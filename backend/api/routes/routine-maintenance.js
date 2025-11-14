@@ -1,7 +1,6 @@
 import express from 'express'
 import { validate, vehicleDataSchema } from '../../middleware/validation.js'
 import { queryMaintenanceSchedule } from '../../services/aiResearchService.js'
-import { compareSchedule } from '../../services/scheduleComparator.js'
 import { logAnalysisSession, logAICall, logGeneratedTable } from '../../services/executionLogger.js'
 
 const router = express.Router()
@@ -11,39 +10,39 @@ router.post('/',
   validate(vehicleDataSchema, 'body'), // Validate vehicle data
   async (req, res) => {
     try {
-      const vehicleData = {
-        make: req.body.make,
-        model: req.body.model,
-        year: req.body.year,
-        mileage: req.body.mileage,
-        trim: req.body.trim || null,
-        engine: req.body.engine || null,
-        vin: req.body.vin || null
-      }
+      // req.body is already validated and sanitized by middleware
+      const { make, model, year, mileage, trim, engine, vin } = req.body
 
       // Create analysis session
-      const sessionId = await logAnalysisSession(vehicleData)
+      const sessionId = await logAnalysisSession({ make, model, year, mileage, trim, engine, vin })
 
       // Query AI for maintenance schedule
       const maintenanceSchedule = await queryMaintenanceSchedule(
-        vehicleData.make,
-        vehicleData.model,
-        vehicleData.year,
-        vehicleData.trim,
-        vehicleData.engine
+        make,
+        model,
+        year,
+        trim || null,
+        engine || null
       )
       await logAICall(sessionId, 'maintenance_schedule', {
-        make: vehicleData.make,
-        model: vehicleData.model,
-        year: vehicleData.year
+        make,
+        model,
+        year
       }, maintenanceSchedule)
 
-      // Pass through AI data - NO service history comparisons
-      const routineMaintenance = await compareSchedule(
-        null, // Not used
-        maintenanceSchedule,
-        null // Not used
-      )
+      // Format AI data for display
+      const routineMaintenance = (!maintenanceSchedule || !maintenanceSchedule.items) 
+        ? []
+        : maintenanceSchedule.items.map(scheduleItem => ({
+            item: scheduleItem.item,
+            interval_miles: scheduleItem.intervalMiles ? scheduleItem.intervalMiles.toLocaleString() : 'N/A',
+            interval_months: scheduleItem.intervalMonths ? scheduleItem.intervalMonths.toString() : 'N/A',
+            cost_range: `$${scheduleItem.costRange.min}-$${scheduleItem.costRange.max}`,
+            oem_cost: `$${scheduleItem.oemCost.min}-$${scheduleItem.oemCost.max}`,
+            description: scheduleItem.description || '',
+            risk_note: scheduleItem.riskNote || ''
+          }))
+      
       await logGeneratedTable(sessionId, 'routine', routineMaintenance)
 
       res.json({

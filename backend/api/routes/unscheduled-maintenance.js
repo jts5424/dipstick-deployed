@@ -10,44 +10,42 @@ router.post('/',
   validate(vehicleDataSchema, 'body'), // Validate vehicle data
   async (req, res) => {
     try {
-      const vehicleData = {
-        make: req.body.make,
-        model: req.body.model,
-        year: req.body.year,
-        mileage: req.body.mileage,
-        trim: req.body.trim || null,
-        engine: req.body.engine || null,
-        vin: req.body.vin || null
-      }
+      // req.body is already validated and sanitized by middleware
+      const { make, model, year, mileage, trim, engine, vin } = req.body
 
       // Create analysis session
-      const sessionId = await logAnalysisSession(vehicleData)
+      const sessionId = await logAnalysisSession({ make, model, year, mileage, trim, engine, vin })
 
       // Query AI for unscheduled maintenance patterns
-      console.log('Unscheduled Maintenance Route - Received vehicle data:', {
-        make: vehicleData.make,
-        model: vehicleData.model,
-        year: vehicleData.year,
-        trim: vehicleData.trim,
-        engine: vehicleData.engine
-      })
-      
       const unscheduledPatterns = await queryUnscheduledMaintenance(
-        vehicleData.make,
-        vehicleData.model,
-        vehicleData.year,
-        vehicleData.trim,
-        vehicleData.engine
+        make,
+        model,
+        year,
+        trim || null,
+        engine || null
       )
       await logAICall(sessionId, 'unscheduled_maintenance', {
-        make: vehicleData.make,
-        model: vehicleData.model,
-        year: vehicleData.year
+        make,
+        model,
+        year
       }, unscheduledPatterns)
 
-      // Format AI data for display - just return the list
-      const unscheduledMaintenance = unscheduledPatterns.items.map(pattern => ({
-        item: pattern.item || 'Unknown'
+      // Format AI data for display - return full data structure
+      const unscheduledMaintenance = (!unscheduledPatterns || !unscheduledPatterns.items) 
+        ? []
+        : unscheduledPatterns.items.map(pattern => ({
+        item: pattern.item || 'Unknown',
+        forecast_mileage: pattern.forecastMileageMin && pattern.forecastMileageMax
+          ? `${pattern.forecastMileageMin.toLocaleString()}-${pattern.forecastMileageMax.toLocaleString()}`
+          : pattern.forecastMileageMin
+          ? pattern.forecastMileageMin.toLocaleString()
+          : 'N/A',
+        probability: pattern.probability ? `${pattern.probability}%` : 'N/A',
+        cost_range: pattern.costRange ? `$${pattern.costRange.min}-$${pattern.costRange.max}` : 'N/A',
+        oem_cost: pattern.oemCost ? `$${pattern.oemCost.min}-$${pattern.oemCost.max}` : 'N/A',
+        description: pattern.description || '',
+        preventative_actions: pattern.preventativeActions || '',
+        inspection: pattern.inspection || ''
       }))
       await logGeneratedTable(sessionId, 'unscheduled', unscheduledMaintenance)
 

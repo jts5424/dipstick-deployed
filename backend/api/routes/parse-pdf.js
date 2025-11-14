@@ -1,5 +1,6 @@
 import express from 'express'
-import { parseServiceHistory } from '../../services/pdfParser.js'
+import fs from 'fs'
+import { parsePDFWithAI } from '../../services/aiPdfParser.js'
 import { validatePDFFile } from '../../middleware/validation.js'
 
 const router = express.Router()
@@ -8,19 +9,34 @@ const router = express.Router()
 router.post('/', 
   validatePDFFile, // Validate PDF file
   async (req, res) => {
+    const pdfFile = req.file
+    const cleanupFile = () => {
+      if (pdfFile?.path) {
+        try {
+          if (fs.existsSync(pdfFile.path)) {
+            fs.unlinkSync(pdfFile.path)
+          }
+        } catch (error) {
+          // Ignore cleanup errors
+        }
+      }
+    }
+
     try {
-      const pdfFile = req.file
-      
-      if (!pdfFile) {
-        return res.status(400).json({ 
-          error: 'No PDF file provided',
-          message: 'Please upload a service history PDF file'
+      // Check if API key is available
+      if (!process.env.OPENAI_API_KEY) {
+        cleanupFile()
+        return res.status(500).json({ 
+          error: 'OpenAI API key not configured',
+          message: 'Please set OPENAI_API_KEY environment variable'
         })
       }
 
-      const serviceHistory = await parseServiceHistory(pdfFile.path)
-
-      console.log('Service history vehicleInfo:', serviceHistory.vehicleInfo)
+      // Parse PDF with AI
+      const serviceHistory = await parsePDFWithAI(pdfFile.path)
+      
+      // Clean up uploaded file
+      cleanupFile()
 
       res.json({
         success: true,
@@ -32,6 +48,7 @@ router.post('/',
         }
       })
     } catch (error) {
+      cleanupFile()
       console.error('Error parsing PDF:', error)
       res.status(500).json({ 
         error: 'Failed to parse PDF',

@@ -47,24 +47,3 @@ export const getUnscheduledMaintenance = async (vehicleData) => {
   return response.data
 }
 
-// Combined function that calls all three endpoints sequentially
-export const analyzeVehicle = async (vehicleData, pdfFile) => {
-  // Step 1: Parse PDF
-  const parseResult = await parsePdf(pdfFile)
-  const serviceHistory = parseResult.serviceHistory
-
-  // Step 2: Get routine maintenance (in parallel with unscheduled for better performance)
-  const [routineResult, unscheduledResult] = await Promise.all([
-    getRoutineMaintenance(vehicleData, serviceHistory),
-    getUnscheduledMaintenance(vehicleData, serviceHistory)
-  ])
-
-  // Combine all results
-  return {
-    serviceHistory,
-    routineMaintenance: routineResult.routineMaintenance || [],
-    unscheduledMaintenance: unscheduledResult.unscheduledMaintenance || [],
-    overallCondition: null
-  }
-}
-

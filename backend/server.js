@@ -4,7 +4,6 @@ import multer from 'multer'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import analyzeRoutes from './api/routes/analyze.js'
 import parsePdfRoutes from './api/routes/parse-pdf.js'
 import routineMaintenanceRoutes from './api/routes/routine-maintenance.js'
 import unscheduledMaintenanceRoutes from './api/routes/unscheduled-maintenance.js'
@@ -48,7 +47,6 @@ const upload = multer({
 })
 
 // Routes
-app.use('/api/analyze', upload.single('serviceHistory'), analyzeRoutes)
 app.use('/api/parse-pdf', upload.single('serviceHistory'), parsePdfRoutes)
 app.use('/api/routine-maintenance', routineMaintenanceRoutes)
 app.use('/api/unscheduled-maintenance', unscheduledMaintenanceRoutes)

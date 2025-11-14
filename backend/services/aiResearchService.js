@@ -1,8 +1,4 @@
 import OpenAI from 'openai'
-import dotenv from 'dotenv'
-
-// Load environment variables
-dotenv.config()
 
 // Lazy initialization of OpenAI client
 function getOpenAIClient() {
@@ -164,15 +160,9 @@ export async function queryUnscheduledMaintenance(make, model, year, trim = null
     }
   }
 
-  // HARD CODED FOR TESTING
-  const vehicleSpec = 'Audi A6 2018 3.0L Quattro Premium Plus'
-  
-  // const vehicleSpec = trim || engine 
-  //   ? `${make} ${model} ${year}${trim ? ` ${trim.trim()}` : ''}${engine ? ` with ${engine.trim()} engine` : ''}`
-  //   : `${make} ${model} ${year}`
-
-  console.log('Unscheduled Maintenance Query - Vehicle Spec (HARD CODED):', vehicleSpec)
-  console.log('Unscheduled Maintenance Query - Make:', make, 'Model:', model, 'Year:', year, 'Trim:', trim, 'Engine:', engine)
+  const vehicleSpec = trim || engine 
+    ? `${make} ${model} ${year}${trim ? ` ${trim.trim()}` : ''}${engine ? ` with ${engine.trim()} engine` : ''}`
+    : `${make} ${model} ${year}`
 
   const prompt = `List the typical unscheduled maintenance and failure modes for this car: ${vehicleSpec}
 

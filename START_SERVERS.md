@@ -1,40 +1,30 @@
-# How to Run Dipstik - Step by Step
+# How to Run Dipstik
 
 ## Prerequisites
 - Node.js installed (v18 or higher)
-- One terminal window/command prompt
+- All dependencies installed (run `npm run install:all` from root if needed)
 
-## Quick Start (Easiest Way)
+## Running the Application
+
+**IMPORTANT: Always run from the project root directory. Both servers must run together.**
 
 1. Open a terminal/command prompt
 2. Navigate to the project root:
    ```bash
    cd C:\Users\jts54\OneDrive\Desktop\Dipstik
    ```
-3. Run both servers with one command:
+3. Run both servers together:
    ```bash
    npm run dev
    ```
+   Or for production mode:
+   ```bash
+   npm start
+   ```
 4. You should see output from both servers:
    - Backend: "Database initialized" and "Server running on port 5000"
-   - Frontend: "Local: http://localhost:3000/"
+   - Frontend: "Local: http://localhost:3000/" (or similar)
 5. **Keep this terminal open** - both servers need to keep running
-
-## Alternative: Run Servers Separately
-
-If you prefer to run them separately (or if the combined command doesn't work):
-
-### Terminal 1 - Backend:
-```bash
-cd C:\Users\jts54\OneDrive\Desktop\Dipstik\backend
-npm start
-```
-
-### Terminal 2 - Frontend:
-```bash
-cd C:\Users\jts54\OneDrive\Desktop\Dipstik\frontend
-npm run dev
-```
 
 ## Step 2: Access the Application
 
@@ -59,15 +49,10 @@ npm run dev
 
 ## Troubleshooting
 
-### Backend won't start:
-- Make sure port 5000 is not already in use
-- Check that you're in the `backend` directory
-- Verify dependencies are installed: `npm install`
-
-### Frontend won't start:
-- Make sure port 3000 is not already in use
-- Check that you're in the `frontend` directory
-- Verify dependencies are installed: `npm install`
+### Application won't start:
+- Make sure you're in the **root directory** (not in `backend` or `frontend`)
+- Verify all dependencies are installed: `npm run install:all`
+- Make sure ports 5000 (backend) and 3000 (frontend) are not already in use
 
 ### Can't connect to backend:
 - Make sure the backend server is running in the first terminal

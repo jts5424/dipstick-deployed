@@ -3,7 +3,6 @@ import fs from 'fs'
 import pdfParse from 'pdf-parse'
 
 // Lazy initialization of OpenAI client
-// Initialize only when needed (after dotenv.config() has run)
 function getOpenAIClient() {
   if (!process.env.OPENAI_API_KEY) {
     return null
@@ -50,7 +49,6 @@ export async function parsePDFWithAI(pdfPath) {
   } catch (error) {
     console.error('Error parsing PDF with AI:', error)
     
-    // Fallback to basic parsing if AI fails
     if (error.message.includes('API key')) {
       throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.')
     }
@@ -249,14 +247,4 @@ ${pdfText.substring(0, 15000)}${pdfText.length > 15000 ? '\n\n[... document trun
   }
 }
 
-/**
- * Alternative: Use OpenAI Vision API for PDFs with images/scans
- * This is more expensive but handles scanned documents better
- */
-export async function parsePDFWithVision(pdfPath) {
-  // This would require converting PDF pages to images first
-  // More complex but handles scanned documents
-  // Implementation can be added if needed
-  throw new Error('Vision API parsing not yet implemented. Use parsePDFWithAI instead.')
-}
 
