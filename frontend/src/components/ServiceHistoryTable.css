@@ -1,0 +1,127 @@
+.service-history-container {
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.record-count {
+  color: #666;
+  font-size: 0.9rem;
+  background: #f0f0f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.service-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.service-history-table thead {
+  background: #f8f9fa;
+  position: sticky;
+  top: 0;
+}
+
+.service-history-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  white-space: nowrap;
+}
+
+.service-history-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.service-history-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.service-history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.date-cell {
+  white-space: nowrap;
+  font-family: monospace;
+  color: #0066cc;
+}
+
+.mileage-cell {
+  text-align: right;
+  font-family: monospace;
+  color: #0066cc;
+}
+
+.service-type-cell {
+  font-weight: 500;
+  color: #333;
+}
+
+.description-cell {
+  max-width: 400px;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.location-cell {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.cost-cell {
+  text-align: right;
+  font-family: monospace;
+  font-weight: 500;
+  color: #28a745;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .service-history-table {
+    font-size: 0.8rem;
+  }
+  
+  .service-history-table th,
+  .service-history-table td {
+    padding: 0.5rem;
+  }
+  
+  .description-cell {
+    max-width: 200px;
+  }
+}
+
