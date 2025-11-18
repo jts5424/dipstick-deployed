@@ -7,6 +7,12 @@ import { dirname, join } from 'path'
 import parsePdfRoutes from './api/routes/parse-pdf.js'
 import routineMaintenanceRoutes from './api/routes/routine-maintenance.js'
 import unscheduledMaintenanceRoutes from './api/routes/unscheduled-maintenance.js'
+import analyzeServiceHistoryRoutes from './api/routes/analyze-service-history.js'
+import maintenanceGapAnalysisRoutes from './api/routes/maintenance-gap-analysis.js'
+import unscheduledMaintenanceRiskRoutes from './api/routes/unscheduled-maintenance-risk.js'
+import portfolioRoutes from './api/routes/portfolio.js'
+import marketValuationRoutes from './api/routes/market-valuation.js'
+import totalCostOfOwnershipRoutes from './api/routes/total-cost-of-ownership.js'
 import { initializeDatabase } from './services/executionLogger.js'
 
 // Load environment variables
@@ -50,6 +56,12 @@ const upload = multer({
 app.use('/api/parse-pdf', upload.single('serviceHistory'), parsePdfRoutes)
 app.use('/api/routine-maintenance', routineMaintenanceRoutes)
 app.use('/api/unscheduled-maintenance', unscheduledMaintenanceRoutes)
+app.use('/api/analyze-service-history', analyzeServiceHistoryRoutes)
+app.use('/api/maintenance-gap-analysis', maintenanceGapAnalysisRoutes)
+app.use('/api/unscheduled-maintenance-risk', unscheduledMaintenanceRiskRoutes)
+app.use('/api/portfolio', portfolioRoutes)
+app.use('/api/market-valuation', marketValuationRoutes)
+app.use('/api/total-cost-of-ownership', totalCostOfOwnershipRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {

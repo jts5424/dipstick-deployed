@@ -164,19 +164,49 @@ export async function queryUnscheduledMaintenance(make, model, year, trim = null
     ? `${make} ${model} ${year}${trim ? ` ${trim.trim()}` : ''}${engine ? ` with ${engine.trim()} engine` : ''}`
     : `${make} ${model} ${year}`
 
-  const prompt = `List the typical unscheduled maintenance and failure modes for this car: ${vehicleSpec}
+  const prompt = `You are an expert automotive mechanic with deep knowledge of common failure modes, technical service bulletins (TSBs), and real-world repair data for ${vehicleSpec} vehicles.
+
+Provide a COMPREHENSIVE list of typical unscheduled maintenance items and failure components that commonly occur with this EXACT vehicle specification. This should be an exhaustive list based on:
+
+- Known common failure modes for this specific make/model/year/engine combination
+- Technical Service Bulletins (TSBs) issued for this vehicle
+- Real-world repair data and mechanic experience
+- Component wear patterns typical for this vehicle
+- Known design weaknesses or problematic systems
+- Typical failure intervals based on mileage
+
+Include ALL categories of failures:
+- Engine components (timing chains, water pumps, oil leaks, gaskets, sensors, etc.)
+- Transmission components (solenoids, valve bodies, clutches, seals, etc.)
+- Electrical systems (alternators, starters, batteries, wiring harnesses, modules, etc.)
+- Suspension and steering (struts, control arms, ball joints, tie rods, power steering pumps, etc.)
+- Brake system components (calipers, master cylinders, ABS modules, brake lines, etc.)
+- Cooling system (radiators, thermostats, hoses, water pumps, heater cores, etc.)
+- Fuel system (fuel pumps, injectors, fuel filters, fuel lines, etc.)
+- Exhaust system (catalytic converters, oxygen sensors, mufflers, exhaust manifolds, etc.)
+- HVAC system (compressors, evaporators, blower motors, actuators, etc.)
+- Body and interior (window regulators, door locks, seat motors, etc.)
+- Any other components known to fail on this specific vehicle
+
+For EACH failure item, provide:
+- The specific component name (be detailed - e.g., "Timing Chain Tensioner" not just "Timing Chain")
+- Typical mileage range when failure occurs (minimum and maximum)
+- Probability of failure (0-100%) based on real-world data
+- Detailed description of what fails and why
+- Cost range for independent shops (min and max in USD)
+- Cost range for OEM/dealer service centers (min and max in USD)
+
+CRITICAL: Include the all common failure mode you know about for this vehicle.
 
 Return ONLY a JSON object with this exact structure:
 {
   "items": [
     {
-      "item": "Item name",
+      "item": "Specific component name (detailed)",
       "forecastMileageMin": number,
       "forecastMileageMax": number,
       "probability": number (0-100),
-      "description": "Brief description",
-      "preventativeActions": "Specific preventative actions - be detailed",
-      "inspection": "Specific inspection procedures - be detailed",
+      "description": "Detailed description of the failure component and what typically goes wrong",
       "costRange": { "min": number, "max": number },
       "oemCost": { "min": number, "max": number }
     }
@@ -189,7 +219,7 @@ Return ONLY a JSON object with this exact structure:
       messages: [
         {
           role: 'system',
-          content: 'Return ONLY valid JSON. No additional text or explanation.'
+          content: 'You are an automotive expert providing comprehensive failure analysis. Return a COMPLETE and EXHAUSTIVE list of all typical unscheduled maintenance items for the specified vehicle. Include 20-40+ items minimum. Be thorough and detailed about specific failure components. Return ONLY valid JSON, no additional text or explanation.'
         },
         {
           role: 'user',
@@ -215,8 +245,6 @@ Return ONLY a JSON object with this exact structure:
       forecastMileageMax: item.forecastMileageMax ? parseInt(item.forecastMileageMax) : null,
       probability: item.probability ? Math.max(0, Math.min(100, parseFloat(item.probability))) : 50,
       description: item.description || '',
-      preventativeActions: item.preventativeActions || '',
-      inspection: item.inspection || '',
       costRange: {
         min: item.costRange?.min ? parseFloat(item.costRange.min) : 0,
         max: item.costRange?.max ? parseFloat(item.costRange.max) : 0

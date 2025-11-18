@@ -10,7 +10,7 @@ function MaintenanceTable({ data, type }) {
     if (type === 'routine') {
       return ['Item', 'Interval (Miles)', 'Interval (Months)', 'Cost Range', 'OEM Cost', 'Description', 'Risk Note']
     } else {
-      return ['Item', 'Forecast Mileage', 'Probability', 'Cost Range', 'OEM Cost', 'Description', 'Preventative Actions', 'Inspection']
+      return ['Item', 'Forecast Mileage', 'Probability', 'Cost Range', 'OEM Cost', 'Description']
     }
   }
 

@@ -43,9 +43,7 @@ router.post('/',
         probability: pattern.probability ? `${pattern.probability}%` : 'N/A',
         cost_range: pattern.costRange ? `$${pattern.costRange.min}-$${pattern.costRange.max}` : 'N/A',
         oem_cost: pattern.oemCost ? `$${pattern.oemCost.min}-$${pattern.oemCost.max}` : 'N/A',
-        description: pattern.description || '',
-        preventative_actions: pattern.preventativeActions || '',
-        inspection: pattern.inspection || ''
+        description: pattern.description || ''
       }))
       await logGeneratedTable(sessionId, 'unscheduled', unscheduledMaintenance)
 

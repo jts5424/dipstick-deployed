@@ -157,3 +157,53 @@ export const validatePDFFile = (req, res, next) => {
   next()
 }
 
+/**
+ * Vehicle data validation schema with service history (for analyze-service-history endpoint)
+ */
+export const vehicleDataWithServiceHistorySchema = vehicleDataSchema.keys({
+  serviceHistory: Joi.object({
+    records: Joi.array().items(Joi.object()).required(),
+    metadata: Joi.object().optional(),
+    vehicleInfo: Joi.object().optional()
+  }).required()
+})
+
+/**
+ * Vehicle data validation schema with routine maintenance (for gap analysis endpoint)
+ */
+export const vehicleDataWithRoutineMaintenanceSchema = vehicleDataSchema.keys({
+  serviceHistory: Joi.object({
+    records: Joi.array().items(Joi.object()).required(),
+    metadata: Joi.object().optional(),
+    vehicleInfo: Joi.object().optional()
+  }).required(),
+  routineMaintenance: Joi.array().items(Joi.object()).required()
+})
+
+/**
+ * Vehicle data validation schema with unscheduled maintenance and service history analysis (for risk evaluation endpoint)
+ */
+export const vehicleDataWithUnscheduledRiskSchema = vehicleDataSchema.keys({
+  serviceHistory: Joi.object({
+    records: Joi.array().items(Joi.object()).required(),
+    metadata: Joi.object().optional(),
+    vehicleInfo: Joi.object().optional()
+  }).required(),
+  serviceHistoryAnalysis: Joi.object().optional(),
+  unscheduledMaintenance: Joi.array().items(Joi.object()).required()
+})
+
+/**
+ * Total Cost of Ownership validation schema
+ */
+export const totalCostOfOwnershipSchema = vehicleDataSchema.keys({
+  purchasePrice: Joi.number().min(0).required(),
+  timePeriodYears: Joi.number().min(0.5).max(10).required(),
+  milesPerYear: Joi.number().min(0).max(50000).required(),
+  gapAnalysis: Joi.object().optional(),
+  riskEvaluation: Joi.object().optional(),
+  serviceHistoryAnalysis: Joi.object().optional(),
+  routineMaintenance: Joi.array().items(Joi.object()).optional(),
+  marketValuation: Joi.object().optional()
+})
+
