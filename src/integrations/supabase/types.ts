@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      portfolios: {
+        Row: {
+          created_at: string | null
+          engine: string | null
+          gap_analysis: Json | null
+          id: string
+          make: string
+          market_valuation: Json | null
+          mileage: number
+          model: string
+          risk_evaluation: Json | null
+          routine_maintenance: Json | null
+          service_history: Json | null
+          service_history_analysis: Json | null
+          total_cost_of_ownership: Json | null
+          trim: string | null
+          unscheduled_maintenance: Json | null
+          updated_at: string | null
+          vin: string | null
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          engine?: string | null
+          gap_analysis?: Json | null
+          id?: string
+          make: string
+          market_valuation?: Json | null
+          mileage: number
+          model: string
+          risk_evaluation?: Json | null
+          routine_maintenance?: Json | null
+          service_history?: Json | null
+          service_history_analysis?: Json | null
+          total_cost_of_ownership?: Json | null
+          trim?: string | null
+          unscheduled_maintenance?: Json | null
+          updated_at?: string | null
+          vin?: string | null
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          engine?: string | null
+          gap_analysis?: Json | null
+          id?: string
+          make?: string
+          market_valuation?: Json | null
+          mileage?: number
+          model?: string
+          risk_evaluation?: Json | null
+          routine_maintenance?: Json | null
+          service_history?: Json | null
+          service_history_analysis?: Json | null
+          total_cost_of_ownership?: Json | null
+          trim?: string | null
+          unscheduled_maintenance?: Json | null
+          updated_at?: string | null
+          vin?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
