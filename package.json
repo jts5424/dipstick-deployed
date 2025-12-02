@@ -5,6 +5,7 @@
   "scripts": {
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:dev": "vite build --mode development",
     "start:backend": "cd backend && npm start",
     "start:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
