@@ -1,0 +1,128 @@
+.method-comparator {
+  width: 100%;
+}
+
+.select-module-prompt {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.module-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #eff6ff;
+  border-radius: 6px;
+}
+
+.comparison-form {
+  margin-bottom: 2rem;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.form-section h4 {
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.form-section select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.methods-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.method-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f9fafb;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.method-checkbox:hover {
+  background: #f3f4f6;
+}
+
+.method-checkbox input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.form-section textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.comparison-form button {
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.comparison-form button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.comparison-form button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.error-result,
+.comparison-result {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 6px;
+}
+
+.error-result {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.comparison-result {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.error-result h4,
+.comparison-result h4 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
+
+.error-result pre,
+.comparison-result pre {
+  margin: 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+

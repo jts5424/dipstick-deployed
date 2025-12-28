@@ -1,0 +1,22 @@
+{
+  "name": "dipstick-dev",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Development framework for isolated module testing",
+  "scripts": {
+    "test": "node tests/run-all.js",
+    "test:maintenance-records": "node modules/vehicle-history-events/services/maintenance-records/test.js",
+    "dev:server": "node framework/api-server.js",
+    "start": "node server.js",
+    "examples": "node examples/basic-usage.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "canvas": "^2.11.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "pdfjs-dist": "^4.0.379"
+  }
+}
+
+

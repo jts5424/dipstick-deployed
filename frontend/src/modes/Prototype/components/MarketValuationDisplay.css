@@ -1,0 +1,298 @@
+.market-valuation-display {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.market-valuation-display h3 {
+  color: #1f2937;
+  margin-bottom: 24px;
+  font-size: 1.75rem;
+}
+
+.market-valuation-display h4 {
+  color: #374151;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.market-valuation-display h5 {
+  color: #4b5563;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+/* Valuation Section */
+.valuation-section {
+  margin-bottom: 32px;
+}
+
+.valuation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.valuation-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.valuation-card h5 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.valuation-range {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.valuation-min,
+.valuation-max {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.valuation-avg {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.valuation-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Depreciation Section */
+.depreciation-section {
+  margin-bottom: 32px;
+}
+
+.depreciation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.depreciation-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 4px solid #2563eb;
+}
+
+.depreciation-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.depreciation-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.projected-values {
+  margin-top: 24px;
+  padding: 16px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.projected-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.projected-item {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+}
+
+.projected-label {
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 80px;
+}
+
+.projected-value {
+  color: #4b5563;
+}
+
+/* Chart Section */
+.chart-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.chart-description {
+  color: #6b7280;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
+
+/* Position Section */
+.position-section {
+  margin-bottom: 32px;
+}
+
+.position-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.position-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 4px solid #10b981;
+}
+
+.position-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.position-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Market Analysis Section */
+.market-analysis-section {
+  margin-bottom: 32px;
+}
+
+.market-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.market-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.market-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.market-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.market-value.market-strong {
+  color: #10b981;
+}
+
+.market-value.market-weak {
+  color: #ef4444;
+}
+
+.market-value.market-stable {
+  color: #6b7280;
+}
+
+.market-factors {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.market-factors ul {
+  margin: 12px 0 0 0;
+  padding-left: 24px;
+}
+
+.market-factors li {
+  margin-bottom: 8px;
+  color: #4b5563;
+}
+
+.regional-variations {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.regional-variations p {
+  margin: 12px 0 0 0;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* Value Factors Section */
+.value-factors-section {
+  margin-bottom: 32px;
+}
+
+.factors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.factor-item {
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.factor-item h5 {
+  margin-top: 0;
+  color: #1f2937;
+}
+
+.factor-item p {
+  margin: 8px 0 0 0;
+  color: #4b5563;
+  line-height: 1.6;
+}
+

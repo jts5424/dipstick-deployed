@@ -1,0 +1,93 @@
+.service-tester {
+  width: 100%;
+}
+
+.select-module-prompt {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.module-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #eff6ff;
+  border-radius: 6px;
+}
+
+.test-form {
+  margin-bottom: 2rem;
+}
+
+.test-form h4 {
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.params-input textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.test-form button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.test-form button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.test-form button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.error-result,
+.test-result {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 6px;
+}
+
+.error-result {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.test-result {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.error-result h4,
+.test-result h4 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
+
+.error-result pre,
+.test-result pre {
+  margin: 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
