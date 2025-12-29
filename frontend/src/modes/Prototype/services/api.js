@@ -1,8 +1,10 @@
 import axios from 'axios'
 
 // Use environment variable with fallback to proxy path for development
-// In production, use VITE_PROTOTYPE_API_URL, in dev use /api proxy
-const API_BASE_URL = import.meta.env.VITE_PROTOTYPE_API_URL || '/api'
+// In production, use VITE_PROTOTYPE_API_URL (just the domain, e.g., https://backend.railway.app)
+// In dev, use /api proxy
+const BASE_URL = import.meta.env.VITE_PROTOTYPE_API_URL || ''
+const API_BASE_URL = BASE_URL ? `${BASE_URL}/api` : '/api'
 
 // Step 1: Parse PDF and get service history
 export const parsePdf = async (pdfFile) => {

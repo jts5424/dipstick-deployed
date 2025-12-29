@@ -63,6 +63,27 @@ app.use('/api/portfolio', portfolioRoutes)
 app.use('/api/market-valuation', marketValuationRoutes)
 app.use('/api/total-cost-of-ownership', totalCostOfOwnershipRoutes)
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Dipstik API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      portfolio: '/api/portfolio',
+      parsePdf: '/api/parse-pdf',
+      routineMaintenance: '/api/routine-maintenance',
+      unscheduledMaintenance: '/api/unscheduled-maintenance',
+      analyzeServiceHistory: '/api/analyze-service-history',
+      maintenanceGapAnalysis: '/api/maintenance-gap-analysis',
+      unscheduledMaintenanceRisk: '/api/unscheduled-maintenance-risk',
+      marketValuation: '/api/market-valuation',
+      totalCostOfOwnership: '/api/total-cost-of-ownership'
+    }
+  })
+})
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Dipstik API is running' })
