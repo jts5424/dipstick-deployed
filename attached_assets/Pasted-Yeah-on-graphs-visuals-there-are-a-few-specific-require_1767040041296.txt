@@ -1,0 +1,72 @@
+Yeah — on **graphs/visuals**, there are a few **specific requirements** in the transcript that are easy to miss. Here’s the **complete visuals spec** (what goes where + how it should behave), pulled directly from the lines where you guys talked about it.
+
+## A) “Dipstick It” (Comparator) should be **mostly graphs + narrative**
+
+**Rule:** “The only thing… in comparator is just visualizations that back that up.” 
+
+### Required visuals (Comparator)
+
+1. **Stacked depreciation curves (both cars on ONE chart)**
+
+* “Both curves stacked… showing *you are here* and *you are here*.” 
+* It should respond to inputs: miles + years → show projected position for each car. 
+
+2. **Total Cost of Ownership graph BELOW the depreciation chart**
+
+* Explicit callout: “Total cost of ownership. Graph below too.” 
+
+3. **Cost breakdown bars (the engineering-style stacked bars)**
+
+* “Just depreciation chart… exactly how you did this cost breakdown. I love that with the bars.” 
+  (So: keep the bars as a core visual element in Comparator.)
+
+### Required “explain the graphs” layer (Comparator)
+
+4. **Narrative explanation + tooltips**
+
+* “Comparator should be a… high level narrative and then just the graphs… explain the charts like in a tooltip…” 
+* Reason: “Some people aren’t good at graphs… explain how to interpret the graph.” 
+* Also: It **can’t be advice**; it has to be framed as **interpretation**. 
+
+### What NOT to do (Comparator)
+
+5. **No big cards / no “second Garage”**
+
+* “I don’t think we should have cards in the comparator… you already have the cards in garage.” 
+* If any car visual exists: keep **small thumbnails**, not scroll-bloat. 
+
+---
+
+## B) Single-car Analysis visuals you should KEEP (these were praised)
+
+These aren’t “Comparator” charts — they’re the **deep analysis visuals** you already have.
+
+1. **Risk Urgency Map**
+
+* “Whoa… that’s really cool. Risk urgency map.” 
+
+2. **Perfect failure probability / unscheduled maintenance survivability curve**
+
+* “Perfect failure probability unscheduled maintenance survivability curve. Yo, that’s sick.” 
+
+So if you’re telling Replit what to preserve: **don’t delete these** — they’re part of the “wow.” 
+
+---
+
+## C) Service History visuals: color legend + filtering must be obvious
+
+* You called out the **color coding** (green/blue/yellow) and asked for it to be made clear. 
+* Legend definition: “Green is maintenance, blue is inspection, yellow is repair.” 
+* Filtering/toggle should work consistently (it was “not functioning” in one instance). 
+
+---
+
+### If you want the tight “Replit instruction”
+
+Tell Replit:
+
+* **Comparator page =** Narrative block + (1) stacked depreciation curves with “you are here” markers + (2) TCO graph below + (3) cost breakdown bars + tooltips explaining how to read them; **no big cards**.  
+* **Analysis page keeps** Risk Urgency Map + failure probability/survivability curve visuals. 
+* **Service history** must show an on-screen legend + working filters. 
+
+If you want, paste your current chart component names (e.g., `DepreciationChart.tsx`, `TCOChart.tsx`, `CostBreakdownBars.tsx`) and I’ll translate this into **exact component-level edits + acceptance criteria**.

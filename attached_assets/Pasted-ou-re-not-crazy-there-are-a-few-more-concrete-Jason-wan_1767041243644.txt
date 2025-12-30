@@ -1,0 +1,78 @@
+ou’re not crazy — there are a few more concrete “Jason wanted this” details that should be in your Replit master spec, beyond what I already gave you.
+
+Add these missing requirements
+1) Comparator entry points (UX flows)
+
+Keep BOTH ways to enter Dipstick It:
+
+From Garage: “compare two vehicles” → it launches the comparator
+
+From top nav: click Comparator/Dipstick It
+
+
+Dipstick v2 round
+
+2) Comparator inputs include Market Price per vehicle
+
+He explicitly liked: “ownership period, annual mileage, market price for each one.”
+
+
+Dipstick v2 round
+
+3) Comparator should be a super quick run
+
+After data is cached behind the car, compare should be “a super quick run.”
+
+
+Dipstick v2 round
+
+4) Garage cards MAY include “estimated total loss”
+
+He called out Garage can have “cards and… estimated total loss” on the card.
+
+
+Dipstick v2 round
+
+5) “Configure analysis (3 years / 12,000)” + “Run full analysis” removal (explicit)
+
+This is the exact phrasing of what to remove, not just the concept.
+
+
+Dipstick v2 round
+
+6) Dipstick It should NOT show “stats in the car” (full list of the clutter)
+
+The specific stats called out as clutter on compare cards:
+
+total loss, deal score, regular oil change, gap service, full report
+and the directive: “don’t put the stats in the car.”
+
+
+Dipstick v2 round
+
+7) Script Builder bug is TWO separate bugs (not just scrolling)
+
+Bug A: clicking Generate Script doesn’t pull up Smart Script Builder (state/trigger bug).
+
+Bug B: modal can’t scroll at normal window size/zoom.
+
+
+Dipstick v2 round
+
+ 
+
+Dipstick v2 round
+
+8) Where Leverage Builder lives in the UI (exact path + placement)
+
+Path: Garage → View Analysis → Summary card → Leverage Builder “to the right” → Generate Script
+
+
+Dipstick v2 round
+
+9) “DTC mode” exists (don’t ignore it)
+
+They referenced “You’re in DTC mode, right?” which implies your UI has modes or a toggle that affects where Leverage Builder shows up. Replit should ensure Leverage Builder/Script Builder is discoverable in that mode.
+
+
+Dipstick v2 round

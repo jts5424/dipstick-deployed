@@ -1,0 +1,243 @@
+Cool. Here are mom-proof rewrite templates you can drop in everywhere (Dipstick It + single-car tabs). They’re short, plain English, and always end with a “what to do.”
+
+Global replacements (use these labels in UI)
+
+TCO → 3-Year Cost
+
+Depreciation → Value loss
+
+Repair exposure → Risk of big repairs
+
+Maintenance → Routine upkeep
+
+Value retention → Holds value
+
+Risk urgency map → Risk map
+
+Survivability curve → Where breakdowns usually happen
+
+Section headers:
+
+How to read this → What you’re looking at
+
+What it means → What it means for you
+
+Add: Bottom line
+
+Dipstick It (multi-car compare) — chart blocks
+1) Value loss chart (Depreciation curves)
+
+What you’re looking at:
+“This shows how much each car is expected to be worth over time.”
+
+What it means for you:
+
+If one line ends higher, that car keeps more of its value.
+
+If the lines are close, value loss isn’t the deciding factor.
+
+Bottom line:
+“Pick the car that keeps more value only if cost and repair risk are similar.”
+
+Dynamic insert (optional):
+
+If delta < $250: “These are basically tied.”
+
+Else: “After {years} years, {winner} is worth about ${delta} more.”
+
+2) 3-Year Cost breakdown (stacked bars)
+
+What you’re looking at:
+“This shows where your money goes over {years} years: value loss, routine upkeep, and repairs.”
+
+What it means for you:
+
+“{winner} costs about ${deltaTotal} less overall.”
+
+“The biggest difference is {biggestDriver}.”
+
+Bottom line:
+“If you want to spend less over {years} years, pick {winner}.”
+
+(If tied)
+Bottom line: “Costs are basically the same — choose based on risk and history.”
+
+3) Risk of big repairs (if you show it as a number)
+
+What you’re looking at:
+“This estimates how likely expensive repairs are.”
+
+What it means for you:
+“Lower is better — fewer surprise bills.”
+
+Bottom line:
+“If you hate surprises, pick the car with lower repair risk.”
+
+4) Scorecard table
+
+What you’re looking at:
+“A quick report card. Higher is better.”
+
+What it means for you:
+
+“{winner} is stronger on {topCategory}.”
+
+“{runnerUp} is stronger on {losingCategory}.”
+
+Bottom line:
+“Pick {winner} for {topCategory}. Pick {runnerUp} if {losingCategory} matters most.”
+
+Single-car pages — mom-proof blocks
+Summary
+
+Replace any long narrative with:
+
+1 sentence: “This car looks {good/fair/risky} at this price.”
+
+2 bullets: “Top concern: ___” “Best sign: ___”
+
+Bottom line: “If you buy it, plan to budget $X–$Y in the first year.”
+
+Market Valuation
+
+What you’re looking at:
+“These are typical prices for similar cars.”
+
+What it means for you:
+“If the asking price is below the fair range, you have room to negotiate.”
+
+Bottom line:
+“Use ${delta} as your negotiation starting point.”
+
+Projected Future Repairs (risk map)
+
+What you’re looking at:
+“Bigger dots mean bigger potential bills. Dots further left tend to happen sooner.”
+
+What it means for you:
+“Most risk is clustered around {mileageWindow} miles.”
+
+Bottom line:
+“Ask for proof those items were fixed, or plan to budget for them.”
+
+Immediate Maintenance Due
+
+What you’re looking at:
+“Work you’ll probably have to pay for right away.”
+
+What it means for you:
+“These are real costs — not ‘maybe later.’”
+
+Bottom line:
+“Ask for ${total} off or ask them to fix these before purchase.”
+
+Vehicle History (gaps)
+
+What you’re looking at:
+“A timeline of service and ownership events.”
+
+What it means for you:
+“A long gap usually means records are missing (work may have been done, but we can’t prove it).”
+
+Bottom line:
+“If there’s a big gap, negotiate for uncertainty or require receipts.”
+
+One UI rule to keep it readable
+
+Every explainer block should be:
+
+2 short sentences max + 1 bottom line
+
+No jargon
+
+Always contains either:
+
+one number, or
+
+one clear action (“Ask for receipts”, “Budget $X”, “Negotiate $Y off”)
+
+If you want the exact rewrites for YOUR current strings
+
+Paste the current “How to read this / What it means” text for:
+
+Depreciation Curves
+
+TCO Breakdown
+
+Scorecard
+…and I’ll rewrite them line-by-line in this mom-proof style and keep your brand voice.
+
+can you actually include both the techincal and everyday speak
+
+Yes — best pattern is a toggle: Simple (default) and Technical (for power users). Don’t show both at once or it’ll feel bloated.
+
+UI pattern
+
+Under each chart:
+
+Explain: Simple | Technical (Simple selected by default)
+
+Keep it consistent across all charts.
+
+Copy templates (you can reuse everywhere)
+Depreciation Curves
+Simple
+
+What you’re looking at: “How much each car is expected to be worth over time.”
+What it means for you: “Higher line = keeps value better.”
+Bottom line: “If the lines are close, focus on total cost and repair risk.”
+
+Technical
+
+Definition: “Projected resale value trajectory across the ownership horizon.”
+Interpretation: “Delta at year {Y} (horizon): ${Δvalue}. Slope reflects value loss rate.”
+Bottom line: “Value loss contribution to TCO is primarily depreciation; use horizon deltas for ranking.”
+
+3-Year Cost Breakdown (stacked bars)
+Simple
+
+What you’re looking at: “Where your money goes: value loss, upkeep, repairs.”
+What it means for you: “Shorter bar = cheaper to own.”
+Bottom line: “Pick the lowest total cost unless repair risk is unacceptable.”
+
+Technical
+
+Definition: “TCO decomposition: Depreciation + Routine Maintenance + Unscheduled Repairs.”
+Interpretation: “Total ΔTCO vs #2 = ${Δtco}. Primary driver = {component} (Δ ${Δcomponent}).”
+Bottom line: “Component deltas explain ranking sensitivity.”
+
+Risk (repairs)
+Simple
+
+What you’re looking at: “Chance of expensive repairs.”
+What it means for you: “Lower risk = fewer surprise bills.”
+Bottom line: “If you hate surprises, choose lower repair risk even if cost is similar.”
+
+Technical
+
+Definition: “Projected failure probability zones by mileage window + cost impact.”
+Interpretation: “Highest-probability window: {range}. Exposure estimate: ${risk$}.”
+Bottom line: “Risk-adjusted TCO favors lower exposure if user risk tolerance is low.”
+
+Scorecard table
+Simple
+
+What you’re looking at: “Quick report card. Higher is better.”
+What it means for you: “Shows what each car is best at.”
+Bottom line: “Use this to pick based on your priorities.”
+
+Technical
+
+Definition: “Normalized category scores (0–100) across value retention, reliability, maintenance economy, condition, deal rating.”
+Interpretation: “Winner leads in {k} of {n} categories; weakness is {weakCat}.”
+Bottom line: “Use category weighting if user preference differs from default.”
+
+Replit copy/paste spec
+For every chart, add an “Explain” toggle:
+- Simple (default): 2 short sentences + Bottom line
+- Technical: definition + 1 numeric delta + Bottom line
+
+Do not show both at once. Persist user preference across the app.
+
+
+If you paste your current “How to read / What it means” strings, I’ll convert each one into Simple + Technical versions with your actual numbers/deltas filled in.

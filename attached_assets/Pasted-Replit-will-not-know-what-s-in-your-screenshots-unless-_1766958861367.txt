@@ -1,0 +1,249 @@
+Replit **will not “know” what’s in your screenshots** unless you tell it. So yes — you need to **type the journey + the data model + mock data requirements** into the prompt so it can generate a believable demo you can show Jason.
+
+Below is a **single, fully-loaded Replit prompt** that:
+
+* recreates Jason’s demo modules (even without screenshots),
+* fills everything with realistic mock data (Audi examples),
+* and shows the **revamped world-class UX** (Garage → Report → Leverage → Costs → Evidence → Compare),
+* while preserving an “Original Demo Mode” view so Jason recognizes his flow.
+
+Copy/paste this whole prompt into Replit AI:
+
+```text
+Build a world-class direct-to-consumer web app UI called “Dipstick” (used-car leverage + cost-to-own intelligence).
+This app is a redesign/revamp of an existing prototype demo. You must implement BOTH:
+(1) “Original Demo Mode” navigation (module-first pages) AND
+(2) “World-Class DTC Mode” navigation (decision-first journey).
+Use realistic mock data throughout so the UI looks real and can be demoed to a stakeholder.
+
+TECH STACK
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Recharts for charts
+- TanStack Table for tables
+- lucide-react icons
+- Responsive layout
+- No backend required; use mock JSON and local state.
+
+BRAND / VISUAL STYLE
+The brand should feel “Maverick + Trustworthy Innovator”.
+- Dark premium background (charcoal) with clean white typography
+- A single bold accent color (teal/green/blue) for “Dipstick energy”
+- Conventional risk colors: green/yellow/red for safety/trust
+- Minimal, modern, plenty of whitespace, crisp card layout
+- Microcopy should be bold but evidence-based (e.g., “Leverage you can prove”, “Evidence linked below”)
+
+INFORMATION ARCHITECTURE
+Create a top-level toggle in the header:
+- “DTC Mode” (default)
+- “Demo Mode” (original prototype flow)
+
+A) DTC MODE (DECISION-FIRST)
+Routes:
+1) /  (Garage)
+- Vehicle cards showing:
+  - Vehicle identity: year make model trim
+  - mileage
+  - Deal Score (0–100)
+  - 3-year TCO (big number)
+  - Total loss (secondary)
+  - Risk level chip
+  - Top leverage bullets (2)
+  - Buttons: Open Report, Add to Compare
+- “Add Vehicle” CTA in header
+- A “Compare Tray” that appears when 2–3 vehicles are selected.
+
+2) /add  (Upload + Parse)
+- Drag/drop Carfax PDF UI (fake upload).
+- After upload, show a stepper with loading states:
+  Step 1 Parse service records
+  Step 2 Generate expert analysis
+  Step 3 Build routine maintenance schedule
+  Step 4 Forecast unscheduled maintenance
+  Step 5 Compute gaps and risk evaluation
+  Step 6 Market valuation + depreciation curve
+  Step 7 Total cost of ownership
+- After the stepper completes (fake delay), create a new vehicle in mock state and navigate to /report/[id].
+
+3) /report/[id]  (Premium DTC Report)
+Tabs: Summary | Leverage | Costs | Evidence | Advanced
+- Summary tab:
+  - Hero row metric cards:
+    - Dipstick Score
+    - Fair price range (private party + retail with ranges)
+    - 3-year TCO
+    - Risk counts (High/Moderate/Low)
+  - Three cards: What’s Good / What’s Concerning / What’s Missing
+  - Top 3 leverage items (IssueCards) with “Add to script” button
+- Leverage tab:
+  - Left: list of leverage IssueCards (gaps + risks, ranked by impact)
+  - Each IssueCard includes:
+    - title
+    - severity chip
+    - cost range
+    - negotiation angle (1 line)
+    - “Questions to ask” bullets
+    - evidence tags (clickable pills)
+    - button: Add to negotiation script
+  - Right: Leverage Drawer (or bottom sheet on mobile) that:
+    - shows selected leverage items
+    - auto-generates a negotiation script (copy button)
+    - shows “Target offer” computed from asking price and leverage total
+- Costs tab:
+  - Depreciation curve chart with markers:
+    - current mileage marker
+    - projected mileage at end of ownership horizon (years * miles/year)
+  - TCO breakdown chart (stacked bar or waterfall-style):
+    - depreciation loss
+    - routine maintenance
+    - gap maintenance
+    - expected repairs (probability-weighted)
+    - total cost
+  - Assumptions card (collapsible):
+    - asking price input
+    - ownership years slider
+    - miles/year input
+    - button “Recalculate”
+  - Show expected resale value at horizon.
+- Evidence tab:
+  - Service history timeline view (grouped by year)
+  - Evidence table (TanStack) with:
+    - filter chips: All / Maintenance / Repairs / Inspection / Admin
+    - search box
+    - grouping by year collapsible
+    - default hides Admin events (registration/title)
+  - Clicking an evidence pill from a leverage card filters the table and highlights matching rows.
+- Advanced tab:
+  - This should mirror the original demo modules (so stakeholders can recognize the old structure):
+    Service History Analysis
+    Routine Maintenance
+    Unscheduled Forecast
+    Gap Analysis
+    Risk Evaluation
+    Market Valuation
+    Total Cost of Ownership
+    Comparator Metrics (if needed)
+
+4) /compare  (World-class Compare)
+- Compare up to 3 vehicles selected from Garage.
+- Top “Winner” banner: “Best 3-year deal: ____” with why bullets.
+- Show side-by-side vehicle summary cards.
+- Charts:
+  - Stacked bar TCO breakdown per vehicle
+  - Total loss bar per vehicle
+  - Risk counts per vehicle
+- Simple comparison table with NO acronyms:
+  Columns: Vehicle | Asking Price | Fair Price | 3-yr TCO | Total Loss | Expected Sale Price | Risk Level | Deal Score
+- Add “Copy script for winner” CTA.
+
+B) DEMO MODE (ORIGINAL PROTOTYPE FLOW)
+Create a route: /demo/[id]
+This page mimics the original module-by-module experience with a left sidebar:
+- Vehicle Information + Upload/Parse status
+- Parsed Service History (raw table)
+- Service History Analysis (text blocks)
+- Routine Maintenance (table)
+- Unscheduled Maintenance Forecast (table)
+- Maintenance Gap Analysis (summary + table)
+- Risk Evaluation (table with chips)
+- Market Valuation (retail/private/trade + depreciation chart + future values)
+- Total Cost of Ownership (inputs + calculate)
+- Comparator (vehicle selection + purchase price inputs + compare button + results tables)
+Important: hide admin actions like “Delete Section” in DTC Mode. In Demo Mode it can appear under a subtle “Debug” accordion.
+
+MOCK DATA REQUIREMENTS (REALISTIC, FILLED OUT)
+Create /lib/mockData.ts exporting vehicles[] with at least 3 vehicles:
+- 2015 Audi S7 (72,300 miles) – has some gaps and higher repair risk
+- 2018 Audi A6 (55,000 miles) – better condition, fewer gaps
+- 2017 BMW 540i (68,000 miles) – moderate risk, mixed history
+For each vehicle provide complete realistic mock data:
+
+Vehicle fields:
+- id, year, make, model, trim, mileage, vin, engine, drivetrain
+- askingPrice (editable)
+- location (city/state)
+
+Service records (40–60 items each):
+- { date, mileage, category (maintenance/repair/inspection/admin), description, location, costEstimate }
+Include admin noise (registration/title) so filtering works.
+
+Expert analysis sections:
+- overallEvaluation string
+- anomalies array
+- concerns array
+- positiveFindings array
+- “services performed more than normal” array
+
+Routine maintenance schedule (20–35 rows):
+- { item, dueEveryMiles, dueEveryMonths, estimatedCostRange, riskNote }
+
+Unscheduled forecast (10–25 items):
+- { name, windowMin, windowMax, probability, costMin, costMax, description }
+
+Gap analysis (10–20 items):
+- { name, status (overdue/dueSoon/notDue), lastPerformedMileage|null, dueAtMileage, estimatedCostRange, severity }
+
+Risk evaluation (15–30 items):
+- { name, riskLevel, riskScore, milesUntilFailureBucket, probability, costMin, costMax, alreadyFixed, recommendations[], evidenceTags[] }
+
+Valuation:
+- retailValue, privatePartyValue, tradeInValue
+- retailRange [min,max], privateRange [min,max], tradeRange [min,max]
+- depreciationCurve array: { mileage, retailValue, privateValue }
+- projectedFutureValues: { year1, year2, year3, year5 }
+- depreciationStats: msrp, totalDepreciation, annualRate, mileageImpact
+
+TCO:
+- inputs: years, milesPerYear, askingPrice
+- computed: immediateCostBurden, routineMaintenanceCost, expectedUnscheduledRepairCost, depreciationLoss, totalCost, expectedSalePrice, totalLoss
+Also provide a breakdown array for charts.
+
+Scores:
+- dipstickScore 0–100
+- dealScore 0–100
+- conditionScore 0–100
+- riskLevel Low/Moderate/High
+- counts: { high, moderate, low }
+
+Leverage items (8–15 items):
+- Derived from high-impact gaps + risks:
+  { id, title, severity, costMin, costMax, negotiationAngle, questionsToAsk[], evidenceTags[] }
+
+INTERACTIONS / UX DETAILS
+- “Asking price” input should drive:
+  - Deal meter (Overpriced/Fair/Underpriced)
+  - Target offer recommendation
+  - Negotiation script text
+- Leverage builder should show a running total: “Justified discount: ~$X–$Y”
+- Evidence tags must filter/highlight service history rows.
+- Compare page should auto-rank best deal using dealScore or lowest totalLoss; show winner banner.
+- Use skeleton loaders and smooth transitions.
+
+DELIVERABLES
+Generate all code and files so the app runs without errors.
+Ensure mock data renders across all pages with charts and tables populated.
+Keep the code modular with reusable components:
+VehicleCard, MetricCard, IssueCard, LeverageDrawer, DealMeter, DepreciationChart, TcoChart, EvidenceTable, Timeline.
+```
+
+---
+
+## What this gets you (and why Jason will care)
+
+* Jason sees **his exact modules** preserved in **Demo Mode** (so he recognizes the original thinking).
+* He also sees the **real product** in **DTC Mode**: verdict → leverage → charts → evidence → compare winner.
+* You can walk him through the new journey and say:
+  “Same engine. Better packaging. This is what consumers will pay for.”
+
+---
+
+## If you want one more “chef’s kiss” addition
+
+Add this line to the prompt under Interactions:
+
+> Add a “Generate PDF Report” button that exports the Summary + Leverage + Costs pages into a clean printable report (mock export is fine).
+
+That will make Jason instantly imagine distribution + virality.
+
+If you want, paste back Replit’s first output (or screenshots) and I’ll give you a tight revision punch list to make it *feel* even more premium (spacing, component rhythm, chart labeling, and the “maverick but trustworthy” microcopy).

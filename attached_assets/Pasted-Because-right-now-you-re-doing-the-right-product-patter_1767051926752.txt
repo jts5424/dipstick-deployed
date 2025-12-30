@@ -1,0 +1,71 @@
+Because right now you’re doing the right product pattern: parsing ≠ saving.
+
+Parsing extracts data, but you still need a confirmation + save step so users can:
+
+verify mileage (often wrong or missing),
+
+add VIN (for recall validation),
+
+correct trim/engine,
+
+avoid creating junk vehicles in Garage.
+
+That said: you can make it feel instant without losing control.
+
+What you should do (best UX)
+After parse success, show this confirm screen briefly…
+
+…and then give users two choices:
+
+Save & build analysis (primary, already there)
+
+Save & go to Garage (secondary)
+
+Also add an “auto-redirect” option
+
+After they click Save & build analysis, do:
+
+toast: “Vehicle saved. Building analysis…”
+
+auto-redirect to Garage after 1–2 seconds
+
+Because users expect to end up back in Garage with the new car card showing “Processing…”
+
+Why “auto-go to Garage immediately after parse” is risky
+
+If you auto-create a vehicle on parse:
+
+you’ll fill Garage with half-baked records when parsing fails
+
+you’ll lose the chance to fix mileage/VIN
+
+users won’t trust your outputs
+
+So: don’t auto-save on parse. Auto-save on Save & build.
+
+What you’re missing right now (based on your screenshot)
+1) You’re labeling VIN as Optional — should be “Recommended”
+
+You already say “We’ll use this for recall validation,” but label should match: VIN (recommended).
+
+2) Your locked fields need an “Edit” affordance
+
+You show lock icons, but users need a way to override:
+
+“Edit” link next to locked fields
+
+Replit copy/paste spec
+Keep confirm step after parse (parse ≠ save), but improve flow:
+
+- On “Save & build analysis”:
+  1) Save vehicle
+  2) Start analysis job
+  3) Redirect to Garage automatically + show “Processing…” badge on the new vehicle card
+
+- Add secondary button: “Save & go to Garage” (no build) OR keep one button and always redirect to Garage after save.
+
+- Don’t redirect to Garage immediately after parse success unless vehicle is saved.
+- Change label to “VIN (recommended)” and add an “Edit” affordance for locked fields.
+
+
+If you want it to feel even more “instant”: show a Garage preview card on this page right after parse (“This is what will appear in your Garage”), then Save confirms it and returns.

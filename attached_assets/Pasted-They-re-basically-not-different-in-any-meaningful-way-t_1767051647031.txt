@@ -1,0 +1,171 @@
+They’re basically not different in any meaningful way — they’re two screenshots of the same “Confirm vehicle details” step with the same fields, same VIN warning, same buttons. The only “difference” is cosmetic/cropping (one shows a slightly different framing of the card and spacing), not a different state or flow.
+
+If these are meant to represent two different modes (VIN entry vs manual entry vs PDF parse), you need to make the differences explicit in the UI, otherwise the user won’t understand what they’re doing.
+
+How to make them actually different (recommended)
+If this screen is reached from Enter VIN
+
+Title: Confirm VIN details
+
+Prefill: VIN (required here) + decoded Make/Model/Year
+
+Show status: “VIN decoded ✓”
+
+Hide Engine/Trim unless decoded (or keep but collapsed)
+
+Primary CTA: Create vehicle
+
+If reached from Manual Entry
+
+Title: Enter vehicle details
+
+VIN truly optional
+
+No VIN warning (instead: “VIN enables recall checks” as neutral info)
+
+Primary CTA: Save vehicle
+
+If reached from Upload PDF
+
+Title: Confirm parsed details
+
+Show parse results banner at top:
+
+“44 records found • 1 gap detected • mileage confidence: medium”
+
+Field chips indicating source: “From PDF”
+
+Primary CTA: Save & build analysis
+
+Quick copy/paste for Replit
+The two “Confirm vehicle details” screens are currently the same state. Make the UI reflect the entry path:
+
+- VIN path: “Confirm VIN details”, VIN required, show “VIN decoded” status, prefill fields, CTA “Create vehicle”.
+- Manual path: “Enter vehicle details”, VIN optional with neutral helper (no warning), CTA “Save vehicle”.
+- PDF path: “Confirm parsed details”, show parse summary banner + “from PDF” chips, CTA “Save & build analysis”.
+
+
+If you tell me which two paths those screenshots were supposed to represent, I’ll give you the exact final copy and what fields should be locked vs editable in each.
+
+you did it for me
+
+Yep — here’s the exact final version of those two screens so they’re actually different and self-explanatory. Copy/paste this into Replit.
+
+Screen A: VIN Flow (fast start)
+Header
+
+Confirm VIN details
+“Paste a VIN to create the vehicle and enable recall checks.”
+
+Form behavior
+
+VIN (required) — prefilled, validated (17 chars)
+
+Helper: “We’ll use this for recall validation and verification.”
+
+If invalid length: “VIN must be 17 characters.”
+
+After VIN is valid, show a status line:
+
+✅ VIN decoded — “Audi • S7 • 2015”
+
+Fields:
+
+Make (locked if decoded, editable via “Edit”)
+
+Model (locked if decoded)
+
+Year (locked if decoded)
+
+Current Mileage (required, user enters)
+
+Trim (optional, collapsed)
+
+Engine (optional, collapsed)
+
+Banner (top of form)
+
+Limited analysis until you upload a history report
+“Upload a CARFAX/vehicle history PDF to unlock gaps, risk model, and service timeline.”
+
+Buttons
+
+Primary: Create Vehicle
+
+Secondary: Back
+
+Tertiary link: Upload PDF instead
+
+Screen B: Manual Flow (limited / fallback)
+Header
+
+Enter vehicle details
+“Manual entry is basic tracking. Upload a history report later for full analysis.”
+
+Form behavior
+
+Make (required)
+
+Model (required)
+
+Year (required)
+
+Current Mileage (required)
+
+Trim (optional)
+
+Engine (optional)
+
+VIN (optional)
+
+Helper: “VIN enables recall validation.”
+
+NO orange warning by default.
+
+If empty, show a soft info: “You can add a VIN anytime.”
+
+Banner (top of form)
+
+Basic mode
+“Some insights will be limited until a vehicle history report is uploaded.”
+
+Buttons
+
+Primary: Save Vehicle
+
+Secondary: Back
+
+Tertiary link: Upload PDF for best results
+
+Shared microcopy (use across both)
+Under VIN field (when present)
+
+“VIN enables recall checks and verification.”
+
+When VIN is missing in VIN-flow only
+
+“Recall validation requires a VIN.” (warning)
+
+When VIN is missing in manual-flow
+
+“Add VIN later (optional).” (info)
+
+Replit implementation notes (tight)
+Make the confirm screen conditional by entry_path:
+
+entry_path="vin":
+- title “Confirm VIN details”
+- VIN required + validate + decoded status
+- lock decoded make/model/year (editable via “Edit”)
+- mileage required
+- show “Limited analysis until upload PDF” banner
+- CTA: Create Vehicle
+
+entry_path="manual":
+- title “Enter vehicle details”
+- VIN optional with neutral helper (no warning)
+- CTA: Save Vehicle
+- show “Basic mode” banner
+
+
+If you want, I’ll also write the PDF parse confirm version (third variant) with the “Parsed successfully: 44 records / gaps / confidence” banner and “Save & build analysis” CTA.

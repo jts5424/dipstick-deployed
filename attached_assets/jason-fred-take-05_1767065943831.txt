@@ -1,0 +1,35 @@
+Fred (00:05.092)
+coring to each one so it's easier.
+
+Jason (00:05.755)
+Yeah, so we want to combine maintenance schedule and meet and immediate maintenance do so that Really like the idea here is that the maintenance schedule is just what needs to be pulled in order to do a gap analysis of the service history of the car relative to the OEM or Indy expert schedule
+
+And then when we perform that gap analysis, we show it relative to the schedule, not relative to the maintenance history. we look at the, and the abstraction from this is each of these routine maintenances that.
+
+for every single item in the schedule, when was the last time it was done? And when does it need to be? When is it due as of today based on the history?
+
+Fred (01:05.4)
+Yes. And can you break down each specific one? So oil change, air filter replacement.
+
+Jason (01:14.415)
+Yeah, exactly. Like the how long until that needs to be done in the future. And, you know, we can have we can have like, we can have urgency cards that say if something's past due, like it pops up at the top, like past due, and then it shows a card for that item, how much it costs. And then
+
+They can be like yellow, it's due in the next couple thousand miles. And then, you know, down the road can be green, something like that.
+
+Jason (02:00.541)
+Uhhhh
+
+Which one is this?
+
+Fred (02:05.07)
+We are on immediate maintenance due.
+
+Jason (02:09.327)
+Yeah, so the last one and this one should be combined into one.
+
+Fred (02:13.953)
+Yes, so for the transcript and the AI, the immediate maintenance due should be infused with the maintenance schedule.
+
+Jason (02:21.244)
+Yeah.
+

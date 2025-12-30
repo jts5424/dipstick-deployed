@@ -1,0 +1,36 @@
+CRITICAL FLOW REQUIREMENTS (MUST MATCH TRANSCRIPT)
+- The Comparator is the HOME / base page. Users should land on Comparator first and do everything from there. (Comparator-first is the product.)
+- Users can upload one or more Carfax PDFs to add vehicles to their portfolio.
+- Step 1 is Parse: Convert the Carfax PDF into a structured records table (services, inspections, purchase, registration, title changes, etc.). The extracted record text should be mostly unchanged, just structured.
+- Step 2 is Analyze: Clicking Analyze on the Comparator runs a step-by-step pipeline with a spinner/stepper:
+  1) Service history expert narrative
+  2) Routine maintenance schedule pulled from OEM
+  3) Unscheduled maintenance forecast pulled from guides
+  4) Gap analysis = routine minus service history
+  5) Risk evaluation = unscheduled minus service/repair history (reduce risk if repaired)
+  6) Market valuation (retail/private/trade-in)
+  7) Total cost of ownership
+  As each step completes, details become available for drill-down.
+
+COMPARATOR UI REQUIREMENTS
+- Comparator must show each vehicle as a TILE/CARD (not a wide table) with:
+  - Big number: “$ you’re going to lose” over chosen horizon (3 yrs default)
+  - Risk chip (green/yellow/red)
+  - 1–2 high-level bullets (e.g., “Well maintained”, “Significant gaps 2019–2022”)
+- Clicking a vehicle tile opens its detailed pages (drill-down), preserving the module hierarchy.
+- Optional: show a playful loading animation of cars racing to a finish line while Analyze runs.
+
+SERVICE HISTORY ANALYSIS BUCKETS
+- Keep consistent titled sections and allow adding more categories:
+  - Overall evaluation
+  - Suspicious patterns
+  - Anomalies & concerns
+  - Services performed more than normal
+  - Positive findings (required)
+  - Expert notes
+
+VISUALIZATION REQUIREMENTS
+- Unscheduled maintenance should have an MVP table AND an expandable survivability curve view:
+  - Y-axis probability, X-axis mileage
+- Depreciation curves should support “hockey stick” behavior and highlight the “knee” around ~40k miles.
+- Comparator results must have charts (TCO breakdown + total loss) and keep the old wide tables ONLY under an “Advanced” accordion.

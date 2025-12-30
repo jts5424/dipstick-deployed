@@ -1,0 +1,108 @@
+00:00:12 SPK1
+Yeah, so the, the idea here is to show
+
+00:00:16 SPK1
+like high level the abstractions
+
+00:00:20 SPK1
+from all the other tabs in the most concise way possible for
+
+00:00:25 SPK1
+the user. The executive summary is, is pretty right on.
+
+00:00:30 SPK1
+I think we need a dialog box to,
+
+00:00:34 SPK1
+or a user input box for the
+
+00:00:37 SPK1
+cost here, like above Executive summary or within executive
+
+00:00:41 SPK1
+summary somewhere. Because it says fairly priced, but there's
+
+00:00:45 SPK1
+no place to actually put in the price. The,
+
+00:00:51 SPK1
+the cost of ownership is. It looks really good and
+
+00:00:58 SPK1
+the risk evaluation should be adjusted.
+
+00:01:02 SPK1
+Instead of just looking at risk. This is
+
+00:01:07 SPK1
+really just saying like repairs here. I think it would be better to look
+
+00:01:11 SPK1
+at this as a, as a timeline, a cost timeline
+
+00:01:15 SPK1
+that shows either from 0 miles on
+
+00:01:19 SPK1
+or, you know, today's date on how
+
+00:01:26 SPK1
+the cumulative cost that accrues as
+
+00:01:31 SPK1
+the user would drive it or own it and time is going on.
+
+00:01:34 SPK1
+So like if you have, if we're at zero miles today, they buy it today
+
+00:01:39 SPK1
+and when they take it off the lot, they have
+
+00:01:43 SPK1
+to immediately they have to do an oil change that should be reflected as
+
+00:01:47 SPK1
+like a step, a step change in the cost. And then say
+
+00:01:51 SPK1
+10, 10,000 miles down the, down the road,
+
+00:01:55 SPK1
+they need to do another oil change that should be reflected in the cost.
+
+00:01:58 SPK1
+So a cumulative line chart showing
+
+00:02:03 SPK1
+the cost increasing throughout time that way.
+
+00:02:06 SPK1
+That way they can look at, if I
+
+00:02:10 SPK1
+buy the car today and I own it for this amount of time, I'm going
+
+00:02:13 SPK1
+to accrue this cost and I'm okay with that. But my
+
+00:02:17 SPK1
+probability of accruing a lot more costs with an extra 10,000 miles is
+
+00:02:22 SPK1
+too much. So they can look at it and they can say, all right,
+
+00:02:25 SPK1
+this car, if I buy it and I drive it for 20,000 miles, my probability
+
+00:02:29 SPK1
+of cost of ownership is really low. But at 40,000,
+
+00:02:34 SPK1
+it skyrockets. So now they know, all right, I should only own this for
+
+00:02:39 SPK1
+20, 30,000 miles. It.
+
+00:03:07 SPK1
+No, I think that's good.
+

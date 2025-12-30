@@ -1,0 +1,119 @@
+You’re right to challenge it — so I went back to the actual transcript you uploaded and pulled literally everything Jason said about that page.
+
+Reality check: in this file, Jason’s feedback on the page is one short, specific block (00:00:12 → 00:03:07). There isn’t more “extra detail” in the transcript beyond what’s below. 
+
+riverside_jason_raw-synced-vide…
+
+Jason’s full edit direction (ALL of it, line-by-line)
+A) What the page is for
+
+The purpose is to show “high level abstractions from all the other tabs” in the “most concise way possible.” 
+
+riverside_jason_raw-synced-vide…
+
+He says the Executive Summary is “pretty right on.” 
+
+riverside_jason_raw-synced-vide…
+
+B) Missing input that breaks logic (“fairly priced”)
+
+Add a dialog box / user input for cost/price, placed above or inside the Executive Summary. 
+
+riverside_jason_raw-synced-vide…
+
+Reason: it says “fairly priced” but there’s no place to put in the price. 
+
+riverside_jason_raw-synced-vide…
+
+He also calls out “cost of ownership looks really good” as-is. 
+
+riverside_jason_raw-synced-vide…
+
+C) “Risk Evaluation” needs to be re-framed into a cost timeline
+
+“Risk evaluation should be adjusted.” 
+
+riverside_jason_raw-synced-vide…
+
+Because right now it’s basically just repairs, not “risk.” 
+
+riverside_jason_raw-synced-vide…
+
+Change it to a timeline / cost timeline that shows either:
+
+from 0 miles onward, or
+
+from today’s date onward 
+
+riverside_jason_raw-synced-vide…
+
+Use a cumulative cost model as you drive/own over time. 
+
+riverside_jason_raw-synced-vide…
+
+Represent immediate required work as a step change at mile 0 (example: oil change immediately after purchase). 
+
+riverside_jason_raw-synced-vide…
+
+Represent later work as another step at the future mileage (example: another oil change at 10,000 miles). 
+
+riverside_jason_raw-synced-vide…
+
+The visual should be a cumulative line chart increasing over time/miles. 
+
+riverside_jason_raw-synced-vide…
+
+D) What the timeline is supposed to help the user decide
+
+User can see: “If I buy today and own it for X time, I accrue $Y cost and I’m okay with that.” 
+
+riverside_jason_raw-synced-vide…
+
+And: “my probability of accruing a lot more cost with an extra 10,000 miles is too much.” 
+
+riverside_jason_raw-synced-vide…
+
+Example decision logic:
+
+cost is low through ~20k miles
+
+but at 40k it skyrockets → so “I should only own this for 20–30k miles.” 
+
+riverside_jason_raw-synced-vide…
+
+That’s the complete set of directions in the transcript. 
+
+riverside_jason_raw-synced-vide…
+
+Replit-ready task list (copy/paste spec)
+1) Add price input control
+
+Component: PriceInput
+
+Label: “Purchase price” (or “Listing price”)
+
+Placement: above Executive Summary (or inside it)
+
+Feeds: “Fairly priced / overpriced / underpriced” logic
+
+2) Keep “Cost of Ownership” section as-is (Jason said it looks good)
+
+Don’t delete it; don’t downgrade it.
+
+3) Replace “Risk Evaluation” section
+
+Rename to: Cost Timeline (or “Cumulative Cost Timeline”)
+
+Chart: cumulative line (step-like jumps allowed)
+
+X-axis: miles from purchase (default) OR time from today (optional toggle)
+
+Must show:
+
+Step at mile 0 if immediate maintenance required
+
+Steps at future mileage markers (10k, etc.)
+
+Ability to interpret “safe to own until ___ miles” vs “skyrockets after ___ miles”
+
+If you think he was more detailed elsewhere, you probably have another clip / transcript (different timestamp or file). Upload it and I’ll merge the full “Jason spec” into one master checklist.

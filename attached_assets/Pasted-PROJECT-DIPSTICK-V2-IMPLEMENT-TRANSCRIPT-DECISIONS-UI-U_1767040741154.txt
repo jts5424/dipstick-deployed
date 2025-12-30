@@ -1,0 +1,302 @@
+PROJECT: DIPSTICK V2 — IMPLEMENT TRANSCRIPT DECISIONS (UI/UX/FEATURES)
+
+GOAL:
+- Make the product thesis crystal clear: "Dipstick It" (Comparator) is the core product experience (executive summary + interpretation + graphs).
+- Garage is inventory only.
+- Single-car Analysis is deep dive with clean tab separation.
+- Fix modal scroll bug.
+- Add recalls validation capability.
+
+============================================================
+A) GLOBAL INFORMATION ARCHITECTURE (NAV + OWNERSHIP OF SETTINGS)
+============================================================
+
+1) NAV SHOULD BE 3 AREAS:
+- Garage (inventory / uploaded cars)
+- Analysis (single-car deep dive, reachable via View Analysis)
+- Dipstick It (rename Comparator -> "Dipstick It"; compare/interpretation layer)
+REF: Rename + 3 sectors discussion. :contentReference[oaicite:1]{index=1} :contentReference[oaicite:2]{index=2}
+
+2) CONFIGURE ANALYSIS MUST EXIST IN ONE PLACE ONLY:
+- Remove analysis configuration from Garage (ownership period, annual mileage, etc.).
+- Keep analysis parameters as inputs on Dipstick It (Comparator) only.
+REF: Config exists in two places → must be one; garage should not have it. :contentReference[oaicite:3]{index=3} :contentReference[oaicite:4]{index=4}
+
+============================================================
+B) HOME / LANDING PAGE
+============================================================
+
+1) REMOVE SEPARATE "GUIDED MVP / IN-APP CUES" SECTION:
+- Replace with ONE line in the hero/banner (ex: "Vehicle portfolio • Start your search • Upload CARFAX").
+REF: Remove guided section; make it a banner line. :contentReference[oaicite:5]{index=5}
+
+2) REMOVE DUPLICATED / CONFUSING INPUTS:
+- Users should not wonder which box to use on first view.
+REF: Confusion due to duplication. :contentReference[oaicite:6]{index=6}
+
+ACCEPTANCE:
+- Above-the-fold has 1 clear primary action and no duplicated input affordances.
+
+============================================================
+C) GARAGE PAGE (INVENTORY ONLY)
+============================================================
+
+INTENT:
+- Garage is JUST uploaded cars (inventory). No analysis configuration. No "run analysis".
+
+EDITS:
+1) Garage shows car cards only (inventory view).
+- Optional: lightweight rollups on card (ex: estimated total loss / summary stat) OK.
+REF: "garage should just be ... cards ... that’s it" + light stat ok. :contentReference[oaicite:7]{index=7} :contentReference[oaicite:8]{index=8}
+
+2) Keep: "View Analysis" per car (drill into single-car analysis).
+REF: View Analysis is good. :contentReference[oaicite:9]{index=9}
+
+3) Remove from Garage:
+- "Configure Analysis" (ownership period, mileage)
+- "Run Full Analysis"
+REF: Remove those controls from garage. :contentReference[oaicite:10]{index=10}
+
+ACCEPTANCE:
+- Garage contains: list of cars + View Analysis.
+- Garage contains NO: ownership period/mileage config, NO Run Full Analysis.
+
+============================================================
+D) DIPSTICK IT (COMPARATOR) PAGE — THE CORE PRODUCT
+============================================================
+
+RENAME:
+- "Comparator" -> "Dipstick It"
+REF: Rename. :contentReference[oaicite:11]{index=11}
+
+PRIMARY INTENT:
+- Dipstick It is the main business thesis: executive summary + dipstick score + interpretation + graphs that prove it.
+REF: Missing insights/train-of-thinking; exec summary/dipstick score; comparator is the whole idea. :contentReference[oaicite:12]{index=12} :contentReference[oaicite:13]{index=13}
+
+-------------------------------------------
+D1) TOP STRIP (INPUTS + CTA)
+-------------------------------------------
+- Show selected cars as small thumbnails/labels (NOT garage-style cards).
+- Inputs:
+  - Ownership period
+  - Annual mileage
+- Primary CTA: big "Compare" button that recalculates outputs.
+REF: Add Compare CTA; keep visuals small; avoid scroll bloat. :contentReference[oaicite:14]{index=14} :contentReference[oaicite:15]{index=15} :contentReference[oaicite:16]{index=16}
+
+-------------------------------------------
+D2) EXECUTIVE SUMMARY (MUST EXIST)
+-------------------------------------------
+Add a compact top panel that answers "so what" immediately (not a garage card).
+Include:
+- Dipstick Score (per car, and/or winner/lean)
+- Key deltas (example: Δ 3-year TCO, Δ depreciation, Δ projected repairs, risk delta)
+REF: "missing ... executive summary ... dipstick score ... no train of thinking". :contentReference[oaicite:17]{index=17}
+
+-------------------------------------------
+D3) TRAIN-OF-THINKING NARRATIVE (MUST EXIST)
+-------------------------------------------
+Add "interpretation" section (NOT advice) explaining why the result is what it is.
+Format:
+- 3–5 bullets: "What matters most / why Car A leads"
+- A short paragraph: "How to interpret what you're seeing"
+Constraints:
+- Must be framed as interpretation, not recommendation/advice ("cannot be advice").
+REF: Need narrative; explain graphs; can’t be advice. :contentReference[oaicite:18]{index=18} :contentReference[oaicite:19]{index=19}
+
+-------------------------------------------
+D4) GRAPHS (THE PROOF) — REQUIRED VISUALS
+-------------------------------------------
+(1) Depreciation chart:
+- Show BOTH cars' depreciation curves on ONE chart
+- Include "you are here" markers for each car
+- Markers respond to ownership period + mileage inputs
+REF: both curves + markers; respond to inputs. :contentReference[oaicite:20]{index=20} :contentReference[oaicite:21]{index=21}
+
+(2) Total Cost of Ownership chart:
+- Place BELOW depreciation chart
+REF: TCO graph below. :contentReference[oaicite:22]{index=22}
+
+(3) Cost breakdown bars:
+- Keep the stacked breakdown bars: depreciation / maintenance / repairs
+- These were explicitly praised; treat as signature visual
+REF: loved bars; cost breakdown. :contentReference[oaicite:23]{index=23} :contentReference[oaicite:24]{index=24}
+
+(4) Graph explainers:
+- Tooltips or inline "How to read this" for each chart
+REF: explain charts; tooltips; users not good at graphs. :contentReference[oaicite:25]{index=25} :contentReference[oaicite:26]{index=26}
+
+-------------------------------------------
+D5) REMOVE CARD CHAOS FROM DIPSTICK IT
+-------------------------------------------
+- Remove "deal score / oil change / gap service" etc from Dipstick It car display.
+- Do NOT duplicate Garage cards here.
+- Do NOT force scroll past inventory.
+REF: remove stats from compare cards; avoid card duplication/scroll. :contentReference[oaicite:27]{index=27} :contentReference[oaicite:28]{index=28}
+
+ACCEPTANCE:
+- Dipstick It page order is: Inputs/Compare -> Executive Summary -> Narrative -> Graphs.
+- No large garage-style cards; only small car identifiers.
+- Charts update when ownership period/mileage changes.
+- Narrative uses interpretation language (no advice).
+
+============================================================
+E) UPLOAD + PROCESSING EXPERIENCE (NON-LINEAR UX)
+============================================================
+
+FACT:
+- Uploading CARFAX triggers aggregation and can take ~1 minute.
+- Compare calculations after that should be fast.
+REF: 1-minute aggregation; store behind car; compare fast. :contentReference[oaicite:29]{index=29} :contentReference[oaicite:30]{index=30} :contentReference[oaicite:31]{index=31}
+
+EDITS:
+- Implement explicit processing state on upload OR a clear background process indicator (choose one consistent UX).
+- Use waiting moment as branded "ad space" (optional but discussed).
+REF: ad space; visible vs background question. :contentReference[oaicite:32]{index=32} :contentReference[oaicite:33]{index=33}
+
+ACCEPTANCE:
+- Upload shows a clear "processing" state and when complete, car has data stored.
+- Dipstick It compare runs quickly after data exists.
+
+============================================================
+F) SINGLE-CAR ANALYSIS PAGE (DEEP DIVE)
+============================================================
+
+KEEP THESE WOW VISUALS:
+- Risk Urgency Map
+- Perfect failure probability / unscheduled maintenance survivability curve
+REF: praised visuals. :contentReference[oaicite:34]{index=34} :contentReference[oaicite:35]{index=35}
+
+KEEP/FEATURE THESE FIELDS:
+- Market valuation: retail / private / trade (as referenced)
+- Executive summary items: dipstick score, fair price range, three-year low
+- Issue severity breakdown
+REF: explicitly listed fields. :contentReference[oaicite:36]{index=36} :contentReference[oaicite:37]{index=37}
+
+-------------------------------------------
+F1) ANALYSIS TAB ARCHITECTURE (CLEAN SEPARATION)
+-------------------------------------------
+Define Summary as the roll-up culmination:
+- market evaluation + routine maintenance gap analysis + risk evaluation + total cost of ownership (and optionally negotiation points)
+REF: Summary definition. :contentReference[oaicite:38]{index=38}
+
+Move "clean green anomaly detection / over-serviced items" to Vehicle History tab (not Summary).
+REF: move anomaly detection. :contentReference[oaicite:39]{index=39}
+
+Rename tab:
+- "Risk & Reliability" -> "Future Repair Projection"
+REF: same thing. :contentReference[oaicite:40]{index=40}
+
+Separate concepts:
+- Repairs = unscheduled (Future Repair Projection)
+- Maintenance = routine (Maintenance Schedule + Immediate Due)
+REF: explicit separation. :contentReference[oaicite:41]{index=41} :contentReference[oaicite:42]{index=42}
+
+Remove "Evidence" as a standalone tab.
+REF: remove evidence. :contentReference[oaicite:43]{index=43}
+
+Proposed tab order (implement this order):
+1) Summary
+2) Market Valuation
+3) Projected Future Repairs (Future Repair Projection)
+4) Maintenance Schedule
+5) Immediate Maintenance Due
+6) Leverage Builder
+PLUS: add Vehicle History tab (see below)
+REF: explicit order. :contentReference[oaicite:44]{index=44} :contentReference[oaicite:45]{index=45}
+
+-------------------------------------------
+F2) SERVICE HISTORY ANALYSIS (EMBED, DON’T ISOLATE)
+-------------------------------------------
+- Keep service history analysis (table/timeline + search).
+- DO NOT isolate as Evidence tab; embed it inside:
+  - Routine maintenance gap analysis
+  - Future repair projection
+REF: embed service history; not evidence. :contentReference[oaicite:46]{index=46} :contentReference[oaicite:47]{index=47}
+
+- Fix broken/inconsistent toggles/filters (works in one view, not another).
+REF: toggle not functioning. :contentReference[oaicite:48]{index=48}
+
+- Add visible legend for color coding:
+  - Green = maintenance
+  - Blue = inspection
+  - Yellow = repair
+REF: legend requirement. :contentReference[oaicite:49]{index=49}
+
+-------------------------------------------
+F3) ADD "VEHICLE HISTORY" TAB (NEW)
+-------------------------------------------
+Add a dedicated Vehicle History tab for general non-service history:
+- timeline: manufacturer delivery, dealer purchase, operated in X state for Y years, etc.
+- Provide narrative/explanations per section (not just raw data)
+- Include "gaps" summarized as patterns, not just line items
+REF: add vehicle history + narrative + gaps summary. :contentReference[oaicite:50]{index=50} :contentReference[oaicite:51]{index=51} :contentReference[oaicite:52]{index=52}
+
+ACCEPTANCE:
+- Tabs are cleanly separated (no overlap).
+- Summary is culmination; service history embedded; evidence removed; vehicle history added.
+
+============================================================
+G) OFFER MODE / LEVERAGE BUILDER / SCRIPT GENERATION
+============================================================
+
+Offer Mode should exist inside Analysis and include:
+- Offer calculator
+- Risk tolerance slider (low <-> high)
+- Build Strategy button
+REF: Offer mode features. :contentReference[oaicite:53]{index=53}
+
+Build Strategy output:
+- produces different tones + leverage points
+REF: tones/leverage points. :contentReference[oaicite:54]{index=54}
+
+Objection Handler:
+- Must be accessible and consistently available (not only on one car / not blocked by scrolling).
+REF: objection handler mentioned + inconsistency. :contentReference[oaicite:55]{index=55}
+
+Leverage framing:
+- Position as talk-track + truth/credibility, not "force dealer to drop price."
+REF: leverage framing. :contentReference[oaicite:56]{index=56} :contentReference[oaicite:57]{index=57}
+
+CRITICAL BUG FIX:
+- Fix Generate Script / Smart Script Builder modal scrolling at NORMAL zoom (no shrinking window needed).
+- Ensure modal content area scrolls with overflow.
+REF: cannot scroll; built at 70-75% zoom. :contentReference[oaicite:58]{index=58} :contentReference[oaicite:59]{index=59}
+
+ACCEPTANCE:
+- Objection handler accessible for every car.
+- Modal scroll works at 100% zoom on normal browser sizes.
+
+============================================================
+H) RECALLS VALIDATION FEATURE (NEW)
+============================================================
+
+- Add recall handling in the risk/repairs context:
+  - If recall exists, provide a step/CTA to validate recall completion for that VIN.
+- Proposed approach: OEM recall system check (Audi easiest; others TBD).
+REF: recalls validation. :contentReference[oaicite:60]{index=60} :contentReference[oaicite:61]{index=61} :contentReference[oaicite:62]{index=62}
+
+============================================================
+I) SHARE FEATURE (REPORT SHARING)
+============================================================
+
+- Keep Share next to Generate Report.
+- Not anonymous; intended to send to the seller/buyer counterpart.
+- Optional tier gating discussed (not required, but allowed).
+REF: share + not anonymous + tiers mention. :contentReference[oaicite:63]{index=63} :contentReference[oaicite:64]{index=64}
+
+============================================================
+J) VISUAL DESIGN CONSTRAINTS
+============================================================
+
+- Style should remain professional/trustworthy (they liked the neutral styling).
+- Avoid "maverick" extremes that feel sketchy/crypto.
+- Reduce palette if too many colors; consider yellow accent instead of green; navy base.
+REF: styling feedback. :contentReference[oaicite:65]{index=65} :contentReference[oaicite:66]{index=66} :contentReference[oaicite:67]{index=67}
+
+============================================================
+K) IMPLEMENTATION NOTES (FYI FOR REPLIT)
+============================================================
+
+- App is React SPA + Tailwind + Router; currently uses MockData.ts.
+- Production: fetch JSON from backend API; expect schema/variable mismatch issues.
+REF: implementation notes. :contentReference[oaicite:68]{index=68} :contentReference[oaicite:69]{index=69}

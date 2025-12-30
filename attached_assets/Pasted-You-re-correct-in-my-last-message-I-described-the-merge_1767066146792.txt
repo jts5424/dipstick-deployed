@@ -1,0 +1,185 @@
+You’re correct — in my last message I described the merge, but I didn’t give you the actual merged IA + component spec you can drop into Replit.
+
+Here it is: one combined page that merges “Maintenance Schedule” + “Immediate Maintenance Due” exactly the way Jason describes: “the last one and this one should be combined into one” 
+
+jason-fred-take-05
+
+ 
+
+jason-fred-take-05
+
+ and “Immediate maintenance due should be infused with the maintenance schedule” 
+
+jason-fred-take-05
+
+.
+
+✅ MERGED PAGE SPEC (Replit-ready)
+Tab / Route
+
+Tab name: Maintenance
+Route: /compare/:id/maintenance
+
+This replaces:
+
+Maintenance Schedule page
+
+Immediate Maintenance Due page
+
+Page Goal (Jason’s intent)
+
+Show a gap analysis of service history vs OEM/Indy schedule, and present results relative to the schedule (schedule is baseline), not relative to history. 
+
+jason-fred-take-05
+
+Top-level layout (in order)
+Section A — “Urgency Cards” (this is the “Immediate Due” part, merged into the same page)
+
+Jason wants urgency cards that surface past due / due soon / later items at the top. 
+
+jason-fred-take-05
+
+A1) Past Due (Red)
+
+Title: Past Due
+
+Card per item:
+
+Item name (Oil Change, Air Filter, etc.)
+
+Overdue by: X miles or X days
+
+Estimated cost: $__ (Jason explicitly wants cost on the card) 
+
+jason-fred-take-05
+
+CTA: View details → scrolls to that item in the schedule list
+
+A2) Due Soon (Yellow)
+
+Title: Due Soon
+
+Definition: due in next couple thousand miles 
+
+jason-fred-take-05
+
+Card shows:
+
+Due in: ~X miles
+
+Estimated cost
+
+A3) Later (Green)
+
+Title: Down the road
+
+Card shows:
+
+Due in: ~X miles
+
+Estimated cost
+
+NOTE: This is your “Immediate Maintenance Due” content — it’s not a separate page anymore.
+
+Section B — “Maintenance Schedule Gap Analysis” (the schedule list)
+
+Jason’s abstraction: for every routine item in the schedule:
+
+when was it last done?
+
+when is it due as of today based on history + interval 
+
+jason-fred-take-05
+
+B0) Controls
+
+Toggle: Show: All | Due only
+
+Sort: Urgency | Cost | Name
+
+Filter (optional but helpful): System (Engine / Brakes / Fluids / Filters...)
+
+B1) Row/Card structure (repeat for each item)
+
+Each maintenance item must be broken out specifically (oil change, air filter, etc.) 
+
+jason-fred-take-05
+
+Fields per item card:
+
+Item name (e.g., Oil Change)
+
+Interval baseline (the “schedule”):
+
+Every 5,000 miles or Every 6 months
+
+Source label: OEM or Indy Expert 
+
+jason-fred-take-05
+
+Last done:
+
+Last done: 62,100 mi (Service record)
+
+If unknown: No record found
+
+Due calculation (as of today):
+
+Due at: 67,100 mi
+
+Current: 70,000 mi
+
+Status pill: Past due / Due soon / Later
+
+Delta: Overdue by 2,900 mi or Due in 1,800 mi
+
+Estimated cost: $__ (same cost value used for urgency cards)
+
+Expand/collapse details:
+
+“Matched service records” list (dates/miles/notes)
+
+Key rule (Jason): the display is “relative to the schedule” — meaning the interval is the anchor, and history only populates “last done” and computes due. 
+
+jason-fred-take-05
+
+Data/logic requirements (minimal, Replit-friendly)
+Inputs
+
+currentMileage
+
+scheduleItems[] (from OEM/Indy schedule)
+
+id, name, intervalMiles?, intervalMonths?, estCost, source
+
+serviceHistory[]
+
+date, mileage, description, tags[]
+
+Computation per item
+
+Find last relevant service record → lastDoneMileage/date
+
+Compute due:
+
+if intervalMiles: dueMileage = lastDoneMileage + intervalMiles
+
+else if intervalMonths: dueDate = lastDoneDate + intervalMonths
+
+Determine status:
+
+PastDue if currentMileage > dueMileage (or today > dueDate)
+
+DueSoon if dueMileage - currentMileage <= 2000 (Jason’s “couple thousand”) 
+
+jason-fred-take-05
+
+else Later
+
+Generate urgency cards from same computed list (group by status)
+
+Copy/paste note you can drop in Replit prompt
+
+“Merge Maintenance Schedule + Immediate Maintenance Due into one ‘Maintenance’ page. Top = urgency cards (Past Due red with cost, Due Soon yellow within 2,000 miles with cost, Down the road green). Below = schedule-based gap analysis list where each maintenance item shows schedule interval (OEM/Indy), last done, due as of today, status, miles overdue/remaining, and estimated cost. The schedule is the baseline; history only supports last done + due calculation.” 
+
+jason-

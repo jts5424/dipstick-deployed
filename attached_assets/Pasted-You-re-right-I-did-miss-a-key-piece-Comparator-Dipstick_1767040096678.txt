@@ -1,0 +1,93 @@
+You’re right — I **did miss a key piece**:
+
+### Comparator (“Dipstick It”) needs an **Executive Summary at the top**
+
+This was explicitly said: “in comparator… it’s like the **executive summary** and then it goes into the **dipstick score**… there’s no train of thinking in the comparator.”  
+
+I previously described “narrative + graphs,” but I didn’t explicitly call out that **the premise/structure is: Executive Summary → Dipstick Score → Train-of-thinking → Graphs**.
+
+Below is the **corrected comparator spec** you can hand to Replit.
+
+---
+
+## ✅ “Dipstick It” (Comparator) — Correct Premise + Page Structure
+
+### 0) Inputs (top strip)
+
+* Car selection shown as **small thumbnails + labels** (NOT big cards). 
+* Ownership Period + Annual Mileage inputs
+* Big **Compare** button (runs the calc)
+
+---
+
+## 1) Executive Summary (must exist)
+
+**Purpose:** give the “so what” instantly before graphs. 
+
+**UI:** a compact summary panel (not “garage cards”)
+
+* **Winner / Lean** (e.g., “Leans S7”)
+* **Dipstick Score (each car)** (or a single “better buy” score + deltas)
+* **Δ 3-Year TCO** (difference)
+* **Δ Depreciation** (difference)
+* **Δ Projected Repairs** (difference)
+* **Risk delta** (optional, but clean)
+
+This is still consistent with “no cards in comparator” because the intent was **no big garage-style inventory cards** / no scroll bloat — not “no summary block.”  
+
+---
+
+## 2) “Train of thinking” narrative (must exist)
+
+Explicit requirement: comparator is missing the “train of thinking” and should be a high-level narrative.  
+
+**Copy style:** interpretation, not advice (“it can’t be advice… it’ll be an interpretation”). 
+
+**Format suggestion:**
+
+* 3–5 bullet “why” statements
+* plus a 2–3 sentence plain-English paragraph
+
+---
+
+## 3) Graphs (the proof)
+
+You already had most of this, but here’s the **complete** graph requirement:
+
+### A) Depreciation chart: BOTH curves on one chart + “you are here” markers
+
+“Both curves stacked… showing you are here and you are here.” 
+
+### B) Total Cost of Ownership graph below
+
+“Total cost of ownership… graph below too.” 
+
+### C) Cost breakdown bars (depreciation/maintenance/repairs)
+
+Keep the engineering-style stacked bars — explicitly praised. 
+
+### D) Graph explainers (tooltips / “how to read”)
+
+“We need to explain the graphs… explain charts in a tooltip.”  
+
+---
+
+## Comparator “don’ts” (still true)
+
+* Don’t show big garage cards in comparator or force scrolling past inventory. 
+* Comparator should be “data in your face” + narrative + graphs that back it up.  
+
+---
+
+## Replit-ready instruction (copy/paste)
+
+**“Update Dipstick It (Comparator) page to this order:**
+
+1. inputs + Compare CTA
+2. Executive Summary panel (winner + dipstick score(s) + key deltas)
+3. Train-of-thinking narrative (interpretation, not advice)
+4. Charts: stacked depreciation curves w/ markers → TCO graph → cost breakdown bars
+5. Tooltips/how-to-read for each chart
+   **Remove big garage-style cards from comparator; keep only small thumbnails/labels.”**  
+
+If you want, paste your current comparator component tree (or routes), and I’ll map this to **exact components to create** (e.g., `ComparatorExecutiveSummary.tsx`, `ComparatorNarrative.tsx`) + acceptance criteria.

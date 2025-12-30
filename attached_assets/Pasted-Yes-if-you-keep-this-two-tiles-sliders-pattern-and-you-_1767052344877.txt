@@ -1,0 +1,91 @@
+Yes — if you keep this “two tiles + sliders” pattern and you ever have 10 vehicles, it’ll get clunky fast. You need a selection model that scales without turning Dipstick It into a spreadsheet.
+
+Here’s the clean way to handle it.
+
+The scaling problem
+
+With 10 vehicles, users will need to:
+
+pick 2 to compare (most common)
+
+sometimes compare 3–4 (optional)
+
+switch pairs quickly (“S7 vs A6”, then “S7 vs X”, etc.)
+If they have to “deselect” through a messy UI, it’ll feel complicated.
+
+Best solution: 2-slot compare picker
+
+Treat comparison as two fixed slots:
+
+Top bar becomes:
+
+Compare Slots
+
+Slot A: [Choose vehicle] (dropdown/search)
+
+Slot B: [Choose vehicle] (dropdown/search)
+
+Swap button ↔
+
+Compare CTA
+
+This scales perfectly to 10+ cars because you’re not managing a bunch of toggles.
+
+Then add “quick chips” under it
+
+A horizontal strip:
+
+Recent comparisons: S7 vs A6, S7 vs 330i, A6 vs Q5
+Clicking a chip fills the two slots.
+
+Optional upgrade: allow “pin winner”
+
+Crown icon means “winner pinned to Slot A”
+
+Then user can click different cars to load into Slot B to “challenge the champ”
+
+This feels game-like and makes the page fun.
+
+What happens when it loads (default behavior)
+
+When user opens Dipstick It:
+
+If they have a recent comparison, load the last pair.
+
+Else auto-load best guess pair:
+
+the two most recently added cars, or
+
+the two with the closest price, or
+
+the two with “analysis ready” status
+
+No one wants a blank compare screen.
+
+If you want multi-car compare (later), don’t do it by default
+
+If you ever add 3+ compare:
+
+make it an “Advanced” toggle:
+
+“Compare 2 (default) / Compare 3–4 (advanced)”
+
+but keep the UI anchored on 2.
+
+Replit copy/paste spec
+Dipstick It must scale to 10+ vehicles.
+
+Replace “select/deselect tiles” with a 2-slot compare picker:
+- Slot A dropdown/search (Choose vehicle)
+- Slot B dropdown/search
+- Swap button
+- Compare CTA
+
+Add “Recent comparisons” chips for fast switching.
+Optional: “Pin winner” (keep Slot A fixed, click a car to load Slot B).
+
+Default load: last compared pair; else choose 2 recent “analysis ready” cars.
+Avoid multi-car compare by default; if needed, make it an Advanced mode.
+
+
+If you tell me whether you want Dipstick It to be strictly 2-car forever (my recommendation), I’ll propose the exact UI layout and copy for the slot picker + recents + pin-winner.

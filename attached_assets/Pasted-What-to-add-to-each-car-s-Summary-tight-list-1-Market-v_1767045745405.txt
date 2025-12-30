@@ -1,0 +1,81 @@
+What to add to each car’s Summary (tight list)
+1) Market valuation roll-up (mini)
+
+He explicitly referenced that the single-car analysis has market valuation (retail / private / trade) and that the Summary should include that concept as part of the culmination. 
+
+Dipstick v2 round
+
+ 
+
+Dipstick v2 round
+
+Add: a small 3-number strip or single “Fairly priced / Overpriced by $X” callout with:
+
+Retail / Private / Trade (or just one “Fair price range” + delta)
+
+“Asking vs Fair” delta
+
+2) “Fair price range / 3-year low” snippet
+
+He literally called out Summary having: dipstick score, fair price range, three-year low. 
+
+Dipstick v2 round
+
+Add: right near the deal score:
+
+Fair price range: $X–$Y
+
+3-year low benchmark: $Z
+
+3) Issue severity breakdown (mini)
+
+He said “issue severity breakdown — I love that.” 
+
+Dipstick v2 round
+
+Add: a compact severity bar/stack like:
+
+Critical / Moderate / Low counts
+
+Or “Immediate liability $X” + “Deferred $Y” split
+
+4) Maintenance gaps count + $ exposure (not the timeline)
+
+Summary should show routine maintenance gap analysis at a roll-up level, not the full service timeline. 
+
+Dipstick v2 round
+
+Add: one line:
+
+“Service gaps detected: 2 (2019–2022)”
+
+“Estimated deferred maintenance exposure: ~$X”
+
+5) Recall status badge (if applicable)
+
+You already implemented recall detection and “Validate recall completion” in Projected Future Repairs. On Summary, just a badge:
+
+“Open recall detected” + link to validate.
+
+This matches the recall workflow he wanted. 
+
+Dipstick v2 round
+
+What NOT to add to Summary
+
+Don’t paste the service history timeline/table into Summary (that belongs in Vehicle History / Maintenance tabs).
+
+Don’t add the full survivability curve module in Summary (keep that in Projected Future Repairs).
+
+Don’t add “Evidence” as a tab (he wanted it removed and embedded elsewhere). 
+
+Dipstick v2 round
+
+Replit copy/paste spec for Summary
+Per-car Summary must be the culmination:
+- Keep Executive Summary narrative + 3-year cost breakdown + Risk Urgency Map.
+- Add compact Market Valuation roll-up (Retail/Private/Trade OR fair price delta).
+- Add Fair Price Range + 3-year low snippet near score.
+- Add Issue Severity Breakdown mini (critical/moderate/low + immediate vs deferred $).
+- Add Service gaps count + estimated exposure (roll-up only, no timeline).
+- If recall exists: show Open Recall badge + link to Validate Recall Completion.

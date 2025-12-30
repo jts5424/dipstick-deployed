@@ -1,0 +1,300 @@
+What this gets you (and why Jason will care)
+
+Jason sees his exact modules preserved in Demo Mode (so he recognizes the original thinking).
+
+He also sees the real product in DTC Mode: verdict → leverage → charts → evidence → compare winner.
+
+You can walk him through the new journey and say:
+“Same engine. Better packaging. This is what consumers will pay for.”
+
+If you want one more “chef’s kiss” addition
+
+Add this line to the prompt under Interactions:
+
+Add a “Generate PDF Report” button that exports the Summary + Leverage + Costs pages into a clean printable report (mock export is fine).
+
+That will make Jason instantly imagine distribution + virality.
+
+If you want, paste back Replit’s first output (or screenshots) and I’ll give you a tight revision punch list to make it feel even more premium (spacing, component rhythm, chart labeling, and the “maverick but trustworthy” microcopy).
+
+no you missed all the data in sccreenshot 
+Thought for 8m 26s
+
+You’re right — my earlier Replit prompt described the structure, but it didn’t include the actual numbers/text from Jason’s screenshots. Replit won’t infer any of that unless we spell it out.
+
+So here’s what I’m going to do for you:
+
+I’m going to type out the demo flow (original) + the revamped flow (improved).
+
+I’m going to include a “DATA PACK” pulled directly from your screenshots (the real values).
+
+I’m going to give you a Replit prompt that tells it to build the UI with mock data that matches Jason’s demo numbers so you can show him a legit redesign.
+
+The demo flow (Jason’s original prototype journey)
+
+Start → finish, as shown in your screenshots
+
+Vehicle Information + Parse
+
+Vehicle: 2015 Audi S7, current mileage 72,300
+
+Trim: 4.0T QUATTRO
+
+Engine: 4.0L V8 F DOHC 32V
+
+VIN: WAUW2AFC9FN008411
+
+Upload “Service History PDF” → click Parse
+
+Success message: “PDF parsed successfully! 44 service records found. Vehicle info auto-populated…”
+
+Parsed Service History
+
+Title: “Parsed Service History (44 records)”
+
+Table columns: Date, Mileage, Service Type, Description, Location, Cost
+
+First visible rows include:
+
+2014-08-30 Manufacturing — “Vehicle manufactured and shipped to original dealer”
+
+2014-08-30 Purchase — “Vehicle purchase reported” — Ohio Motor Vehicle Dept.
+
+2014-09-11 Registration — Title/registration issued, first owner — Chagrin Falls, OH
+
+2014-11-26 Registration — Registration issued/renewed — Chagrin Falls, OH
+
+2015-01-21 (5,364) Maintenance — “5,000 mile service performed” — Audi of Bedford
+
+2015-05-14 (7,457) Tire Service — “Tire condition and pressure checked” — Audi of Bedford
+
+2015-11-23 (11,795) Inspection — “Maintenance inspection completed…” — Audi of Bedford
+
+Service History Analysis (expert narrative)
+Key visible bullets:
+
+Gaps in service history (Gap): significant gaps between 2019 and 2022 (medium concern)
+
+Inconsistent mileage reporting (Missing): several records do not include mileage (high concern)
+
+Services performed more than normal: “Tire condition and pressure checks” performed 10 times over 9 years
+
+Expert notes: missing services like brake fluid changes and transmission fluid checks appear absent
+
+Routine Maintenance Schedule (OEM table)
+Visible items + exact costs:
+
+Oil Change — 10,000 mi / 12 mo — $100–$200 (OEM $150–$300)
+
+Air Filter Replacement — 20,000 / 24 — $30–$60 (OEM $50–$100)
+
+Cabin Air Filter — 20,000 / 24 — $30–$50 (OEM $50–$80)
+
+Fuel Filter — 40,000 / 48 — $100–$150 (OEM $150–$250)
+
+Transmission Fluid Change — 40,000 / 48 — $150–$300 (OEM $250–$400)
+
+Brake Fluid Flush — 20,000 / 24 — $70–$120 (OEM $100–$180)
+
+Coolant Change — 40,000 / 48 — $100–$150 (OEM $150–$250)
+
+Power Steering Fluid — 40,000 / 48 — $50–$100 (OEM $80–$150)
+
+Spark Plug Replacement — 60,000 / 72 — $200–$400 (OEM $300–$500)
+
+Belt Replacement (Serpentine/Timing) — 60,000 / 72 — $300–$600 (OEM $500–$800)
+
+Unscheduled Maintenance Forecast (probability + window)
+Visible rows + exact values:
+
+Timing Chain Tensioner — 60k–100k — 30% — $300–$600 (OEM $500–$900)
+
+Water Pump — 70k–120k — 25% — $400–$800 (OEM $600–$1000)
+
+Oil Leaks (Valve Cover Gaskets) — 50k–90k — 40% — $200–$400 (OEM $300–$600)
+
+Oil Cooler — 80k–120k — 20% — $500–$900 (OEM $700–$1100)
+
+Fuel Pump — 60k–100k — 15% — $300–$600 (OEM $500–$800)
+
+Transmission Solenoids — 70k–120k — 20% — $200–$400 (OEM $300–$600)
+
+Brake Calipers — 50k–100k — 25% — $250–$500 (OEM $400–$700)
+
+Alternator — 80k–120k — 20% — $300–$600 (OEM $500–$900)
+
+Maintenance Gap Analysis
+
+Summary: “Analyzed 13 maintenance items. Found 1 overdue, 0 due now, 4 due in the near future.”
+
+Oil Change row shown:
+
+Status: NEAR FUTURE
+
+Status details: “Due in 10,000 miles / 10 months”
+
+Last performed: 72,300 miles (2025-10-13)
+
+Interval: 10,000 miles / 12 months
+
+Next due: 82,300 miles (2026-10-13)
+
+Cost range: $100–$200 (OEM $150–$300)
+
+Brake Fluid Flush row shown:
+
+Status: NOT DUE
+
+Last performed: Never
+
+Next due: 79,200 miles (2026-10-09)
+
+Cost range $70–$120 (OEM $100–$180)
+
+Transmission Fluid Change row shown:
+
+Status: NOT DUE
+
+Last performed: Never
+
+Next due: 112,300 miles (2029-12-24)
+
+Cost range $150–$300 (OEM $250–$400)
+
+Coolant Change row shown:
+
+Status: NEAR FUTURE
+
+Last performed: 68,578 (2024-11-01)
+
+Next due: 108,578 (2028-11-01)
+
+Cost range $100–$150 (OEM $150–$250)
+
+Unscheduled Maintenance Risk Evaluation
+
+Summary: “Evaluated 26 items. Found 1 already fixed/replaced, 0 critical, 4 high, 21 moderate, 0 low.”
+
+Examples shown (exact):
+
+Transmission Solenoids — 70k–120k, 20%, HIGH, risk score 75, already fixed No, mileage risk “At risk”, miles until failure “Past by 300 miles”, maintenance quality Fair
+
+Oil Leaks (Valve Cover Gaskets) — 50k–90k, 40%, HIGH, score 75, already fixed No, “Past by 200 miles”, quality Fair
+
+Oil Cooler — 80k–120k, 20%, HIGH, score 75, quality Fair
+
+Water Pump — 70k–120k, 25%, MODERATE, score 60, “Past by 2,300 miles”, quality Fair
+
+Fuel Pump — 60k–100k, 15%, MODERATE, score 45, “Past by 12,300 miles”, quality Fair
+
+Power Steering Pump — 70k–120k, 15%, MODERATE, score 45, “Past by 2,300 miles”, quality Fair
+
+Oxygen Sensors — 60k–100k, 25%, ALREADY FIXED/REPLACED, score 0, already fixed Yes, “Past by 2,700 miles”, quality Fair
+
+Market Valuation & Depreciation
+Current market valuation (exact):
+
+Retail value: $35,500 (range $33,000 – $38,000)
+
+Private party: $32,500 (range $30,000 – $35,000)
+
+Trade-in: $27,500 (range $25,000 – $30,000)
+
+Depreciation analysis (exact):
+
+Original MSRP: $82,000
+
+Total depreciation: $46,500 (56.1%)
+
+Annual depreciation rate: 5.6%
+
+Value retention: 43.3%
+
+Mileage impact: Average
+
+Projected future values (exact):
+
+1 year: Retail $34,000 | Private $31,000
+
+2 years: Retail $32,000 | Private $29,000
+
+3 years: Retail $30,000 | Private $27,000
+
+5 years: Retail $27,000 | Private $24,000
+
+Depreciation curve tooltip example (exact):
+
+Mileage: 30,000
+
+Retail value: $62,000
+
+Private party value: $60,000
+
+Vehicle position tiles (exact):
+
+Current mileage: 72,300
+
+Retail: $35,500
+
+Private: $32,500
+
+Depreciation phase: Mid depreciation phase
+
+Value retention: 43.3%
+
+vs average: At average
+
+Market condition: Stable
+
+Market trend: Stable
+
+Market segment: Luxury
+
+Total Cost of Ownership
+Inputs shown:
+
+Purchase price field (example): 2500
+
+Ownership period: 3 years
+
+Miles per year: 12000
+
+Comparator
+Comparator settings:
+
+Ownership period: 3
+
+Miles per year: 12000
+Selections + purchase prices:
+
+2015 Audi S7 4.0T QUATTRO — $25,000
+
+2018 Audi A6 Quattro Premium Plus — $20,000 (mileage shown later 72,176)
+
+Comparator results (exact):
+
+S7: current value (purchase + ICB) $7,465, ICB $35, EURC $0, C12 $35, total costs (3 yrs) $8,675, total loss $6,675, condition score 81/100, risk level LOW
+
+A6: current value (purchase + ICB) $8,405, ICB $95, EURC $0, C12 $95, total costs (3 yrs) $8,335, total loss $5,335, condition score 100/100, risk level LOW
+
+Detailed cost breakdown (exact):
+
+S7: immediate cost burden $35, projected routine $3,140, expected unscheduled $0, depreciation $5,500, total costs $8,675, expected sale price $27,000
+
+A6: immediate cost burden $95, projected routine $2,740, expected unscheduled $0, depreciation $5,500, total costs $8,335, expected sale price $23,000
+
+The improved world-class flow (same engine, better packaging)
+
+Garage → Report Summary → Leverage Script → Costs (visual) → Evidence → Compare Winner
+
+Garage shows cards with the same computed values (TCO, loss, risk, condition, deal score).
+
+Report Summary shows the verdict + top leverage issues first (not raw tables).
+
+Leverage builder creates the negotiation script + target offer.
+
+Costs tab shows the depreciation curve with markers + TCO breakdown chart.
+
+Evidence tab links every leverage item back to filtered service rows.
+
+Compare is charts + winner banner; the wide acronym tables go under “Advanced”.

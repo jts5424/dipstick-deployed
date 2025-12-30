@@ -1,0 +1,123 @@
+Got it — Take-05 is Jason’s direction for the Maintenance Schedule + Immediate Maintenance Due pages.
+
+Here’s everything he said, turned into the exact Replit edit spec. 
+
+jason-fred-take-05
+
+Jason’s full direction (Take-05)
+1) Combine the two pages/sections into one
+
+“We want to combine maintenance schedule and immediate maintenance due.” 
+
+jason-fred-take-05
+
+He confirms: “the last one and this one should be combined into one.” 
+
+jason-fred-take-05
+
+Replit instruction: merge Maintenance Schedule + Immediate Maintenance Due into a single tab/section.
+
+2) Purpose of the maintenance schedule = enable gap analysis (not just show a list)
+
+The maintenance schedule exists so you can do a gap analysis of the car’s service history vs the OEM or independent expert schedule. 
+
+jason-fred-take-05
+
+Replit instruction: don’t frame this as “here’s the schedule.” Frame it as “here’s what’s due based on schedule vs your history.”
+
+3) Show results relative to the schedule (not relative to the history)
+
+“When we perform that gap analysis, we show it relative to the schedule, not relative to the maintenance history.” 
+
+jason-fred-take-05
+
+Replit instruction: the UI baseline is the schedule (expected intervals). Service history is the evidence used to compute “last done” and “due.”
+
+4) For every routine item: last done + due as of today
+
+For each routine maintenance item:
+
+When was the last time it was done?
+
+When is it due as of today (based on that last done + the interval) 
+
+jason-fred-take-05
+
+Replit instruction: each maintenance row/card must include:
+
+Last done (miles/date)
+
+Due at (miles/date)
+
+Miles remaining (or overdue by)
+
+5) Break down each specific item (oil change, air filter, etc.)
+
+He explicitly agrees to breaking down “each specific one” like oil change, air filter replacement, etc. 
+
+jason-fred-take-05
+
+Replit instruction: do not lump items into generic categories—list them item-by-item.
+
+6) Add urgency cards with color + cost
+
+He wants “urgency cards” that float items to the top:
+
+Past due → pops up at top, shows item + cost
+
+Due soon (next couple thousand miles) → yellow
+
+Down the road → green 
+
+jason-fred-take-05
+
+Replit instruction:
+Top of page = “Urgency” stack:
+
+Red: Past due
+
+Yellow: Due soon (≤ ~2,000 miles) (he said “next couple thousand miles”)
+
+Green: Later
+
+Each card shows:
+
+Item name
+
+Due status (Overdue / Due soon / Later)
+
+Estimated cost
+
+Replit-ready page structure (paste this)
+
+Tab name: Maintenance (or “Maintenance & Due Now”)
+
+Urgency Cards (auto-sorted)
+
+Past Due (red)
+
+Due Soon (yellow)
+
+Later (green)
+
+Maintenance Schedule Gap Analysis (full list)
+
+For each item:
+
+Interval source: OEM / Indy Expert
+
+Last done (from history)
+
+Due now? (computed)
+
+Due at mileage/date + miles remaining
+
+Estimated cost
+
+Optional toggles:
+
+Show: All | Due only
+
+Sort: Urgency | Category | Cost
+
+If you upload Take-06, I’ll keep stacking these into one “Jason spec doc” so you can implement page-by-page without missing anything.

@@ -1,0 +1,171 @@
+2) Dipstick It needs an executive summary + dipstick score (not just price adjustments)
+
+He explicitly said comparator should feel like:
+
+“executive summary” → “dipstick score” and that it’s missing the “train of thinking.” 
+
+Dipstick v2 round
+
+✅ You should have a top section that instantly answers:
+
+who wins
+
+dipstick score(s)
+
+key deltas (TCO, depreciation, repair exposure, gaps)
+
+3) It needs a train-of-thinking narrative
+
+“There’s no train of thinking in the comparator.” 
+
+Dipstick v2 round
+
+He wanted a “high level comparison narrative.” 
+
+Dipstick v2 round
+
+✅ You need 3–5 bullet “why” reasons + a short paragraph tying it together.
+
+4) Dipstick It should be narrative + graphs (graphs are the proof)
+
+He said the comparator should basically be:
+
+“a narrative… and then just the graphs” 
+
+Dipstick v2 round
+
+and “we need to explain the graphs” because people aren’t good at graphs 
+
+Dipstick v2 round
+
+✅ This means each chart needs “How to read” + “What it means” (tooltips or inline).
+
+5) The “signature visuals” he praised
+
+He called out two specific things he loved:
+
+A) The stacked cost breakdown bars (depreciation/maintenance/repairs)
+
+“I love what you did with depreciation, maintenance, repairs… stack those up in a bar chart.” 
+
+Dipstick v2 round
+
+“I love that with the bars… how we do it in engineering.” 
+
+Dipstick v2 round
+
+B) Depreciation + breakdown + narrative together
+
+“depreciation… these breakdowns… and a narrative” 
+
+Dipstick v2 round
+
+✅ These bars can’t be a tiny widget at the bottom. They’re a core proof point.
+
+6) Dipstick It must not become “a second Garage”
+
+This was repeated hard:
+
+“I don’t think we should have cards in the comparator.” 
+
+Dipstick v2 round
+
+Don’t force scrolling past lots of cards — garage already does that 
+
+Dipstick v2 round
+
+Keep any car visuals “small, smaller.” 
+
+Dipstick v2 round
+
+He called out the compare cards having random stats (total loss, deal score, oil change, gap service, full report) and said: don’t put the stats in the car 
+
+Dipstick v2 round
+
+✅ If comparator shows big garage-style cards or loads of “stats in the car,” it violates the spec.
+
+7) Comparator output must be interpretation, not advice
+
+“It can’t be advice… it’ll be an interpretation.” 
+
+Dipstick v2 round
+
+✅ Your narrative copy should say “Based on…” not “We recommend you buy…”
+
+8) Very important boundary: single-car deep data is not in compare
+
+“All the data that they get to see… is not in the compare tool.” 
+
+Dipstick v2 round
+
+✅ Dipstick It should not contain service timelines, repair evidence tables, etc. It should link out to per-car analysis.
+
+“Did we include EVERYTHING?” checklist
+
+Use this like a QA sheet:
+
+Must exist
+
+ Ownership + mileage inputs + Compare button 
+
+Dipstick v2 round
+
+ Market price per car supported (even editable) 
+
+Dipstick v2 round
+
+ Executive summary + Dipstick score 
+
+Dipstick v2 round
+
+ Train-of-thinking narrative 
+
+Dipstick v2 round
+
+ Graph explainers/tooltips 
+
+Dipstick v2 round
+
+ Stacked cost breakdown bars (dep/maint/repairs) as a hero visual 
+
+Dipstick v2 round
+
+ Comparator is fast once upload analysis exists 
+
+Dipstick v2 round
+
+Must NOT happen
+
+ Big garage cards in comparator 
+
+Dipstick v2 round
+
+ Scroll past lots of “cars” to get to charts 
+
+Dipstick v2 round
+
+ Random “stats in the car” (total loss, deal score, etc.) 
+
+Dipstick v2 round
+
+ Deep single-car analysis data dumped into comparator 
+
+Dipstick v2 round
+
+ “We recommend…” advice language 
+
+Dipstick v2 round
+
+If you want my blunt verdict based on your latest Dipstick It screenshots
+
+You’re 80% there structurally (ranked results + charts + table), but the page often loses the executive insight layer (the “why” panel + narrative + explainers) when you move into multi-car ranking. That’s the piece Jason cared about most.
+
+If you keep the multi-car ranking, just make sure the top has:
+
+Executive summary (winner + deltas)
+
+Train-of-thinking (“why it wins”)
+
+Then the charts
+
+That satisfies every requirement above.

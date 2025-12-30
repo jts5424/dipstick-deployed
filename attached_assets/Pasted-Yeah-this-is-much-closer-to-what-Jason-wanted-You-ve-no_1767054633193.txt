@@ -1,0 +1,84 @@
+Yeah — this is much closer to what Jason wanted. You’ve now got the three pillars he kept asking for:
+
+Executive summary / insight layer (your “Smart Analysis” + drivers)
+
+Graphs as proof (depreciation + cost breakdown + report card)
+
+Chart explainers (Simple/Technical toggle + “what you’re looking at / what it means”)
+
+That directly matches his “narrative + graphs + explain the graphs” requirement. 
+
+Dipstick v2 round
+
+ 
+
+Dipstick v2 round
+
+But to be truly “Jason-perfect,” you still need 4 tweaks:
+
+1) Fix the “stats truth” in the Smart Analysis block
+
+Your Smart Analysis says “S7 retains 78% of its value…” and “fastest depreciating…” — that’s the kind of claim that will feel made up unless it’s computed from the chart.
+
+Rule: every line in Smart Analysis must be backed by a number you can show (delta at horizon, % retained, $ saved). Otherwise it reads like marketing.
+
+Do:
+
+“At 3 years, S7 is projected to be worth $X more.”
+
+“S7 total 3-year cost is $1,605 less.”
+
+“Repair risk delta: $840 lower.”
+
+2) Make “Key Drivers for Winner” evidence-linked
+
+Jason didn’t want the compare tool to dump deep data, but he did want it to be credible.
+
+Add “View evidence” links on each driver:
+
+Value loss → jumps to depreciation chart
+
+Repair risk → jumps to breakdown / risk section
+
+Service gaps → jumps to per-car vehicle history tab
+
+This keeps compare clean but verifiable.
+
+3) Depreciation curves need the “You are here” / horizon markers (even in Top 4)
+
+He repeatedly wanted the curves to show “you are here” markers tied to the ownership/mileage assumption. In your current chart, it’s just lines.
+
+Add:
+
+marker for Year 0 (today)
+
+marker at Year N (horizon)
+
+tooltip shows $ at horizon
+
+That’s a signature “Dipstick” mechanic.
+
+4) Hide the “Comparison Report Card” label (rename it)
+
+“Comparison Report Card” sounds like a PDF section.
+Rename to something human:
+
+Report Card
+
+Quick Scorecard
+
+Category Breakdown
+
+Bottom line
+
+✅ Yes — this is basically the shape he wanted.
+To finish it, make it more deterministic + evidence-linked + markers on the curve.
+
+If you want, paste the current computed values you have for:
+
+value at horizon per car
+
+total 3-year cost per car
+
+repair exposure per car
+…and I’ll rewrite the Smart Analysis text so it’s 100% grounded and never “marketing-y.”

@@ -1,0 +1,158 @@
+Perfect — here’s production-ready UI copy for that 3-step “Add Vehicle” wizard (tight, confident, not prototype-y). You can paste this straight into Replit as the spec.
+
+Add Vehicle Wizard — UI Copy + States
+Entry CTA (button)
+
+Add Vehicle
+
+Subtext (optional tooltip):
+“Upload CARFAX or start with a VIN.”
+
+Step 1 — Add method
+Title
+
+Add a vehicle
+
+Helper line
+
+“Start fast. Uploading CARFAX gives the best analysis.”
+
+Option cards
+
+A) Upload CARFAX (Recommended)
+
+Label: “Upload PDF”
+
+Microcopy: “Builds full history, gaps, and risk model.”
+
+B) Enter VIN (Fast start)
+
+Label: “VIN”
+
+Microcopy: “Creates the vehicle and enables recall checks. Upload CARFAX later for full analysis.”
+
+C) Manual entry (Limited)
+
+Label: “Manual”
+
+Microcopy: “Basic tracking only. Limited risk and history insights.”
+
+Upload help link
+
+What PDF works?
+Modal copy:
+
+“Upload a CARFAX Vehicle History Report PDF.”
+
+“Other service PDFs may parse, but results can be incomplete.”
+
+Step 2 — Parse & confirm
+Title
+
+Confirm vehicle details
+
+Parsing state (shown immediately after upload)
+
+Header: Extracting records…
+Progress bullets (animate/check off):
+
+“Reading service events”
+
+“Detecting mileage patterns & gaps”
+
+“Building the risk model”
+
+Microcopy:
+“Most reports take ~30–60 seconds.”
+
+Parse result summary (after success)
+
+Parsed successfully
+
+“Service records found: 44”
+
+“History gaps detected: 1”
+
+“Mileage confidence: Medium”
+
+If gaps found:
+“Gaps aren’t always bad — but they reduce certainty and affect risk.”
+
+Form labels (editable fields)
+
+Make
+
+Model
+
+Year
+
+Current mileage
+
+Trim (optional)
+
+Engine (optional)
+
+VIN (recommended)
+Helper under VIN:
+“Needed for recall validation and verification.”
+
+If VIN missing:
+Warning badge: “Recall validation requires a VIN.”
+
+Buttons
+
+Primary: Save vehicle
+Secondary: Back
+
+Step 3 — Saved state
+Title
+
+Vehicle added
+
+Success line
+
+“Analysis is ready.”
+
+If uploaded CARFAX
+
+CTA: View analysis
+
+If VIN/manual only
+
+Banner:
+“Upload CARFAX to unlock full analysis (history, gaps, risk projection).”
+CTA: Upload CARFAX now
+Secondary: Skip for now
+
+Error states (important)
+Upload error
+
+Couldn’t read that file
+“Try a CARFAX Vehicle History Report PDF. If you don’t have one, start with a VIN.”
+
+Buttons:
+
+Try another file
+
+Enter VIN instead
+
+Partial parse
+
+Partial results
+“We found vehicle details but only 12 service records. You can still continue.”
+
+Buttons:
+
+Save anyway
+
+Try a different PDF
+
+Replit implementation note (short)
+
+Keep the “Save vehicle” button disabled until required fields are present: Make/Model/Year/Mileage.
+
+VIN is recommended but not required; show warning if blank.
+
+After saving, route to Garage with an “Analysis ready / Limited” badge.
+
+If you want, I’ll also write the exact “What PDF works?” modal content + a 3-line “how to download CARFAX PDF” instruction that doesn’t feel spammy.

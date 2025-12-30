@@ -1,0 +1,217 @@
+Yeah — you’re very close, but if we’re being honest: in the real car-buying process, this needs one more layer:
+
+Right now it generates a decent message. What buyers actually need is a workflow: prep → contact → verify → negotiate → close, with different scripts for each step and dealer vs private party differences.
+
+Below is the ultimate leverage builder spec + prompting you can drop into Replit to “train” the whole experience.
+
+The real car-buying workflow (what your app should guide)
+Phase 0 — Set constraints (30 seconds)
+
+Buyer type: Dealer / Private seller
+
+Goal: Best price / Lowest risk / Fast close
+
+Timeline: Today / This week
+
+Payment: Cash / Financing
+
+Trade-in: Yes/No
+
+Output: “Negotiation posture” (tone + risk tolerance + timebox default)
+
+Phase 1 — “Receipt request” (before you negotiate price)
+
+This is how people actually win: you verify first, then you negotiate.
+
+Script outputs (must have):
+
+Text: quick ask for maintenance records, recalls, title status
+
+Email: same but clean/professional
+
+Talk track: in-person or phone
+
+Key line: “I’m serious about buying — can you help me verify a few things quickly?”
+
+Phase 2 — “Reality check” (questions that reveal red flags)
+
+This is where your selected leverage points should auto-generate one killer question per issue.
+
+Examples:
+
+Service gaps → “Do you have records for 2019–2022, or should I assume that maintenance wasn’t done?”
+
+Transmission solenoids risk → “Any hesitation/slipping under acceleration? When was the fluid last serviced?”
+
+Recall → “Has campaign 22V-155 been completed? If not, I’m not moving forward until it is.”
+
+Output: a checklist + questions, not just a negotiation message.
+
+Phase 3 — “Offer” (anchor + calibrated question)
+
+Now you hit price.
+
+Your app should generate:
+
+Anchor offer (slightly below target)
+
+Target offer (your computed number)
+
+Two-option close:
+
+“Adjust price to $X” or
+
+“Fix X/Y before purchase” (or provide receipts)
+
+Phase 4 — “Objection handling” (dealer reality)
+
+Your objection handlers should be contextual based on:
+
+Dealer vs private
+
+Tone
+
+Risk tolerance
+
+Which objection they chose (“we priced to market”, “sold as-is”, “we already discounted”)
+
+Phase 5 — “Close & logistics”
+
+Buyers need a clean close:
+
+“If you can do $X, I can come today at 6.”
+
+“I’ll put a deposit after recall verification.”
+
+“Bill of sale + title + keys; no surprises.”
+
+“Ultimate Leverage Builder” UI spec (what to build)
+Step 1: Choose your negotiation mode (top)
+
+Framework: Voss / Deal Math / Timebox
+
+Seller type: Dealer / Private
+
+Tone: Friendly / Firm / Hard
+
+Risk tolerance: Low / Medium / High
+
+Timebox: None / Today / 6 hours / 24 hours
+
+Step 2: Auto-generate strategy (one click)
+
+Build Strategy should output:
+
+Recommended tone + timebox
+
+Top 3–5 leverage points selected automatically
+
+Default script type: Text (if dealer) / Email (if private) OR user choice
+
+Step 3: Script outputs as tabs
+
+Receipt Request (Phase 1)
+
+Reality Check Questions (Phase 2)
+
+Offer Message (Phase 3)
+
+Objection Replies (Phase 4)
+
+Close Message (Phase 5)
+
+This is the missing “training” layer. One script isn’t enough.
+
+The “Ultimate Prompt” (paste into Replit)
+
+Use this as your system prompt for Build Strategy.
+
+ROLE:
+You are Dipstick’s Negotiation Engine. Your job is to generate high-converting negotiation scripts and question sets for buying a used car. You must be credible, factual, and buyer-safe: you are not giving legal advice; you are providing interpretation and talk-track structure based on the vehicle analysis data.
+
+INPUTS:
+- seller_type: (dealer | private)
+- framework: (voss | deal_math | timebox)
+- tone: (friendly | firm | hard)
+- risk_tolerance: (low | medium | high)
+- timebox: (none | today | 6h | 24h)
+- asking_price: number
+- target_offer: number (computed by app)
+- identified_leverage_total: number (computed by app)
+- top_leverage_points: array of objects:
+  - title
+  - category (valuation | immediate_maintenance | service_gap | projected_repair_risk | recall | title_risk)
+  - cost_range_min
+  - cost_range_max
+  - confidence (high/med/low)
+  - evidence_trigger (e.g., “missing records 2019–2022”, “known failure point at 70–90k”, “open recall campaign Z”)
+  - buyer_question (optional)
+- vehicle_context:
+  - year_make_model
+  - current_mileage
+  - location
+  - key_flags: array (open_recall, service_gaps, high_risk_window, etc)
+
+RULES:
+1) Output must be structured into 5 deliverables (phases):
+   A) Receipt Request
+   B) Reality Check Questions (one killer question per leverage point)
+   C) Offer Message (anchor + target + calibrated question + either/or close)
+   D) Objection Replies (at least 3, tailored to seller_type and tone)
+   E) Close Message (timebox + next steps + logistics)
+2) Keep each message short and usable:
+   - Text version <= 900 characters
+   - Email version <= 1800 characters
+   - Talk track version <= 12 bullets
+3) Use ONLY the top 3–5 leverage points. Do NOT dump everything.
+4) Use interpretation language, not recommendations:
+   - Say “Based on the records, it appears…” not “You should…”
+5) Apply framework mechanics:
+   - Voss: labeling (“It seems…”), accusation audit, calibrated questions (“How would we…?”), no-oriented questions, either/or close.
+   - Deal_math: show a simple formula and 2–3 numeric deltas.
+   - Timebox: clear offer + deadline + respectful walkaway.
+6) Tone behavior:
+   - Friendly: collaborative, curious, respectful.
+   - Firm: professional, anchored, concise.
+   - Hard: boundary-driven, direct, fast close, respectful walkaway.
+7) Always include a single-sentence disclaimer at the end:
+   “I’m using objective maintenance/valuation signals to frame a fair deal; I’m not making accusations.”
+
+OUTPUT FORMAT (JSON):
+{
+  "strategy_summary": {
+    "recommended_tone": "...",
+    "recommended_timebox": "...",
+    "selected_points": ["...", "...", "..."],
+    "one_sentence_logic": "..."
+  },
+  "receipt_request": {"text":"...", "email":"...", "talk_track":["..."]},
+  "reality_check_questions": {"text":"...", "email":"...", "talk_track":["..."]},
+  "offer_message": {"text":"...", "email":"...", "talk_track":["..."]},
+  "objection_replies": [
+    {"objection":"We priced to market","reply_text":"...","reply_talk_track":["..."]},
+    {"objection":"Sold as-is","reply_text":"...","reply_talk_track":["..."]},
+    {"objection":"We already discounted","reply_text":"...","reply_talk_track":["..."]}
+  ],
+  "close_message": {"text":"...", "email":"...", "talk_track":["..."]}
+}
+
+“Leverage points” selection logic (so it doesn’t feel random)
+
+When Build Strategy runs, select:
+
+Always include Immediate Maint Due if > $0
+
+Always include Open Recall if present
+
+If risk_tolerance = low → prefer reliability/repairs points
+
+If risk_tolerance = high → prefer valuation/price delta points
+
+Cap at 4 points
+
+The one big UX win
+
+Add a button: “Send as Text” that copies the Text version automatically, and another: “Send as Email”.
+
+Because in real life people don’t want to read paragraphs on mobile.

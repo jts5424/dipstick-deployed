@@ -1,0 +1,79 @@
+Make it “mom-proof” with 3 changes
+1) Rename jargon everywhere
+
+TCO → 3-Year Cost
+
+Depreciation → Value loss
+
+Repair exposure → Risk of big repairs
+
+Maintenance economy → Routine upkeep cost
+
+Value retention → Holds value
+
+2) Replace “How to read” with “What you’re looking at”
+
+People don’t think in charts. They think “what is this?”
+
+Use:
+
+What you’re looking at
+
+What it means for you
+
+3) Give a 1-line decision takeaway
+
+Every chart explanation ends with:
+
+“Bottom line: pick ___ if you want ___.”
+
+Example rewrites (drop-in)
+Depreciation curves
+
+What you’re looking at:
+“This shows how much each car is expected to be worth over time.”
+
+What it means for you:
+“After 3 years, these two cars are expected to be worth about the same. So this chart doesn’t decide the winner.”
+
+Bottom line:
+“Use the cost and repair-risk charts to choose.”
+
+Cost breakdown (stacked bars)
+
+What you’re looking at:
+“This shows where your money goes over 3 years: value loss, upkeep, and repairs.”
+
+What it means for you:
+“The S7 costs about $2,192 less mainly because it has lower repair risk.”
+
+Bottom line:
+“If you want fewer surprise bills, the S7 is safer.”
+
+Scorecard table
+
+What you’re looking at:
+“A quick report card. Higher is better.”
+
+What it means for you:
+“The A6 scores better on condition, but the S7 is cheaper to own.”
+
+Bottom line:
+“Pick A6 if you care most about condition; pick S7 if you care most about total cost.”
+
+UI details that make it readable
+
+Keep explanations to 2–3 short lines max.
+
+Use big numbers and bold deltas (e.g., $2,192 less).
+
+Replace paragraphs with bullets.
+
+Add a “Why?” tooltip for one word at a time, not long tooltips.
+
+Replit copy/paste spec
+Make chart explanations “mom-proof”:
+- Replace jargon: TCO→3-Year Cost, Depreciation→Value loss, Repair exposure→Risk of big repairs, etc.
+- Rename section headers: “How to read this” → “What you’re looking at” and “What it means for you”.
+- Cap to 2–3 short sentences + 1 “Bottom line” sentence.
+- Always include a numeric delta and a decision cue (“Pick X if…”).

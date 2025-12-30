@@ -1,0 +1,220 @@
+You’re right to push this — so I went through the transcript **line-by-line (L1–L1297)** and pulled **every actionable edit / requirement** (plus a couple “implied” ones that were still explicitly discussed). Everything below is grounded in the transcript. 
+
+---
+
+## 1) Landing / Home: remove the “guided MVP cues” section + remove duplicate/confusing inputs
+
+**Edits**
+
+* **Remove the separate “in-app cues / guided MVP” section** and make it **one line inside the banner**. 
+* Fix first-impression confusion: user shouldn’t land and wonder “**which box do I use**?” → **remove duplication**. 
+
+---
+
+## 2) Global: “Configure Analysis” must live in ONE place
+
+**Edits**
+
+* You can currently configure analysis in **Garage** or in **Comparator** → **pick one** (to avoid UX confusion + functional conflicts). 
+* Decision: **Garage should NOT have analysis parameters**. 
+
+---
+
+## 3) Garage screen: inventory-only (cards only) + remove “configure/run”
+
+**Edits**
+
+* Garage = **just your uploaded cars** (“car cards, that’s it”). 
+* Keep **View Analysis** (drill into a car) — that’s good. 
+* Remove from Garage:
+
+  * **Configure Analysis** (3 years / 12,000 miles etc.) 
+  * **Run Full Analysis** 
+* Garage cards *may* show high-level card stats (example given: “estimated total loss / total cost”), but you **don’t run analysis there**. 
+
+---
+
+## 4) Comparator naming + information architecture: rename it
+
+**Edits**
+
+* “Comparator” is the wrong name because you can run the concept on **one car** too → rename to **“Dipstick It”**. 
+* The site should be mentally 3 areas:
+
+  * **Garage** (inventory)
+  * **Analysis** (single-car deep dive)
+  * **Dipstick It** (comparison / interpretation layer) 
+
+---
+
+## 5) Compare (“Dipstick It”) page: fix cards + add compare CTA + remove scroll bloat
+
+### 5A) Cards in compare are inconsistent and too busy
+
+**Edits**
+
+* Current issue: compare has a card design that’s different from Garage and includes lots of stats (deal score, oil change, gap service, etc.) → **remove those stats from compare cards**. 
+* Compare shouldn’t be “a second Garage” → **don’t force people to scroll past a bunch of cards**. 
+* If you show car visuals in compare, keep them **small** (thumbnail-level), not big cards. 
+
+### 5B) Add the explicit “Compare” action
+
+**Edits**
+
+* The top of compare should be: set **ownership period + mileage** → click a big **Compare** button → it runs. 
+
+### 5C) Compare must include narrative/interpretation (not just charts)
+
+**Edits**
+
+* Compare is “missing the train of thinking” → add **high-level explanation / narrative**. 
+* The narrative should help users **interpret graphs** (tooltips or explanation blocks). 
+* It should be framed as **interpretation**, not “recommendation/financial advice.” 
+
+---
+
+## 6) Upload vs Compare: clarify the “slow step” vs the “fast step”
+
+**Edits**
+
+* Uploading CARFAX triggers the heavy lifting (data aggregation) and can take **~1 minute**. 
+* That processing happens **behind the car** and is stored in the Garage. 
+* Compare should be “near instant” once data exists (just recalculating with years/miles). 
+* Open UX question raised: should the upload/progress be **explicit to the user** or totally backgrounded? (You’ll need Replit to implement one clear approach.) 
+* Fun note: the wait time was called “ad space” (aka a branded loading screen opportunity). 
+
+---
+
+## 7) Compare visuals: specific chart requirements
+
+**Edits**
+
+* Keep/lean into your stacked cost breakdown bars (depreciation/maintenance/repairs) — explicitly praised. 
+* Depreciation chart in compare should show **both curves stacked** with “you are here” markers. 
+* Add **Total Cost of Ownership graph below** (explicitly stated). 
+
+---
+
+## 8) Share functionality: keep optional + clarify intent
+
+**Edits**
+
+* Share button next to Generate Report is not “dumb”; it’s workable. 
+* It should **not** be anonymous — it’s for sending to **the person you’re buying the car from**. 
+* Optional monetization idea: sharing could be tied to tiers (“tears/tiers” comment). 
+
+---
+
+## 9) Offer Mode + Leverage Builder: keep it in Analysis + ensure Objection Handler is reachable
+
+**Edits**
+
+* Offer Mode includes:
+
+  * Offer calculator
+  * **Risk tolerance slider (low ↔ high)**
+  * **Build Strategy** 
+* Build Strategy outputs different **tones** and leverage points. 
+* There is an **Objection Handler** feature conceptually, but it was not reachable due to scroll issues / placement on only one car. Make it consistently available and accessible. 
+
+**Important product clarification**
+
+* Leverage Builder should position value as: “**arm the buyer with a talk track + truths**,” not “you will force a dealership to drop the price.” 
+
+---
+
+## 10) Critical bug: modal can’t scroll at normal zoom
+
+**Edits**
+
+* “Generate Script / Smart Script Builder” modal shows content below but **cannot scroll** unless the window is tiny. 
+* Root cause mentioned: it was built while Chrome was at ~70–75% zoom → fix proper overflow/scroll behavior at normal zoom. 
+
+---
+
+## 11) Brand / visual system notes (explicit)
+
+**Edits**
+
+* The styling direction was praised as “neutral / professional / trustworthy.” 
+* “Maverick” pushes can make it feel sketchy/crypto — be careful. 
+* “Too many colors” concern → reduce palette. 
+* Optional tweak: **yellow instead of green**; keep **navy** as primary “trustworthy” base. 
+
+---
+
+## 12) Recalls feature: validate recall completion
+
+**Edits**
+
+* Build recall handling into risk/reliability: if something is on recall, add a workflow to **validate recall was completed**. 
+* Proposed method: automated outreach to OEM systems (Audi is easiest; others TBD). 
+
+---
+
+## 13) Analysis tab architecture (single-car): rename/reorder + remove “Evidence” as a tab
+
+**Edits**
+
+* Summary definition: should include **market valuation + routine maintenance gap analysis + risk eval + total ownership**, plus negotiation leverage points if desired. 
+* “Clean green anomaly detection / over-serviced items” should move to **Vehicle History**. 
+* Rename “Risk & Reliability” → it’s really “**Future Repair Projection**” (repairs = unscheduled). 
+* Repairs vs Maintenance must be separated:
+
+  * Repairs = **unscheduled**
+  * Maintenance = **routine**
+  * Separate tabs, then they roll up into Summary. 
+* Proposed tab ordering (explicit):
+
+  1. Summary
+  2. Market Valuation
+  3. Projected Future Repairs
+  4. Maintenance Schedule
+  5. Immediate Maintenance Due
+  6. Leverage Builder
+     And: **remove Evidence**. 
+
+---
+
+## 14) Service History Analysis: keep it, but embed it + fix toggles + add legend
+
+**Edits**
+
+* You do like service history analysis (table/timeline + search). 
+* But it should live **inside** Routine Maintenance Gap Analysis and **inside** Repair Projection — not as “Evidence.” 
+* Fix the “toggle/filter not functioning” issue in one view. 
+* Add an obvious **legend** for color coding:
+
+  * Green = maintenance
+  * Blue = inspection
+  * Yellow = repair 
+
+---
+
+## 15) Add the missing tab: general Vehicle History (not service-focused)
+
+**Edits**
+
+* Add a tab for general “Vehicle History” timeline: where operated, timeline milestones, gaps, etc. 
+* Add “narrative for each thing” (not just raw line items). 
+* “Gaps” should summarize history patterns (not just the detailed list). 
+* Overall directive: clean separation of concerns between tabs. 
+
+---
+
+## 16) Engineering / integration notes (not UI, but explicitly discussed)
+
+If you’re feeding “everything into Replit,” include these too:
+
+* The front end described here is a **React SPA** with **Tailwind + Router** and uses **MockData.ts** now; production would fetch JSON from your backend API. 
+* Integration approach mentioned: build static files (`npm run build`) and connect to Node backend; biggest pain = variable/schema mismatches between prototype front end vs real backend. 
+
+---
+
+# Quick verdict: did we miss anything else “edit-like”?
+
+Based on the full transcript, **no other concrete UI edits** were discussed beyond:
+
+* page/feature placement, naming, tab architecture, chart composition, narrative/tooltip layer, color palette guidance, recall validation workflow, share intent, and the modal scroll bug. 
+
+If you want this in the exact format Replit Agent likes, tell me what your actual route/component names are (e.g., `/garage`, `/compare`, `/analysis/:id`, `LeverageBuilderModal.tsx`) and I’ll rewrite the above as a **dev task list mapped to files/components** with acceptance criteria.

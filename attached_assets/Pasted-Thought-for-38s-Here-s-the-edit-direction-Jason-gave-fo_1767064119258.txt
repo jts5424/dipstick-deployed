@@ -1,0 +1,94 @@
+Thought for 38s
+
+Here’s the edit direction Jason gave for the Executive Summary / “Compare” page, in a form you can paste into Replit as the spec.
+
+What this page is supposed to do
+
+The page should show high-level abstractions from all the other tabs, as concisely as possible for the user. 
+
+riverside_jason_raw-synced-vide…
+
+He said the Executive Summary is “pretty right on.” 
+
+riverside_jason_raw-synced-vide…
+
+Required edits
+1) Add a price input (so “fairly priced” isn’t guessing)
+
+Add a user input / dialog box for the car’s price (listing price / your offer).
+
+Place it above the Executive Summary or inside it.
+
+Reason: the UI says “fairly priced” but there’s no place to enter price, which breaks the logic. 
+
+riverside_jason_raw-synced-vide…
+
+Implementation note for Replit:
+
+Field: Purchase price ($) (number input)
+
+That value should feed:
+
+“Fairly priced / overpriced / underpriced”
+
+“Cost of ownership” rollups (since those depend on what you pay) 
+
+riverside_jason_raw-synced-vide…
+
+2) Replace/adjust “Risk Evaluation” → make it a Cost Timeline
+
+He wants the “risk evaluation” reframed because right now it’s basically just “repairs.” 
+
+riverside_jason_raw-synced-vide…
+
+Instead, make it a timeline / cumulative cost chart showing how ownership cost accrues over time/miles:
+
+Start point: 0 miles from purchase or today’s date 
+
+riverside_jason_raw-synced-vide…
+
+Show step changes when immediate work is needed (example: oil change right when you buy it = a visible jump at mile 0). 
+
+riverside_jason_raw-synced-vide…
+
+Show future events at mileage markers (example: another oil change at 10,000 miles = another step). 
+
+riverside_jason_raw-synced-vide…
+
+The actual chart Jason described:
+
+A cumulative line chart that increases over time/miles so users can see:
+
+“If I buy today and own for X miles, I’ll accrue ~$Y cost”
+
+Where cost is low vs where it skyrockets (his example: looks fine at 20–30k miles, but at 40k it spikes → tells you how long you should own it). 
+
+riverside_jason_raw-synced-vide…
+
+Implementation note for Replit:
+
+Chart title: Cumulative Ownership Cost Over Time
+
+X-axis toggle: Miles (default) / Time
+
+Add a user control:
+
+Ownership horizon (slider: miles, e.g., 0 → 60k)
+
+Output: “Estimated cost by X miles: $Y”
+
+Data model suggestion:
+
+maintenanceEvents[] = { mile, item, cost, requiredNow (bool), probability(optional) }
+
+Cumulative = running sum over sorted events (step function)
+
+3) Make the chart understandable (mom-friendly) + still technical
+
+Not explicitly in Jason’s clip, but it fits his “concise abstractions” goal and solves your readability issue:
+
+Under the cost timeline chart, add two stacked explanations:
+
+Everyday speak: “This line is the money you’ll likely spend on upkeep as you drive. Jumps = scheduled work hits.”
+
+Technical: “Cumulative expected maintenance/repair cost. Step increases occur at predicted service intervals.”

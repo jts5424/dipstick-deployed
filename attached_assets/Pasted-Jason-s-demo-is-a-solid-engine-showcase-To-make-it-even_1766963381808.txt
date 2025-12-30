@@ -1,0 +1,214 @@
+Jason’s demo is a solid engine showcase. To make it even better (and truer to what he actually said) you upgrade 6 things: home screen logic, comparator tiles, the analyze stepper, evidence trust, the “$ you’ll lose” framing, and the survivability/depreciation visuals. Here’s the exact delta.
+
+1) Make Comparator the only “home” (harder than you think)
+
+Jason wasn’t “also want a garage.” He explicitly wanted the comparator to be the base page where everything starts. 
+
+jason-fred
+
+
+Better: Don’t make “Garage” and “Comparator.” Make Comparator = Garage.
+
+Upgrade UI
+
+Home = a grid of vehicle tiles
+
+Top bar = ownership assumptions (years + miles/year)
+
+One primary CTA = Analyze
+
+Everything else is drill-down
+
+This makes the UX feel intentional, not like a dashboard with random pages.
+
+2) Vehicle tiles must scream “$ you’ll lose” + 2 bullets (Jason’s exact framing)
+
+He literally said the comparator should show “how much money you’re going to lose” and then you click a tile to drill down. 
+
+jason-fred
+
+Better tile layout
+
+Big number: $6,675
+Label: “Total loss (3 yrs)”
+
+Smaller: “3-yr TCO: $8,675”
+
+Risk chip: LOW/MOD/HIGH
+
+Condition score chip
+
+2 bullets (from analysis):
+
+“Significant service gaps (2019–2022)”
+
+“Mileage missing on multiple records”
+
+Button: View leverage (not “open report”)
+
+Now the home screen is the product.
+
+3) The Analyze experience should unlock modules progressively (not just “run”)
+
+Jason wanted a spinner/stepper where sections become available as they finish. 
+
+jason-fred
+
+Better stepper
+When you hit Analyze:
+
+show a vertical stepper with checkmarks:
+
+Parse records ✅
+
+Service narrative ⏳
+
+OEM schedule ⏳
+
+Unscheduled forecast ⏳
+
+Gap analysis ⏳
+
+Risk eval ⏳
+
+Market valuation ⏳
+
+TCO ✅
+
+And as each step completes, the corresponding tile bullets update live.
+
+That feels “innovator,” not static.
+
+4) Surivivability curve toggle for unscheduled maintenance (Jason called it out)
+
+He said unscheduled should eventually be a survivability curve. 
+
+jason-fred
+
+Better
+On “Unscheduled Maintenance”:
+
+Default view: top 8 cards (soonest/highest risk)
+
+Toggle: Table | Curve
+
+Curve:
+
+X = mileage
+
+Y = failure probability
+
+Shaded “risk window”
+
+“You are here” marker at current mileage
+
+This is one of the few visuals that will instantly make Jason go: “Yeah, that’s it.”
+
+5) Risk evaluation must subtract “already fixed” (he explicitly described this logic)
+
+He described reducing risk if it’s in service history repairs. 
+
+jason-fred
+
+Better
+Every risk item card shows:
+
+Status: Already fixed / No evidence
+
+Evidence tags that jump to records
+
+“Revised probability” (lower if fixed)
+Even if the math is mocked, the UI must show the concept.
+
+That’s how Dipstick differentiates from “generic repair list.”
+
+6) Depreciation curve needs the “knee” storytelling (he cares about the curve shape)
+
+He talked about depreciation being a “hockey stick” with a knee around ~40k miles. 
+
+jason-fred
+
+Better
+Depreciation chart should have:
+
+Two markers:
+
+Current mileage
+
+Projected mileage at end of ownership
+
+Annotation on the curve:
+
+“Depreciation knee (~40k)”
+
+Toggle Retail | Private Party
+
+A small “loss over horizon” callout under the chart
+
+This turns valuation from “data” into “decision.”
+
+7) Biggest “even better” layer Jason implied but didn’t demo: Negotiation leverage packaging
+
+He called gap + risk the key differentiators vs Carfax. 
+
+jason-fred
+
+
+The world-class move is turning those into a usable negotiation output:
+
+Better
+A “Leverage” drawer on every vehicle:
+
+Selected issues
+
+Running $ range
+
+Script:
+
+questions to ask
+
+receipts to request
+
+offer anchor
+
+Jason’s prototype is analysis. This makes it a product.
+
+8) Trustworthiness: evidence linking must be first-class
+
+Jason’s whole pitch is: “We’re more useful than Carfax,” but to be trustworthy you have to show evidence.
+
+Better trust features
+
+Every leverage item has “Evidence tags”
+
+Clicking them filters and highlights the service history table rows
+
+Data quality card:
+
+“Mileage missing on X records”
+
+“Gap 2019–2022”
+
+“Admin events hidden by default”
+
+This gives “innovator” + “credible.”
+
+The simplest “Jason-approved” upgrade summary
+
+If you do only 3 upgrades, do these:
+
+Comparator tiles with $ you’ll lose + 2 bullets (his exact home-screen vision) 
+
+jason-fred
+
+Analyze stepper that unlocks modules progressively 
+
+jason-fred
+
+Unscheduled Curve toggle (survivability) 
+
+jason-fred
+
+That alone makes it feel “world class” compared to the prototype.
+
+If you want, I’ll rewrite your Lovable/Replit prompt so it explicitly forces these Jason-specific “better” features (so the generator can’t skip them).

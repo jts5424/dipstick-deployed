@@ -1,0 +1,73 @@
+Storing is doable, but it bumps your risk profile. You can still make it sane if you treat the PDF like a private user upload and you never redistribute or repackage it.
+
+Here’s the clean “low-risk” way to store.
+
+Safer storage approach (do this)
+1) Store the PDF as a private attachment, not as a “report”
+
+Store per-user, per-vehicle.
+
+No public URLs. No share links. No indexing. No CDN URL that anyone can guess.
+
+Access only after auth; short-lived signed URLs if needed.
+
+2) Don’t output the PDF back to the user from your app
+
+No “Download original report” button.
+
+No “Share report” that includes the uploaded CARFAX PDF.
+
+If you want to be extra safe: don’t store it long-term at all — store extracted structured data, delete the PDF after parsing, and show “we don’t store your original report.”
+
+3) Parse → store structured data → keep PDFs siloed
+
+Extract events, dates, mileage, gaps, service items, VIN, recall campaign IDs.
+
+Run analysis on the structured data.
+
+Your exported “Generate PDF report” should be Dipstick analysis, not the uploaded report contents.
+
+4) UI copy changes (must do)
+
+Change “Upload CARFAX” to “Upload vehicle history report (PDF)”
+
+Add a clear disclaimer in the wizard:
+
+“Upload a report you own/have rights to use (e.g., a CARFAX PDF you purchased).”
+
+“Dipstick is not affiliated with CARFAX.”
+
+5) Never show CARFAX branding or imply integration
+
+No CARFAX logos, no “CARFAX verified,” no “Connect CARFAX.”
+
+6) Security + compliance basics (non-negotiable)
+
+Encrypt at rest
+
+Virus scan uploads
+
+Retention policy (e.g., auto-delete after 30/60/90 days unless user keeps it)
+
+“Delete vehicle” deletes the PDF
+
+What to change right now in Garage
+
+Button label: Add Vehicle
+
+Modal option: Upload vehicle history report (PDF)
+
+Subtext: “CARFAX/AutoCheck supported”
+
+Copy/paste spec for Replit
+We store uploaded PDFs. Implement these safeguards:
+
+- Rename UI from “Upload CARFAX” to “Upload vehicle history report (PDF)”.
+- Add disclaimer: “Upload reports you own/have rights to use. Dipstick is not affiliated with CARFAX.”
+- Store PDFs privately per-user/per-vehicle (no public links, no share/download).
+- Parse and store structured extracted data; analysis + exports must be Dipstick-generated, not reproduction of the source PDF.
+- Add retention + delete controls: deleting a vehicle deletes the PDF.
+- Security: auth-gated access, signed URLs, encryption at rest, malware scan.
+
+
+If you want the lowest-risk version: delete the PDF after parsing and store only extracted data. If you insist on storing it, the rules above are the minimum.

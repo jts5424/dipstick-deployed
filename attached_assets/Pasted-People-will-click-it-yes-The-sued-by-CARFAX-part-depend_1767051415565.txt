@@ -1,0 +1,85 @@
+People will click it, yes. The “sued by CARFAX” part depends on how you handle the PDF and what you claim, but you can dramatically reduce risk with a few clear product + legal-safe choices.
+
+I’m not a lawyer, but here’s the practical playbook.
+
+The real risk isn’t “uploading a PDF”
+
+Users can upload files they legally have. The bigger risk is:
+
+You scrape CARFAX, circumvent access controls, or automate retrieval from CARFAX without permission.
+
+You reproduce/distribute CARFAX reports (share/export the PDF, re-host it, or generate a “CARFAX-like report” that copies their layout/content).
+
+You imply affiliation: “Upload CARFAX” can read like an official integration.
+
+Make it safer (recommended changes)
+1) Change the button label (most important)
+
+Instead of: “Add Vehicle (Upload PDF)” with “Upload CARFAX” elsewhere, use:
+
+Add Vehicle
+Then inside the modal:
+
+“Upload vehicle history report (PDF) — e.g., CARFAX”
+This avoids looking like an official CARFAX feature.
+
+2) Don’t store or redistribute the original report
+
+Safer patterns:
+
+Process locally in-browser and only store extracted structured data (events, mileage, dates).
+
+Or if you store the PDF, keep it private to the user, never shareable, never downloadable from you.
+
+Avoid:
+
+“Generate PDF report” that includes CARFAX text/images.
+
+“Share full report” that shares the CARFAX document.
+
+3) Don’t call it “CARFAX Report” anywhere in exports
+
+Your “Generate PDF report” should be your own analysis summary, not a repackaging of CARFAX content.
+
+4) Add a simple disclaimer in the upload modal
+
+Something like:
+
+“Upload a vehicle history report you own/have rights to use (e.g., a CARFAX PDF you purchased).”
+
+“Dipstick is not affiliated with CARFAX.”
+
+5) Avoid using CARFAX branding
+
+No CARFAX logo, no “CARFAX integration,” no color scheme/phrasing that implies partnership.
+
+6) Give a VIN option (also reduces CARFAX dependence)
+
+As we discussed:
+
+VIN = “fast start”
+
+PDF upload = “best results”
+This also de-risks the user flow and makes your product less dependent on a single vendor.
+
+Will users click the Garage button?
+
+Yes. But change it from a long, specific CTA to:
+
+Add Vehicle
+and make the garage “+ tile” also open the same wizard.
+
+Copy/paste safe spec for Replit
+Change Garage CTA from “Add Vehicle (Upload PDF)” to “Add Vehicle”.
+
+In modal:
+- Option: “Upload vehicle history report (PDF) (recommended)”
+  Helper: “Works with reports like CARFAX, AutoCheck, dealer service PDFs.”
+- Option: “Enter VIN (fast start)”
+- Add disclaimer text:
+  “Upload reports you own/have rights to use. Dipstick is not affiliated with CARFAX.”
+- Do not re-host/share the original PDF publicly; exports should be Dipstick analysis only, not a reproduction of the report content.
+- Avoid CARFAX logos/branding in UI.
+
+
+If you tell me whether you’re currently storing the uploaded PDFs server-side or just parsing them client-side, I’ll tell you which approach is lower risk and what copy to use.

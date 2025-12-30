@@ -1,0 +1,82 @@
+This Projected Future Repairs page is very close to what Jason wanted — and you actually have the two “wow” visuals he praised:
+
+Risk Urgency Map ✅
+
+Survivability Curve / failure probability curves ✅
+He explicitly liked both of these in the transcript. 
+
+Dipstick v2 round
+
+ 
+
+Dipstick v2 round
+
+And you also implemented the recall workflow:
+
+“Open Recall Detected” + Validate Recall Completion ✅
+That matches the recall option he wanted built in. 
+
+Dipstick v2 round
+
+So overall: Yes, this page is good.
+
+What’s off / what I’d fix (based on what he asked for)
+1) The “Repair Evidence” block name/placement is slightly wrong
+
+He didn’t want a standalone “Evidence” concept; he said remove the Evidence tab and embed service history analysis under routine maintenance gap analysis and repair projection. 
+
+Dipstick v2 round
+
+You did embed it (good), but the header “Repair Evidence” is still basically “Evidence” rebranded. That may trigger the same objection.
+
+Fix: rename + tighten the purpose
+
+Rename “Repair Evidence” → “Service History Signals” or “Historical Signals”
+
+Add a 1–2 sentence line: “Past records that increase/decrease confidence in projected repair risk.”
+
+2) Make the filters match the intent of this tab
+
+Right now your legend/filter shows Maintenance / Inspection / Repair — that’s great, but on this page you probably want the default filter to highlight repairs + anomalies that support the risk forecast.
+
+Fix:
+
+Default filter on this tab: Repair + Inspection (or “All signals”)
+
+Add quick chips: “Show only anomalies”, “Show gaps”, “Show repeats”
+
+3) Tie the risk forecast to the evidence automatically
+
+You have “3 high probability failures detected” at the top, but the evidence list below isn’t clearly connected.
+
+Fix: “Evidence for this forecast” sublist
+Directly under the risk forecast banner, add:
+
+“Why we think this is high risk:”
+
+“Service gap 2019–2022” (link scrolls to those items)
+
+“Repeated ‘visual inspection only’ notes” (link)
+
+“No record of X replacement by 72k miles” (link)
+
+This creates the “train of thinking” inside the single-car page (which was a big theme overall).
+
+4) Recall validation needs a status state (even mocked)
+
+Right now the CTA exists. Great. But it needs to return a status like:
+
+“Not verified” → “Verification in progress” → “Verified complete” / “Likely incomplete”
+
+That’s aligned with the recall “validate completion” intent. 
+
+Dipstick v2 round
+
+Quick Replit note (copy/paste)
+Projected Future Repairs is mostly correct and includes the “wow” visuals Jason praised (Risk Urgency Map + Survivability Curve) and the Recall CTA.
+
+Improvements:
+- Rename “Repair Evidence” to “Service History Signals” (avoid “Evidence” concept).
+- Default filters on this tab should highlight repair/anomaly signals.
+- Add “Evidence for this forecast” bullets that deep-link to the relevant timeline rows.
+- Add recall validation status states (Not verified / Checking / Verified complete / Likely incomplete).

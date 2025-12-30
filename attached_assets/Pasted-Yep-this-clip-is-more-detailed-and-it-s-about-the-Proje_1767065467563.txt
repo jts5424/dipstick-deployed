@@ -1,0 +1,169 @@
+Yep — this clip is more detailed, and it’s about the Projected Future Repairs / Survivability + Top Risks page, not the Executive Summary.
+
+Here’s ALL the edit direction Jason gave in this “next” file, converted into a Replit-ready spec. 
+
+jason-fred-take-04
+
+Jason’s direction for this page (complete)
+1) “Risk Urgency Map” — keep it (mostly)
+
+Jason: “risk urgency map… really good.” 
+
+jason-fred-take-04
+
+He notes you previously said you’d modify it on the summary page, but on this page he thinks it’s good as-is (then he wavers briefly). 
+
+jason-fred-take-04
+
+Replit instruction: keep the Risk Urgency Map section on this page. Don’t delete it.
+
+2) The real “meat” is Survivability (components)
+
+He corrects himself: the “real way to look at this” is the survivability section below — that’s what you should really be showing. 
+
+jason-fred-take-04
+
+Replit instruction: visually prioritize survivability analysis as the primary content on the page (layout, spacing, headline weight, position).
+
+3) Explain how to read the survivability chart (non-negotiable)
+
+Jason describes what the survivability chart means:
+
+It’s survivability analysis of components due to fail unscheduled (unscheduled maintenance). 
+
+jason-fred-take-04
+
+There’s a probability of failure at different mileage levels throughout the lifecycle. 
+
+jason-fred-take-04
+
+“We should definitely explain that so people understand how to read these charts.” 
+
+jason-fred-take-04
+
+Replit instruction: add a “How to read this” explainer directly above the chart (or an info tooltip that’s open by default on first view).
+
+4) “Top Risks” tiles must be clickable → pop-up drilldown
+
+Jason: the curves/tiles represent different failure modes and are congruent with the survivability curves. 
+
+jason-fred-take-04
+
+He wants interaction: click a box (e.g., water pump) → it explains what’s failing and why, and shows detail. 
+
+jason-fred-take-04
+
+Replit instruction: make each “Top Risk” tile a button that opens a modal/drawer.
+
+5) Drilldown modal contents (this is the big spec)
+
+When you click a component tile (example: Water Pump), the pop-up should include:
+
+A) Component-specific survivability curve
+
+“You could have the survivability of just that one on the pop-up.” 
+
+jason-fred-take-04
+
+B) Service history analysis specific to that component
+
+He wants “a list of service records or a summary… as applicable to that failure.” 
+
+jason-fred-take-04
+
+Example logic he gives:
+
+If water pump was replaced at 30k and car is 70k, call out:
+
+it “failed early,” but was replaced, so restart the clock
+
+the component effectively has 40k miles on it (not 70k) 
+
+jason-fred-take-04
+
+Mention maintenance that “reduces likelihood” of failure again 
+
+jason-fred-take-04
+
+Add usage context like low miles/year and what that implies (example: 40k miles over 8 years = not heavily driven). 
+
+jason-fred-take-04
+
+“Like an analysis of the service history relative to the water pump… have that for all of them.” 
+
+jason-fred-take-04
+
+Replit instruction: modal must include a “Service History Impact” block that is dynamic per component (positive/negative).
+
+6) Remove “Service History Signals” box from this page
+
+Jason: “I don’t think we need this box on this page.” 
+
+jason-fred-take-04
+
+Clarified: you do not need “service history signals” on the projected future repairs page. 
+
+jason-fred-take-04
+
+Instead, those signals should be baked into the failure mode cards when you click them. 
+
+jason-fred-take-04
+
+Replit instruction: delete the standalone “Service History Signals” section and relocate that content into each component modal (summary form is fine).
+
+Replit-ready build checklist (copy/paste)
+Page layout
+
+Sections (top → bottom):
+
+Risk Urgency Map (keep)
+
+Survivability Analysis (make this the hero / primary)
+
+Top Risks (clickable tiles)
+
+Survivability section
+
+Add “How to read this chart” explainer:
+
+What “unscheduled maintenance” means
+
+“Probability of failure vs mileage” concept
+
+What higher probability zones imply
+
+Top Risks tiles
+
+Each tile opens ComponentDetailModal(componentId)
+
+ComponentDetailModal (required blocks)
+
+Header: Component name + risk score + “why it matters”
+
+Mini survivability chart for that component only
+
+“Why it fails” short explanation
+
+Service History Impact (component-specific):
+
+Last replacement date/mileage (if any)
+
+“Restarted clock” miles-on-component calculation
+
+Maintenance signals that reduce/increase risk
+
+Driving pattern context (miles/year)
+
+Net takeaway: “More likely / less likely than average”
+
+Remove from page
+
+Standalone “Service History Signals” box (bake it into the modal instead)
+
+If you want, I can also turn this into exact UI copy (mom-friendly + technical toggle) for:
+
+the survivability explainer
+
+the tile hover states
+
+the modal “Service History Impact” narrative template (auto-generated text)

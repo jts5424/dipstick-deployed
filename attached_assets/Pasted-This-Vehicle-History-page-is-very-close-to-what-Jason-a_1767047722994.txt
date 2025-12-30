@@ -1,0 +1,85 @@
+This Vehicle History page is very close to what Jason asked for. In the transcript, his asks for this page were specific and pretty narrow:
+
+What Jason wanted (and you already have)
+
+A general “Vehicle History” tab (separate from service/repairs tabs). 
+
+Dipstick v2 round
+
+A narrative at the top (“History Narrative”) — not just raw records. 
+
+Dipstick v2 round
+
+A clear separation of concerns so this isn’t muddled with other tabs. 
+
+Dipstick v2 round
+
+You’ve implemented those.
+
+What’s still missing vs transcript (and what to change)
+1) Add a “Gaps summary” section (explicit ask)
+
+Jason said “gaps should be treated as a summary of the history” — not just a callout in the timeline. 
+
+Dipstick v2 round
+
+Add directly under History Narrative:
+
+Known gaps: “2019–2022 missing service history”
+
+Confidence impact: “reduces confidence in maintenance cadence”
+
+Likely interpretation: “work may have been done but undocumented” vs “maintenance likely deferred” (keep it as interpretation)
+
+2) Add non-service ownership/context milestones
+
+In the transcript, his examples for Vehicle History were about broader timeline: manufacturer delivery, dealer purchase, operated in X state for Y years, etc. 
+
+Dipstick v2 round
+
+Right now your timeline appears to be mostly service events.
+Add a small “Ownership & Context” block above the service timeline:
+
+“Registered in: Ohio”
+
+“Observed mileage consistency: mostly consistent / inconsistent”
+
+“Usage pattern: steady mileage / long gaps / clustered servicing”
+(You can mock this now.)
+
+3) Move “anomaly detection / over-serviced items” here (if it’s still elsewhere)
+
+He explicitly said “clean green anomaly detection / over-serviced items” belongs in Vehicle History, not Summary. 
+
+Dipstick v2 round
+
+So in this tab add a subsection:
+
+Anomalies & Signals
+
+“Repeated ‘visual inspection only’ notes”
+
+“Service frequency unusually high/low”
+
+“Mileage reporting missing in X entries”
+
+4) Add “jump links” to the leverage builder
+
+This is not stated verbatim, but it follows the “make narrative actionable” intent:
+
+When you show a gap/anomaly, add a button: “Use as leverage” (preselects the leverage point in Leverage Builder).
+
+This keeps the product tight end-to-end.
+
+Replit copy/paste spec
+Vehicle History page is close. Transcript-required additions:
+
+- Add a dedicated “Gaps Summary” section under History Narrative (gaps treated as a summary, not just timeline callout).
+- Add non-service milestones/context block (ownership/operated-in/usage pattern) separate from service events.
+- Add “Anomalies & Signals” subsection here (over-serviced items / mileage inconsistencies / repeated inspection-only notes). This content should NOT live in Summary.
+- Add “Use as leverage” action on gaps/anomalies to preselect leverage points in Leverage Builder.
+
+
+If you want, paste the current data fields you have for “vehicle history” (location, owners, title events, etc.). I’ll tell you the exact top-of-tab layout so it reads like a real CARFAX-level storyline, not just another service feed.
+
+Sources

@@ -1,0 +1,99 @@
+The best pattern (do this for every chart)
+
+Under each chart, render a small “Explain” block with the same structure:
+
+1) How to read (static, 1 sentence)
+
+Always the same per chart type.
+
+2) What it means (dynamic, 1–2 sentences)
+
+Computed from the chart values.
+
+3) Key takeaway (one bold line)
+
+“Winner saves $X here.”
+
+4) Why we’re confident (optional chip)
+
+“Confidence: Medium (gaps detected)”
+
+What to compute for each of your charts
+A) Depreciation Curves
+
+Dynamic values to compute:
+
+Value at horizon for each car
+
+Depreciation loss over horizon for each car
+
+Delta between #1 and #2
+
+What it means template:
+
+“At {years} years, {winner} is projected to retain ${delta_value} more value than {runner_up}.”
+
+“That’s about ${delta_per_year}/yr in reduced value loss.”
+
+Also add markers on the chart (even in multi-car):
+
+show the “ownership horizon” point.
+
+B) TCO Breakdown (stacked bars)
+
+Compute:
+
+Total TCO for each car
+
+Breakdown components: depreciation / maintenance / repairs
+
+Biggest driver of the delta
+
+What it means template:
+
+“Over {years} years, {winner} costs ${delta_tco} less than {runner_up}.”
+
+“The biggest difference is {component} (Δ ${delta_component}).”
+
+C) Performance Scorecard (table)
+
+This is not self-explanatory. Add a short explainer under it:
+
+Compute:
+
+Which category the winner wins
+
+Any “watch-out category” where the winner loses
+
+What it means template:
+
+“{winner} leads on {top_category}. {runner_up} only wins on {category}.”
+
+“If you care most about {losing_category}, consider {runner_up}.”
+
+Where your current copy is failing
+
+You have “retains roughly $0 more equity” — that’s a dead giveaway you aren’t pulling the real delta or you’re rounding wrong.
+
+Fix: never allow “$0” outputs:
+
+If abs(delta) < $250, say “roughly the same” instead of “$0”.
+Example:
+
+“These curves are essentially tied over 3 years (within ~$250).”
+
+Replit copy/paste spec
+Add an “Explain this chart” block under EVERY chart using a consistent template:
+
+For each chart:
+- How to read (static 1 sentence)
+- What it means (dynamic 1–2 sentences computed from values)
+- Key takeaway (bold, numeric delta)
+- Optional confidence chip
+
+Depreciation chart: compute value-at-horizon + delta vs #2; avoid $0 by using “roughly the same” if delta < $250.
+TCO chart: compute total delta + biggest driver component.
+Scorecard: state which categories winner leads/loses and when to choose runner-up.
+
+
+If you paste your current data objects for these charts (what fields you have in code), I’ll write the exact formula snippets + the final copy templates using your variable names.

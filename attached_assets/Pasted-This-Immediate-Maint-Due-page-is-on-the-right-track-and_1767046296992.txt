@@ -1,0 +1,76 @@
+This Immediate Maint. Due page is on the right track and matches the “immediate liability / deduct from asking price” intent. It’s basically the “Immediate Maintenance Due” tab Jason wanted in the tab order. 
+
+Dipstick v2 round
+
+But you have two things to fix to make it consistent + more persuasive (without bloating it).
+
+What’s good
+
+The top banner framing is correct: “these are past due / pay immediately / deduct from asking price.”
+
+The cards have:
+
+severity tag
+
+cost range
+
+negotiation angle
+
+Use Leverage CTA
+That ties directly into the talk-track engine, which is the whole point of leverage builder. 
+
+Dipstick v2 round
+
+What’s wrong / missing (specific)
+1) The banner math is clearly broken
+
+It says “$35 in Deferred Maintenance” while each card shows $100–$200, $100–$150, $300–$600.
+
+So either:
+
+the banner is pulling the wrong field, or
+
+it’s truncating/formatting wrong, or
+
+it’s mixing “count” vs “$”.
+
+Fix: Banner should show:
+
+Immediate liability total (min–max): $500–$950 (sum of ranges), and
+
+optionally: “3 items past due.”
+
+This page lives or dies on that headline number.
+
+2) You need one extra field per item: “due because…”
+
+Right now “Negotiation angle” is good, but Jason’s leverage framing was “truth + credibility,” not just claims. 
+
+Dipstick v2 round
+
+Add one line under each card title:
+
+Evidence trigger: “Last recorded at 62k miles” or “No record in 18 months” or “OEM interval: 40k miles; now 72k”
+(Keep it short. This is what makes it feel real.)
+
+3) Add a “selected leverage” state (so this page feeds the script)
+
+If I click “Use Leverage,” I should see:
+
+the card changes to “Added to Leverage Builder”
+
+a small counter at top: “3 items added”
+
+a link: “Go to Leverage Builder”
+
+Otherwise it feels disconnected.
+
+Replit copy/paste note
+Immediate Maint Due page is correct conceptually, but:
+
+1) Fix the header total: it must display the true immediate liability range (sum of item min/max) and item count. Current “$35” is wrong.
+2) Add 1-line evidence trigger per item (last recorded date/mileage or missing record vs OEM interval) to support credibility.
+3) When “Use Leverage” is clicked, show selected state + counter + deep link to Leverage Builder.
+
+
+If you send the Leverage Builder page next, I’ll tell you whether it matches what he wanted (tones/risk tolerance + objection handlers + script preview) and whether anything else is missing.

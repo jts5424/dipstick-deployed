@@ -1,0 +1,96 @@
+Because you shifted Dipstick It into multi-car “Ranked Results + charts” mode, and when you did that you effectively dropped the executive summary + train-of-thinking layer that Jason kept emphasizing.
+
+Multi-car didn’t require losing that. It just requires restructuring it so it doesn’t become a wall of text.
+
+What Jason wanted that’s missing here
+
+He wanted the compare experience to have:
+
+Executive summary (what wins + key deltas)
+
+Train-of-thinking / insights explaining why
+
+Then graphs as proof (with “how to read” help)
+
+Right now you have:
+
+ranking (good)
+
+charts (good)
+
+scorecard table (fine)
+But you’re missing the insight layer that makes it feel intelligent instead of just “a dashboard.”
+
+How to bring the “advanced information” back without clutter
+1) Add a “Why this wins” panel directly under Ranked Results
+
+For the #1 vehicle (or selected vehicle), show 3–5 drivers:
+
+Why the 2015 S7 ranks #1
+
+Lower 3-yr TCO by $2,192
+
+Better value retention at 7 yrs (+$X resale at horizon)
+
+Lower repair exposure (–$Y)
+
+Fewer critical service gaps (0 vs 2)
+
+Recall status verified (or “needs verification”)
+
+This is the missing “smart analysis.”
+
+2) Add “Drivers” as an expandable drawer for each vehicle row
+
+Each ranked row gets:
+
+Top 3 drivers
+
+“View details” expands to show:
+
+service gaps count + years
+
+immediate liability
+
+open recalls
+
+top 3 risks (from the risk model)
+
+Still compact, but now it feels “advanced.”
+
+3) Don’t hide the “explain the charts” layer
+
+Under each chart, add:
+
+How to read this
+
+What it means (for the top car)
+
+You had that in the earlier single-pair version; it’s absent here.
+
+4) Bring back the “Advanced” toggle
+
+Top right: Advanced
+
+Off = ranking + charts
+
+On = adds:
+
+“Why this wins” panel
+
+per-vehicle driver breakdown
+
+chart explainers
+This keeps the default clean.
+
+Replit copy/paste spec
+Dipstick It lost the executive summary + insight layer when switching to multi-car ranking mode.
+
+Add back:
+1) “Why this wins” panel under Ranked Results (3–5 drivers for #1 or selected vehicle).
+2) Expandable “Drivers” drawer on each ranked row (service gaps, immediate liability, recalls, top risks).
+3) Chart explainers under each chart: “How to read” + “What it means.”
+4) Optional “Advanced” toggle to show/hide these insight sections (keep default clean).
+
+
+If you want the page to feel premium: make clicking a ranked row set it as the “focus car” (highlights its curve/bars and updates the “Why this wins” panel). That turns it into an interactive analysis, not static charts.

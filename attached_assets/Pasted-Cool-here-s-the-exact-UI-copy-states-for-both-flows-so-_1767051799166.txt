@@ -1,0 +1,120 @@
+Cool — here’s the exact UI copy + states for both flows so Replit can implement without guessing. No provider names.
+
+VIN Flow — UI copy + states
+Screen title
+
+Confirm VIN details
+Subtitle: “We’ll decode the vehicle and enable recall checks.”
+
+Fields (order matters)
+
+VIN (required)
+Placeholder: “17-character VIN”
+Helper: “Used for recall validation and verification.”
+
+VIN validation states
+
+Empty / invalid length:
+“VIN must be 17 characters.”
+
+Decoding (spinner):
+“Decoding VIN…”
+
+Decoded (success):
+✅ “VIN decoded: Audi • S7 • 2015”
+(Show Make/Model/Year fields auto-filled below)
+
+Make (auto-filled, locked)
+
+Model (auto-filled, locked)
+
+Year (auto-filled, locked)
+Link next to locked fields: Edit (if user needs to override)
+
+Current mileage (required)
+Placeholder: “e.g., 84,000”
+Helper: “Used for risk windows and depreciation.”
+
+Trim (optional) (collapsed “More details”)
+
+Engine (optional) (collapsed)
+
+Banner (top of form)
+
+Limited analysis until you upload a vehicle history report
+“Upload a vehicle history report (PDF) to unlock full history, gaps, and risk insights.”
+
+Primary CTA
+
+Create vehicle
+
+Secondary actions
+
+Back
+
+Link: Upload a PDF instead
+
+Manual Entry Flow — UI copy + states
+Screen title
+
+Enter vehicle details
+Subtitle: “Basic tracking. Add a VIN or PDF later for deeper analysis.”
+
+Fields
+
+Make (required)
+Placeholder: “e.g., Audi”
+
+Model (required)
+Placeholder: “e.g., S7”
+
+Year (required)
+Placeholder: “e.g., 2015”
+
+Current mileage (required)
+Placeholder: “e.g., 84,000”
+
+Trim (optional)
+
+Engine (optional)
+
+VIN (optional)
+Label: “VIN (optional)”
+Placeholder: “17-character VIN”
+Helper (neutral): “Adding a VIN enables recall validation.”
+
+VIN state (manual)
+
+If VIN entered and valid: ✅ “VIN ready for recall checks.”
+
+If VIN blank: show nothing (no warning).
+
+Banner (top of form)
+
+Basic mode
+“Some insights will be limited until a vehicle history report (PDF) is uploaded.”
+
+Primary CTA
+
+Save vehicle
+
+Secondary actions
+
+Back
+
+Link: Upload a PDF for best results
+
+Important behavior rules (so they don’t drift back into being identical)
+
+VIN flow: block CTA until VIN is valid AND mileage entered.
+
+Manual flow: never show “recall validation requires a VIN” warning on this screen.
+
+Only show recall warnings later when user tries to run recall validation without a VIN.
+
+Replit “one-liner” to implement
+VIN route = VIN required + decode + fewer required fields + CTA “Create vehicle”.
+Manual route = VIN optional + no warning + more required fields + CTA “Save vehicle”.
+
+
+If you want, I’ll also draft the PDF Parse confirm screen copy (third path) so all three feel coherent and intentional.

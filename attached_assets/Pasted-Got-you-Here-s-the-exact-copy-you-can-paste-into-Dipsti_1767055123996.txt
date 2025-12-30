@@ -1,0 +1,169 @@
+Got you. Here’s **the exact copy** you can paste into Dipstick It **plus the deterministic “formula”** to generate it for any set (2–10 cars). No fluff, no $0 bugs.
+
+---
+
+# A) The “Takeaway” copy block (UI-ready)
+
+### Section title
+
+**Takeaway**
+
+### Best for you if…
+
+**Pick {{winner}} if:**
+
+* You want the lowest **{{years}}-year cost** (about **{{deltaTco}} less** than {{runnerUp}}).
+* You prefer **lower surprise repair risk** (about **{{deltaRepairRisk}} less** exposure).
+
+**Pick {{runnerUp}} if:**
+
+* You care most about **{{runnerUpStrength}}** (e.g., condition or routine upkeep).
+* You’re okay paying **{{deltaTco}} more** to get that advantage.
+
+### Watch-outs
+
+* **{{winner}} watch-out:** {{winnerWatchout}}
+* **{{runnerUp}} watch-out:** {{runnerUpWatchout}}
+
+### Next step
+
+Button: **Generate negotiation plan**
+Subtext: “Uses the top leverage points from {{winner}} and your risk tolerance.”
+
+---
+
+# B) Deterministic formula (what to compute)
+
+## 1) Pick your anchors
+
+* **winner** = rankedCarIds[0]
+* **runnerUp** = rankedCarIds[1]
+
+(For 10 cars, still anchor the summary on winner vs runner-up.)
+
+## 2) Compute deltas (always vs runner-up)
+
+Let:
+
+* `tco[winner]`, `tco[runnerUp]`
+* `repairRisk[winner]`, `repairRisk[runnerUp]`
+
+### Delta cost
+
+```ts
+deltaTco = tco[runnerUp].total - tco[winner].total; // positive = winner cheaper
+```
+
+### Delta repair risk
+
+```ts
+deltaRepairRisk = repairRisk[runnerUp] - repairRisk[winner]; // positive = winner lower risk
+```
+
+## 3) Guardrails (no $0 / no lying)
+
+```ts
+const TIE = 250;
+
+function money(n:number){ /* fmtMoney */ }
+
+function deltaPhrase(delta:number, thing:string){
+  if (Math.abs(delta) < TIE) return `about the same ${thing}`;
+  return delta > 0 ? `${money(delta)} less ${thing}` : `${money(Math.abs(delta))} more ${thing}`;
+}
+```
+
+So:
+
+* If `deltaTco < 250`, say “costs are basically tied.”
+* If `deltaRepairRisk < 250`, say “repair risk is similar.”
+
+## 4) Pick runner-up strength (deterministic)
+
+Use your scorecard table. Choose the runner-up’s best advantage over the winner:
+
+Example categories:
+
+* condition (higher better)
+* routine upkeep (lower $ better)
+* value retention (higher better)
+* deal rating (higher better)
+
+```ts
+const candidates = [
+  { key:"condition", label:"condition", better:"higher", w:cond[winner], r:cond[runnerUp] },
+  { key:"routineUpkeep", label:"routine upkeep", better:"lower", w:upkeep[winner], r:upkeep[runnerUp] },
+  { key:"dealRating", label:"deal rating", better:"higher", w:deal[winner], r:deal[runnerUp] }
+];
+
+runnerUpStrength =
+  candidates
+    .map(c => ({...c, advantage: c.better==="higher" ? (c.r - c.w) : (c.w - c.r)}))
+    .sort((a,b)=> b.advantage - a.advantage)[0];
+
+if (runnerUpStrength.advantage < 3) runnerUpStrengthLabel = "one specific category you care about most";
+else runnerUpStrengthLabel = runnerUpStrength.label;
+```
+
+## 5) Watch-outs formula (deterministic)
+
+Winner watch-out: pick the biggest “risk flag” for winner:
+Priority order:
+
+1. open recall not verified
+2. major service gap
+3. low mileage confidence
+4. high repair risk window soon
+
+Runner-up watch-out: pick its biggest flag too.
+
+```ts
+function pickWatchout(carId){
+  if (recallOpen[carId] && !recallVerified[carId]) return "recall status isn’t verified — confirm completion before closing";
+  if (gapSeverity[carId] === "critical") return `a major history gap (${gapYears[carId]}) — ask for receipts`;
+  if (mileageConfidence[carId] === "low") return "mileage reporting is inconsistent — verify usage/records";
+  if (repairRiskWindowSoon[carId]) return `higher repair risk near ${riskWindow[carId]} miles — budget or negotiate`;
+  return "no major red flags detected — still verify key maintenance receipts";
+}
+```
+
+---
+
+# C) Example output using your numbers (S7 vs A6)
+
+(Using what your UI is showing: savings **$1,605**, repair risk delta **$840**)
+
+**Pick 2015 S7 if:**
+
+* You want the lowest 3-year cost (about **$1,605 less** than the A6).
+* You prefer fewer surprise repair bills (about **$840 less** repair exposure).
+
+**Pick 2018 A6 if:**
+
+* You care most about **condition score** and are okay paying more for it.
+
+**Watch-outs**
+
+* **S7 watch-out:** verify the service history gap (2019–2022) with receipts.
+* **A6 watch-out:** higher projected repair exposure—budget or negotiate accordingly.
+
+**Next step:** Generate negotiation plan
+
+---
+
+# D) Replit copy/paste spec
+
+```text
+Add a “Takeaway” block to Dipstick It with:
+- Best for you if… (winner + runner-up)
+- Watch-outs (1 each)
+- Next step CTA (Generate negotiation plan)
+
+Generate all text deterministically:
+- Compare winner vs runner-up deltas for 3-Year Cost + Repair Risk
+- No $0 outputs: if abs(delta)<$250 say “basically tied”
+- Runner-up strength = category where runner-up has biggest advantage
+- Watch-outs pulled from flags: recall/gaps/mileage confidence/risk window
+```
+
+If you paste the exact field names you have in your compare JSON (`tco.total`, `repairRisk`, `gapYears`, etc.), I’ll rewrite the formula with your real keys so Replit can literally paste it into code.

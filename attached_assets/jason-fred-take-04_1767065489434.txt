@@ -1,0 +1,67 @@
+Jason (00:07.094)
+We could do this one too. So here like risk urgency map. I think this is really good.
+
+This chart was on the summary page and we said we should modify it on the summary page. But here I think it's good the way it is. I think.
+
+Jason (00:31.754)
+I think,
+
+Jason (00:36.426)
+Actually, I don't know.
+
+Jason (00:40.418)
+I don't know. I don't know. I think the real way to look at this is below its survivability here. This is what we should really be showing. Is components that this is the meat of really what we should be showing here. Good, wait, stay there.
+
+Fred (00:42.285)
+don't think it's good.
+
+Jason (01:10.248)
+So this chart shows the survivability analysis of these components that are due to fail unscheduled, which is unscheduled maintenance, which means that a component failed on the car and there's probability of failure at different levels of mileage throughout the life cycle of the car. So.
+
+the, we should definitely explain that so people understand this a little bit, how to read these charts. And then if you go to top risks.
+
+Jason (01:51.082)
+This is really interesting because it tiles those, you know, those curves are different failure modes. Each one of these is also a different failure mode. They're congruent with one another. So when you, we should make it so if you click one of these boxes,
+
+Fred (02:09.421)
+Let's go into one for example. water.
+
+Jason (02:11.208)
+Yeah, yeah, like it explains, it explains like, you know, what's failing and maybe like why it fails and
+
+Fred (02:22.391)
+So you click in the water pump and it does a pop-up or it goes into a card or?
+
+Jason (02:29.45)
+Yeah, it gives like a pop-up and you could have like the survivability of just that one on the pop-up and then also a list of the service records or a summary of the service records that says, okay, the vehicle history.
+
+as applicable to that failure. So whether positive or negative, if the vehicle, if let's say the water pump was already done, then you would, and it was done at like 30,000 miles and the car is 70,000 now, right? You would say, okay, this car's water pump failed pretty early, but it was replaced at 30 and therefore we restarted the clock.
+
+So you only have 40,000 miles on the water pump, even though the car has 70. And there was these maintenance things done on it that, that, reduce the likelihood of the water pump failing again. And the car was the car appears to have very low mileage per year. So it was not being driven a lot, even though it was 40,000 miles. That was over an eight year period.
+
+So like an analysis of the service history relative to the water pump. Have that for all of them.
+
+Fred (04:09.399)
+services.
+
+Jason (04:09.41)
+And yeah, that way, I don't think we need this box on this page.
+
+Fred (04:16.311)
+We do not need service history signals box on the projected future repairs page.
+
+Jason (04:24.34)
+Yeah, the idea is that instead of having a separate place for that, this quote service history signals will be baked into the failure mode cards when you click on them.
+
+Fred (04:35.927)
+Got it.
+
+Jason (04:38.166)
+but it won't be, it'll be baked in or it'll be like just in a summary form. I don't know, we'll play with that, but basically it says how the service history applies to that, yeah.
+
+Fred (04:53.945)
+Anything else on this specific one?
+
+Jason (04:56.246)
+No. All good.
+

@@ -1,0 +1,144 @@
+You are building a world-class direct-to-consumer web app UI called “Dipstick” (Used Car Negotiation Leverage Platform). 
+Goal: take a user from “upload Carfax” → “get verdict + negotiation leverage + costs” → “compare 2–3 vehicles” with clean charts and a premium DTC experience.
+
+TECH REQUIREMENTS
+- Use Next.js 14 (App Router) + TypeScript.
+- Use Tailwind CSS.
+- Use shadcn/ui components.
+- Use Recharts for charts.
+- Use TanStack Table for tables.
+- Use lucide-react icons.
+- Must be responsive (desktop first, but mobile usable).
+- Build with mock data first (hardcoded JSON), but structure code so data can be replaced by API calls later.
+
+INFORMATION ARCHITECTURE / PAGES
+Create these routes:
+
+1) / (Garage / Home)
+- Shows “Your Garage” with Vehicle Cards (2–6 cards).
+- Each Vehicle Card shows:
+  - Year Make Model Trim
+  - Current mileage
+  - Deal Score (0–100) badge
+  - 3-Year TCO (big number)
+  - Total Loss (secondary)
+  - Risk Level chip (Low/Moderate/High)
+  - Top 2 leverage bullets (ex: “Gap: Missing brake fluid service”, “Risk: Transmission solenoids”)
+  - Buttons: “Open Report” and “Compare”
+- Top bar includes: “Add vehicle” button.
+
+2) /add (Upload + Parse)
+- Drag/drop “Carfax PDF” upload UI (no real parsing yet).
+- On upload, show a parsing stepper UI:
+  Step 1: Parse service records
+  Step 2: Detect routine schedule
+  Step 3: Identify gaps
+  Step 4: Forecast unscheduled risk
+  Step 5: Market valuation
+  Step 6: TCO calculation
+- When “parsing” completes (fake timeout), route user to /report/[id].
+
+3) /report/[id] (Single Vehicle Report)
+This is the premium report experience with tabs:
+- Summary
+- Leverage
+- Costs
+- Evidence
+
+Summary tab:
+- Hero row (4 metric cards):
+  - Dipstick Score
+  - 3-Year TCO
+  - Fair Price Range (retail/private party)
+  - Risk Count (High/Moderate/Low)
+- “What’s good / What’s concerning / What’s missing” as 3 cards with bullets.
+- “Top 3 leverage items” (IssueCard list) with button “Add to negotiation script”.
+
+Leverage tab:
+- Leverage Builder panel:
+  - List of IssueCards the user has selected (start with mock selected items).
+  - Generates a “Negotiation Script” text block (copy button).
+  - Each IssueCard should have:
+    - Title
+    - Severity chip
+    - Cost exposure range
+    - Evidence tags (clickable)
+    - Button “Add to script”
+- Add a right-side drawer (or bottom sheet on mobile) that shows the script and selected leverage items.
+
+Costs tab:
+- Depreciation chart with two markers:
+  - Current mileage
+  - Projected mileage at ownership horizon
+- TCO Breakdown waterfall-like stacked bar:
+  - Depreciation loss
+  - Routine maintenance
+  - Gap maintenance
+  - Expected repairs (probability weighted)
+  - Total
+- Assumptions card (collapsible):
+  - Asking price input
+  - Ownership years
+  - Miles per year
+  - Button “Recalculate”
+- Also show “Expected resale value in X years”.
+
+Evidence tab:
+- Service history timeline + table:
+  - Default filters hide “administrative” events (registration/title).
+  - Filter chips: All / Maintenance / Inspection / Repairs / Admin
+  - Search box.
+  - Group by year collapsible sections.
+  - Click an evidence tag from a leverage item filters the table.
+
+4) /compare (Comparator)
+- User can select up to 3 vehicles from garage.
+- Each selected vehicle is shown as a compact card with asking price input.
+- Show “Winner” banner (Best 3-year deal).
+- Comparison charts:
+  - Stacked bar TCO breakdown per vehicle.
+  - Total Loss per vehicle (bar).
+  - Risk summary chips.
+- Comparison table (simple, no acronyms):
+  Columns: Vehicle, Asking Price, 3-Year TCO, Total Loss, Expected Sale Price, Risk Level, Deal Score.
+- Hide any advanced acronyms (ICB/EURC/C12). If needed, put them under an “Advanced metrics” accordion with tooltips.
+
+DESIGN / UX RULES
+- Never show “Delete Section” or admin controls in the consumer UI.
+- Outcome-first: summary + verdict first, details later.
+- No wide horizontal scrolling tables for primary views.
+- Use consistent spacing, typographic hierarchy, and card layout.
+- Use chips/badges for severity and risk.
+- Add subtle loading states and skeletons.
+
+DATA MODEL (mock JSON)
+Create a mock data file in /lib/mockData.ts that exports:
+- vehicles: array of vehicle objects
+Each vehicle object should include:
+  id, year, make, model, trim, mileage,
+  valuation: { retail, privateParty, tradeIn, retailRange, privateRange },
+  depreciationCurve: array of { mileage, retailValue, privateValue },
+  tco: { years, milesPerYear, askingPrice, depreciationLoss, routineMaintenance, gapMaintenance, expectedRepairs, totalCost, expectedSalePrice },
+  scores: { dipstickScore, dealScore, conditionScore, riskLevel },
+  leverageItems: array of { id, title, severity, costMin, costMax, evidenceTags[], negotiationAngle, questionsToAsk[] },
+  risks: array of { name, riskLevel, probability, windowMin, windowMax, costMin, costMax, milesUntilFailureBucket },
+  gaps: array of { name, status: overdue|dueSoon|notDue, dueAtMileage, costMin, costMax },
+  serviceRecords: array of { date, mileage, type, description, location, category: admin|maintenance|inspection|repair }
+
+IMPLEMENTATION TASKS
+1) Scaffold Next.js app with Tailwind + shadcn/ui installed and configured.
+2) Create layout with top nav “Dipstick” and left “Garage” link.
+3) Build shared components:
+- VehicleCard
+- MetricCard
+- IssueCard
+- LeverageDrawer
+- DepreciationChart (Recharts)
+- TcoBreakdownChart (Recharts)
+- EvidenceTable (TanStack Table)
+4) Build all pages with mock data working end-to-end.
+5) Add routing: clicking a vehicle card opens /report/[id]. Compare navigates to /compare with selected vehicles stored in state (use URL query or simple global store).
+6) Keep code clean, modular, and easy to replace mock data with API calls later.
+
+OUTPUT
+Generate all required files and code. Ensure the app runs without errors.

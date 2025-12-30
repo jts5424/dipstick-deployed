@@ -1,0 +1,94 @@
+Got it. This screen is the missing “intake + parsing” step from the original prototype — and yes, you should bring it back (but tighten it so it feels premium, not like a dev form).
+
+What this screen is doing (and why it matters)
+
+It’s the Add Vehicle → Parse CARFAX/Service PDF → auto-populate fields → confirm flow. That supports the transcript’s key mechanics:
+
+Upload is the slow step (aggregation) and then everything is cached behind the car. 
+
+Dipstick v2 round
+
+VIN is used later for recall validation and should be captured here. 
+
+Dipstick v2 round
+
+So yes: this is a legit, foundational screen.
+
+How to bring it back (make it world-class)
+1) Turn it into a 3-step wizard (instead of a form)
+Step 1: Add vehicle
+
+Choose one:
+
+Upload CARFAX PDF (recommended)
+
+Enter VIN (fast start)
+
+Manual entry (limited)
+
+Step 2: Parse & confirm
+
+Show parsing progress (“Extracting service records… detecting gaps… building risk model…”)
+
+Auto-fill: make/model/year/mileage/trim/vin/engine
+
+Let users edit anything
+
+Step 3: Save to Garage
+
+“Vehicle added — analysis ready”
+
+If VIN-only/manual: show “Upload CARFAX to unlock full analysis”
+
+2) Replace “Parse” with premium language + progress
+
+Instead of a dead “Parse” button, use:
+
+“Extract records” (CARFAX) or “Build analysis”
+And show a progress state (spinner + 3 bullet steps).
+
+3) Make VIN NOT “optional” (treat it as “recommended”)
+
+VIN is critical for recall validation later.
+
+Label: VIN (recommended)
+
+If missing, show a gentle warning: “Recall validation needs a VIN.”
+
+4) Show output quality after parse (confidence)
+
+After parsing:
+
+“44 service records found”
+
+“1 gap detected (2019–2022)”
+
+“Mileage confidence: Medium”
+This makes the rest of your analysis feel credible.
+
+5) Add “what PDF works?” helper
+
+Under upload:
+
+“Upload CARFAX Vehicle History Report PDF (recommended)”
+
+Link to “How to download from CARFAX” (modal)
+
+If the user uploads something else, show “Limited parse.”
+
+Replit copy/paste spec
+Re-add the original “Vehicle Information + Service History PDF + Parse” flow as the official Add Vehicle wizard.
+
+Implement as 3 steps:
+1) Add method: Upload CARFAX PDF (recommended) / Enter VIN (fast start) / Manual entry (limited)
+2) Parse & Confirm: show progress steps; auto-populate fields (make/model/year/mileage/trim/engine/VIN); allow edits; show parse results (#records, gaps, mileage confidence)
+3) Save to Garage
+
+Replace “Parse” with “Extract records / Build analysis” + progress UI.
+Change VIN label from Optional → Recommended (needed for recall validation).
+Add helper: “What PDF works?” with CARFAX guidance.
+
+
+If you want, I can also write the exact UI copy for each step so it feels like a consumer product (not a prototype tool).
+
+Sources

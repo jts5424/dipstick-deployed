@@ -1,0 +1,216 @@
+Yep. Since I don’t have your exact current strings pasted, here’s a drop-in copy pack that gives you Simple + Technical for every major chart/module, using placeholders your code can fill. This will instantly make the app readable for “mom mode” while still satisfying power users.
+
+Use it as a JSON/TS constant and render based on the user’s toggle.
+
+{
+  "global": {
+    "toggleLabel": "Explain",
+    "modes": { "simple": "Simple", "technical": "Technical" },
+    "placeholders": {
+      "years": "{{years}}",
+      "milesPerYear": "{{milesPerYear}}",
+      "winner": "{{winner}}",
+      "runnerUp": "{{runnerUp}}",
+      "deltaMoney": "{{deltaMoney}}",
+      "deltaMoneyAbs": "{{deltaMoneyAbs}}",
+      "driver": "{{driver}}",
+      "confidence": "{{confidence}}",
+      "tieThreshold": "{{tieThreshold}}"
+    }
+  },
+
+  "dipstickIt": {
+    "executiveSummary": {
+      "simple": {
+        "title": "Quick take",
+        "lines": [
+          "Best overall: {{winner}}",
+          "Biggest reason: saves about {{deltaMoney}} over {{years}} years.",
+          "Bottom line: If you want the safest bet with the lowest surprise costs, pick {{winner}}."
+        ]
+      },
+      "technical": {
+        "title": "Executive summary",
+        "lines": [
+          "Rank #1: {{winner}} (Dipstick {{winnerScore}}) vs #2: {{runnerUp}} ({{runnerUpScore}}).",
+          "Δ 3-Year Cost (vs #2): {{deltaTco}}; primary driver: {{driver}} (Δ {{deltaDriver}}).",
+          "Confidence: {{confidence}} (based on gaps, recall status, and mileage consistency)."
+        ]
+      }
+    },
+
+    "charts": {
+      "depreciationCurves": {
+        "simple": {
+          "title": "Value over time",
+          "whatYouSee": "This shows how much each car is expected to be worth over time.",
+          "whatItMeans": "Higher line = keeps value better. If the lines are close, value isn’t the deciding factor.",
+          "bottomLineTie": "Bottom line: Value is basically tied — use 3-Year Cost and repair risk to decide.",
+          "bottomLineWin": "Bottom line: {{winner}} should be worth about {{deltaMoneyAbs}} more at {{years}} years."
+        },
+        "technical": {
+          "title": "Depreciation curve",
+          "whatYouSee": "Projected resale value trajectory by year; markers show current position and ownership horizon.",
+          "whatItMeansTie": "Horizon delta at year {{years}} is within {{tieThreshold}} → curves are statistically close for decisioning.",
+          "whatItMeansWin": "Horizon delta at year {{years}}: {{winner}} retains {{deltaMoneyAbs}} more value than {{runnerUp}}.",
+          "bottomLine": "Bottom line: Depreciation contribution should be weighted against repairs + maintenance deltas."
+        }
+      },
+
+      "tcoStackedBars": {
+        "simple": {
+          "title": "3-Year Cost breakdown",
+          "whatYouSee": "This shows where your money goes: value loss, routine upkeep, and repairs.",
+          "whatItMeans": "Shorter bar = cheaper to own.",
+          "bottomLineTie": "Bottom line: Costs are basically tied — pick the one with lower repair risk.",
+          "bottomLineWin": "Bottom line: {{winner}} costs about {{deltaMoneyAbs}} less over {{years}} years."
+        },
+        "technical": {
+          "title": "Total Cost of Ownership (TCO) decomposition",
+          "whatYouSee": "TCO = Depreciation + Routine Maintenance + Unscheduled Repairs, aggregated across the ownership horizon.",
+          "whatItMeansTie": "ΔTCO vs #2 is within {{tieThreshold}}; ranking is sensitive to risk tolerance and evidence confidence.",
+          "whatItMeansWin": "ΔTCO vs #2: {{deltaMoneyAbs}}; primary driver: {{driver}} (Δ {{deltaDriver}}).",
+          "bottomLine": "Bottom line: Use component deltas to explain why the leader ranks #1."
+        }
+      },
+
+      "repairRisk": {
+        "simple": {
+          "title": "Risk of big repairs",
+          "whatYouSee": "This estimates how likely expensive repairs are.",
+          "whatItMeans": "Lower risk = fewer surprise bills.",
+          "bottomLine": "Bottom line: If you hate surprises, choose the car with lower repair risk."
+        },
+        "technical": {
+          "title": "Unscheduled repair risk",
+          "whatYouSee": "Projected failure probability windows by mileage + severity-weighted cost exposure.",
+          "whatItMeans": "Highest risk window: {{riskWindow}}; exposure estimate: {{riskExposure}}.",
+          "bottomLine": "Bottom line: If risk tolerance is low, prefer the lowest exposure even if cost is similar."
+        }
+      },
+
+      "scorecardTable": {
+        "simple": {
+          "title": "Report card",
+          "whatYouSee": "A quick report card. Higher is better.",
+          "whatItMeans": "This shows what each car is best at.",
+          "bottomLine": "Bottom line: Pick the highest overall score unless you care most about one category."
+        },
+        "technical": {
+          "title": "Category scorecard",
+          "whatYouSee": "Normalized category scores (0–100) across value, reliability, upkeep cost, condition, and deal rating.",
+          "whatItMeans": "{{winner}} leads on {{winnerCategories}}; {{runnerUp}} leads on {{runnerUpCategories}}.",
+          "bottomLine": "Bottom line: Adjust category weighting if user priorities differ from the default scoring."
+        }
+      }
+    }
+  },
+
+  "singleCar": {
+    "marketValuation": {
+      "simple": {
+        "title": "Market Valuation",
+        "whatYouSee": "These are typical prices for similar cars.",
+        "whatItMeans": "If the asking price is above the fair range, you have room to negotiate.",
+        "bottomLine": "Bottom line: Use {{deltaMoneyAbs}} as your starting point for negotiation."
+      },
+      "technical": {
+        "title": "Market Valuation (Retail / Private / Trade)",
+        "whatYouSee": "Estimated market bands across retail, private-party, and trade-in benchmarks.",
+        "whatItMeans": "Asking vs fair range delta: {{deltaMoney}}; percentile: {{percentile}}.",
+        "bottomLine": "Bottom line: Anchor with the fair range and justify using evidence-backed deltas."
+      }
+    },
+
+    "riskUrgencyMap": {
+      "simple": {
+        "title": "Risk map",
+        "whatYouSee": "Bigger dots can mean bigger bills. Dots on the left tend to happen sooner.",
+        "whatItMeans": "This helps you spot what could hit your wallet first.",
+        "bottomLine": "Bottom line: If a big dot is ‘soon,’ budget for it or negotiate for it."
+      },
+      "technical": {
+        "title": "Risk urgency map",
+        "whatYouSee": "Severity vs expected time-to-failure distribution using mileage-window signals.",
+        "whatItMeans": "Top risks concentrate in {{riskWindow}}; severity-weighted exposure: {{riskExposure}}.",
+        "bottomLine": "Bottom line: Use this to prioritize immediate inspections/verification."
+      }
+    },
+
+    "survivabilityCurve": {
+      "simple": {
+        "title": "Where breakdowns usually happen",
+        "whatYouSee": "This shows when problems tend to start as mileage increases.",
+        "whatItMeans": "A sharper drop means higher chance of repairs around that mileage.",
+        "bottomLine": "Bottom line: If you’re near the drop, plan for repairs or negotiate."
+      },
+      "technical": {
+        "title": "Survivability curve (unscheduled repairs)",
+        "whatYouSee": "Survival function over mileage; steeper decline indicates higher failure probability density.",
+        "whatItMeans": "High-risk region: {{riskWindow}}; estimated probability mass: {{riskProb}}.",
+        "bottomLine": "Bottom line: Use risk tolerance to decide whether to discount or require verification."
+      }
+    },
+
+    "immediateMaintenanceDue": {
+      "simple": {
+        "title": "Immediate maintenance due",
+        "whatYouSee": "Work you’ll likely pay for right away.",
+        "whatItMeans": "These are near-term costs — not ‘maybe later.’",
+        "bottomLine": "Bottom line: Ask for {{deltaMoneyAbs}} off, or ask them to fix these before purchase."
+      },
+      "technical": {
+        "title": "Immediate maintenance liability",
+        "whatYouSee": "Near-term maintenance items derived from schedule + observed gaps and time/mileage intervals.",
+        "whatItMeans": "Estimated liability range: {{liabilityRange}}; confidence: {{confidence}}.",
+        "bottomLine": "Bottom line: Convert liability into either a price delta or pre-sale remediation."
+      }
+    },
+
+    "vehicleHistory": {
+      "simple": {
+        "title": "Vehicle history",
+        "whatYouSee": "A timeline of service and history events.",
+        "whatItMeans": "A long gap usually means records are missing (work may have happened, but it’s unproven).",
+        "bottomLine": "Bottom line: If there’s a big gap, ask for receipts or negotiate for uncertainty."
+      },
+      "technical": {
+        "title": "Vehicle history + gaps",
+        "whatYouSee": "Event timeline + gap detection; gaps reduce evidence confidence for maintenance cadence.",
+        "whatItMeans": "Largest gap: {{gapYears}}; confidence impact: {{confidence}}.",
+        "bottomLine": "Bottom line: Treat gaps as uncertainty and weight risk projections accordingly."
+      }
+    },
+
+    "recall": {
+      "simple": {
+        "title": "Recalls",
+        "whatYouSee": "A recall is a known issue the manufacturer fixes (usually free).",
+        "whatItMeans": "If it’s not completed, it’s a ‘must-do’ before you feel confident.",
+        "bottomLine": "Bottom line: Verify recall completion before you close the deal."
+      },
+      "technical": {
+        "title": "Recall status",
+        "whatYouSee": "Recall presence + verification status by VIN/OEM validation.",
+        "whatItMeans": "Status: {{recallStatus}} ({{recallCampaign}}).",
+        "bottomLine": "Bottom line: Block closing until recall completion is verified when status is unknown/open."
+      }
+    }
+  }
+}
+
+How to use this in the UI
+
+Default to Simple.
+
+Add a small toggle: Explain: Simple | Technical.
+
+Fill the placeholders from your computed deltas (winner vs runner-up, horizon years, etc.).
+
+Guardrails:
+
+If abs(delta) < $250, use the “tie” versions.
+
+Never display “$0 more” — display “basically tied.”
+
+If you paste your current existing explanation strings (even 5–10 lines) I’ll map them into this structure exactly, so you don’t have to retrofit it manually.

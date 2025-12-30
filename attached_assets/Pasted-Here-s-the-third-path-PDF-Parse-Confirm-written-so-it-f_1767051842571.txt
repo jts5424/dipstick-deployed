@@ -1,0 +1,124 @@
+Here’s the third path — PDF Parse Confirm — written so it feels like a premium product, not a prototype. Zero provider names.
+
+PDF Flow — Parse & Confirm (UI copy + states)
+Screen title
+
+Confirm parsed details
+Subtitle: “We extracted your vehicle history. Review and edit anything before saving.”
+
+Parsing state (immediately after upload)
+Header
+
+Extracting records…
+
+Progress checklist (animated)
+
+Reading service events
+
+Detecting mileage patterns & gaps
+
+Building the risk model
+
+Microcopy:
+“Most reports take ~30–60 seconds.”
+
+Secondary link
+
+Cancel upload
+
+Success state (after parsing completes)
+Banner (success)
+
+✅ Parsed successfully
+“Vehicle details were auto-filled from your report. Please verify and edit if needed.”
+
+Parse results summary (mini cards or one line)
+
+Records found: 44
+
+Gaps detected: 1
+
+Mileage confidence: Medium
+
+If gaps detected, add this note (interpretation tone):
+“Gaps aren’t always bad, but they reduce certainty and increase risk exposure.”
+
+Form fields (prefilled + editable)
+Required
+
+Make
+
+Model
+
+Year
+
+Current mileage
+
+Optional (prefilled if available)
+
+Trim (optional)
+
+Engine (optional)
+
+VIN (recommended)
+
+Label: VIN (recommended)
+Helper: “Needed for recall validation and verification.”
+Placeholder: “17-character VIN”
+
+If VIN missing (this is the one place a warning is ok, but keep it calm):
+⚠️ “Recall validation won’t be available until a VIN is added.”
+
+“Source” transparency (nice touch)
+
+Under each prefilled field (small grey chip):
+
+“From PDF”
+And if user edits: “Edited”
+
+Buttons
+
+Primary: Save & build analysis
+Secondary: Back
+
+Optional tertiary:
+
+Upload a different PDF
+
+Error + partial parse states (must-have)
+Error banner
+
+❌ We couldn’t read that PDF
+“Try a vehicle history report (PDF). Some dealer service PDFs may be incomplete.”
+
+Buttons:
+
+Try another file
+
+Enter VIN instead
+
+Manual entry
+
+Partial parse banner
+
+⚠️ Partial results
+“We found basic vehicle details but only 12 records. You can continue, but insights may be limited.”
+
+Buttons:
+
+Save anyway
+
+Try a different PDF
+
+Tiny footer disclaimer (safe + simple)
+
+“Upload reports you own/have rights to use.”
+
+Replit implementation notes (tight)
+PDF path = Parse state → Success/Partial/Error states.
+On success: show parse summary (records/gaps/mileage confidence) + prefilled editable fields + CTA “Save & build analysis”.
+VIN recommended (warning only if missing), not required.
+Track field provenance: From PDF vs Edited.
+
+
+If you want, I can also write the microcopy for the Garage card badges (“Full analys

@@ -1,0 +1,230 @@
+Yep — here’s a drop-in rules engine (TypeScript-style) that will generate the “How to read / What it means / Key takeaway” blocks deterministically, so you stop getting weak outputs like “$0 more equity.”
+
+You can hand this to Replit as the implementation spec. Replace field names to match your real objects.
+
+1) Data shapes (map your existing objects to this)
+type CarId = string;
+
+type CarMeta = {
+  id: CarId;
+  label: string;          // "2015 S7"
+};
+
+type Assumptions = {
+  years: number;          // ownership years
+  milesPerYear: number;   // annual mileage
+};
+
+type DepreciationSeriesPoint = { year: number; value: number }; // value in $
+type DepreciationSeries = { carId: CarId; points: DepreciationSeriesPoint[] };
+
+type TcoBreakdown = {
+  carId: CarId;
+  depreciation: number; // $
+  maintenance: number;  // $
+  repairs: number;      // $
+  total: number;        // $
+};
+
+type ScorecardRow = {
+  carId: CarId;
+  valueRetention: number;  // 0-100 (higher better)
+  reliability: number;     // 0-100 (higher better) OR label
+  maintEconomy: number;    // $ per year OR score (define one)
+  condition: number;       // 0-100
+  dealRating: number;      // 0-100
+};
+
+type CompareContext = {
+  cars: CarMeta[];
+  assumptions: Assumptions;
+  // ranked results already computed elsewhere:
+  rankedCarIds: CarId[]; // [winner, runnerUp, ...]
+  // chart data:
+  depreciationSeries: DepreciationSeries[];
+  tco: TcoBreakdown[];
+  scorecard: ScorecardRow[];
+};
+
+2) Formatting + guardrails (prevents “$0” nonsense)
+const MONEY_TIE_THRESHOLD = 250;   // under $250 = “roughly the same”
+const MONEY_ROUND = 10;            // round to nearest $10
+
+function fmtMoney(n: number): string {
+  const rounded = Math.round(n / MONEY_ROUND) * MONEY_ROUND;
+  return rounded.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+}
+
+function fmtSignedMoney(n: number): string {
+  const sign = n >= 0 ? "+" : "−";
+  return `${sign}${fmtMoney(Math.abs(n))}`;
+}
+
+function roughlySame(n: number): boolean {
+  return Math.abs(n) < MONEY_TIE_THRESHOLD;
+}
+
+function winnerAndRunnerUp(ctx: CompareContext) {
+  const winnerId = ctx.rankedCarIds[0];
+  const runnerUpId = ctx.rankedCarIds[1] ?? winnerId;
+  const winner = ctx.cars.find(c => c.id === winnerId)!;
+  const runnerUp = ctx.cars.find(c => c.id === runnerUpId)!;
+  return { winnerId, runnerUpId, winner, runnerUp };
+}
+
+function valueAtYear(series: DepreciationSeriesPoint[], targetYear: number): number {
+  // assumes points include integer years; otherwise interpolate
+  const pt = series.find(p => p.year === targetYear);
+  if (pt) return pt.value;
+  // fallback interpolate between nearest points
+  const sorted = [...series].sort((a,b) => a.year - b.year);
+  const left = [...sorted].reverse().find(p => p.year < targetYear);
+  const right = sorted.find(p => p.year > targetYear);
+  if (!left && right) return right.value;
+  if (left && !right) return left.value;
+  if (!left || !right) return sorted[sorted.length - 1]?.value ?? 0;
+  const t = (targetYear - left.year) / (right.year - left.year);
+  return left.value + t * (right.value - left.value);
+}
+
+3) Chart explainer generators
+A) Depreciation Curves explainer
+function explainDepreciation(ctx: CompareContext) {
+  const { winnerId, runnerUpId, winner, runnerUp } = winnerAndRunnerUp(ctx);
+  const horizonYear = ctx.assumptions.years;
+
+  const wSeries = ctx.depreciationSeries.find(s => s.carId === winnerId)?.points ?? [];
+  const rSeries = ctx.depreciationSeries.find(s => s.carId === runnerUpId)?.points ?? [];
+
+  const wVal = valueAtYear(wSeries, horizonYear);
+  const rVal = valueAtYear(rSeries, horizonYear);
+  const delta = wVal - rVal; // positive means winner retains more value
+
+  const howToRead = "Steeper lines mean faster value loss. Flatter curves hold value better.";
+  let whatItMeans: string;
+  let takeaway: string;
+
+  if (roughlySame(delta)) {
+    whatItMeans = `At ${horizonYear} years, ${winner.label} and ${runnerUp.label} retain roughly the same value (within ~${fmtMoney(MONEY_TIE_THRESHOLD)}).`;
+    takeaway = "Value retention is essentially tied — use cost and risk to decide.";
+  } else if (delta > 0) {
+    whatItMeans = `At ${horizonYear} years, ${winner.label} is projected to retain about ${fmtMoney(delta)} more value than ${runnerUp.label}.`;
+    takeaway = `${winner.label} holds value better by ~${fmtMoney(delta)}.`;
+  } else {
+    whatItMeans = `At ${horizonYear} years, ${winner.label} is projected to retain about ${fmtMoney(Math.abs(delta))} less value than ${runnerUp.label}.`;
+    takeaway = `${runnerUp.label} holds value better by ~${fmtMoney(Math.abs(delta))}.`;
+  }
+
+  return { howToRead, whatItMeans, takeaway, debug: { wVal, rVal, delta } };
+}
+
+B) TCO Breakdown explainer (stacked bars)
+function explainTco(ctx: CompareContext) {
+  const { winnerId, runnerUpId, winner, runnerUp } = winnerAndRunnerUp(ctx);
+  const years = ctx.assumptions.years;
+
+  const w = ctx.tco.find(x => x.carId === winnerId);
+  const r = ctx.tco.find(x => x.carId === runnerUpId);
+  if (!w || !r) {
+    return {
+      howToRead: "Shorter total bars mean lower ownership cost. Colors show where your money goes.",
+      whatItMeans: "TCO data is missing for one or more vehicles.",
+      takeaway: "Unable to compute a cost delta."
+    };
+  }
+
+  const deltaTotal = r.total - w.total; // positive means winner cheaper
+  const deltas = [
+    { key: "depreciation", label: "depreciation", delta: r.depreciation - w.depreciation },
+    { key: "maintenance", label: "maintenance", delta: r.maintenance - w.maintenance },
+    { key: "repairs", label: "repairs", delta: r.repairs - w.repairs }
+  ];
+
+  // biggest driver by absolute delta
+  const driver = deltas.slice().sort((a,b) => Math.abs(b.delta) - Math.abs(a.delta))[0];
+
+  const howToRead = "Shorter total bars are better. The stack shows which costs drive the difference.";
+  let whatItMeans: string;
+  let takeaway: string;
+
+  if (roughlySame(deltaTotal)) {
+    whatItMeans = `Over ${years} years, total ownership cost is roughly the same (within ~${fmtMoney(MONEY_TIE_THRESHOLD)}).`;
+    takeaway = "Costs are essentially tied — use risk and history to break the tie.";
+  } else if (deltaTotal > 0) {
+    whatItMeans = `Over ${years} years, ${winner.label} is about ${fmtMoney(deltaTotal)} cheaper to own than ${runnerUp.label}. Biggest driver: ${driver.label} (Δ ${fmtSignedMoney(driver.delta)}).`;
+    takeaway = `${winner.label} wins on cost by ~${fmtMoney(deltaTotal)}.`;
+  } else {
+    whatItMeans = `Over ${years} years, ${winner.label} is about ${fmtMoney(Math.abs(deltaTotal))} more expensive to own than ${runnerUp.label}. Biggest driver: ${driver.label} (Δ ${fmtSignedMoney(driver.delta)}).`;
+    takeaway = `${runnerUp.label} wins on cost by ~${fmtMoney(Math.abs(deltaTotal))}.`;
+  }
+
+  return { howToRead, whatItMeans, takeaway, debug: { deltaTotal, driver, w, r } };
+}
+
+C) Performance Scorecard explainer (table)
+function explainScorecard(ctx: CompareContext) {
+  const { winnerId, runnerUpId, winner, runnerUp } = winnerAndRunnerUp(ctx);
+  const w = ctx.scorecard.find(r => r.carId === winnerId);
+  const r = ctx.scorecard.find(r => r.carId === runnerUpId);
+
+  const howToRead = "Higher scores are better. Use this to see what each vehicle is best at.";
+  if (!w || !r) {
+    return { howToRead, whatItMeans: "Scorecard data is missing.", takeaway: "Unable to compare categories." };
+  }
+
+  const categories = [
+    { key: "valueRetention", label: "Value Retention", w: w.valueRetention, r: r.valueRetention, higherBetter: true },
+    { key: "reliability", label: "Reliability", w: w.reliability, r: r.reliability, higherBetter: true },
+    { key: "maintEconomy", label: "Maint. Economy", w: w.maintEconomy, r: r.maintEconomy, higherBetter: false }, // if this is $/yr, lower is better
+    { key: "condition", label: "Condition", w: w.condition, r: r.condition, higherBetter: true },
+    { key: "dealRating", label: "Deal Rating", w: w.dealRating, r: r.dealRating, higherBetter: true }
+  ];
+
+  function winnerForCat(c: typeof categories[number]) {
+    if (c.w === c.r) return "tie";
+    if (c.higherBetter) return c.w > c.r ? "winner" : "runner";
+    return c.w < c.r ? "winner" : "runner";
+  }
+
+  const wins = categories.map(c => ({ label: c.label, who: winnerForCat(c) }));
+  const winnerWins = wins.filter(x => x.who === "winner").map(x => x.label);
+  const runnerWins = wins.filter(x => x.who === "runner").map(x => x.label);
+
+  const whatItMeans =
+    `${winner.label} leads on ${winnerWins.length ? winnerWins.join(", ") : "no categories"}; ` +
+    `${runnerUp.label} leads on ${runnerWins.length ? runnerWins.join(", ") : "no categories"}.`;
+
+  const takeaway =
+    runnerWins.length
+      ? `If you prioritize ${runnerWins[0]}, consider ${runnerUp.label}. Otherwise, ${winner.label} is the stronger overall pick.`
+      : `${winner.label} is the stronger overall pick across the key categories.`;
+
+  return { howToRead, whatItMeans, takeaway, debug: { winnerWins, runnerWins } };
+}
+
+4) Render model for the UI
+type ExplainBlock = {
+  howToRead: string;
+  whatItMeans: string;
+  takeaway: string;
+};
+
+function buildExplainBlocks(ctx: CompareContext) {
+  const dep = explainDepreciation(ctx);
+  const tco = explainTco(ctx);
+  const score = explainScorecard(ctx);
+
+  return {
+    depreciation: { howToRead: dep.howToRead, whatItMeans: dep.whatItMeans, takeaway: dep.takeaway } as ExplainBlock,
+    tco: { howToRead: tco.howToRead, whatItMeans: tco.whatItMeans, takeaway: tco.takeaway } as ExplainBlock,
+    scorecard: { howToRead: score.howToRead, whatItMeans: score.whatItMeans, takeaway: score.takeaway } as ExplainBlock
+  };
+}
+
+5) Final UI rule so it always reads “premium”
+
+No $0 statements. Use “roughly the same” if under threshold.
+
+“What it means” must always include (a) horizon years and (b) named vehicles.
+
+“Key takeaway” must be one sentence and should match the ranking.

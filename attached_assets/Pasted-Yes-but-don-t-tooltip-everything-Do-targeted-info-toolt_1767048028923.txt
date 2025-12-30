@@ -1,0 +1,75 @@
+Yes — but don’t tooltip everything. Do targeted “info” tooltips only where a normal buyer won’t instantly understand what they’re looking at, and where misunderstanding would change their decision.
+
+In your screenshot, you should add hover/info in 4 places:
+
+1) Fair Price Range (needs explanation)
+
+People will ask: “Range based on what? Private or retail? Why this range?”
+
+Add ⓘ tooltip:
+
+“Estimated fair private-party price range for this vehicle given mileage/market comps. Use it to sanity-check the asking price. It’s an estimate, not a guarantee.”
+
+2) 3-Year Low (needs explanation)
+
+People will assume it’s “the lowest anyone will sell” or a guaranteed floor.
+
+Tooltip:
+
+“Historical low estimate over the last ~3 years for similar listings. Useful as a negotiation anchor, not a promise.”
+
+3) Retail / Private Party / Trade-In (needs explanation)
+
+Users mix these up constantly.
+
+Tooltip for each card:
+
+Retail: “Typical dealer list price.”
+
+Private party: “Typical direct-to-seller price.”
+
+Trade-in: “What a dealer may offer you if you trade it in.”
+
+Optional: add a one-line microcopy under the 3 cards:
+“Dealer prices are usually highest; trade-in is usually lowest.”
+
+4) Depreciation curve + “ownership horizon” (def needs explanation)
+
+This is the biggest “confusion risk.”
+
+Add:
+
+A small ⓘ next to “Projected Depreciation”
+
+Tooltip:
+
+“This shows estimated resale value over time. ‘You are here’ is current mileage. The red dot is your ownership horizon (3 yrs @ 12k/yr).”
+
+Also add “How to read” below the chart (you already do this elsewhere) but keep it short:
+
+“Steeper drop = faster value loss. Compare where you land at the horizon.”
+
+How to implement without clutter
+Use this pattern:
+
+Title + small ⓘ icon (hover/click opens tooltip)
+
+Tooltips should be 1–2 sentences max
+
+On mobile: ⓘ becomes tap-to-open
+
+Where NOT to add tooltips:
+
+Don’t add tooltips for obvious numbers like “$35,500” unless it’s ambiguous what it represents (it isn’t).
+
+Replit copy/paste spec
+Add targeted info tooltips (ⓘ) only to ambiguous concepts:
+- Fair Price Range: what it represents + estimate disclaimer
+- 3-Year Low: what it means + “anchor not promise”
+- Retail/Private/Trade-in: plain-English definitions
+- Depreciation chart: explain “You are here” + ownership horizon dot + how to read
+
+Tooltips: max 2 sentences, tap-to-open on mobile. Avoid tooltip spam.
+
+
+If you want, I’ll write the exact tooltip copy for each element in your UI tone (short, confident, not legal-y).

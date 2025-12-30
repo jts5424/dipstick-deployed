@@ -1,0 +1,377 @@
+You are building a world-class DTC web app UI called “Dipstick” (Used Car Negotiation Leverage Platform). 
+This is a redesign of an existing prototype demo (Jason’s demo). You must implement BOTH:
+(1) DTC MODE (world-class decision-first product) and
+(2) DEMO MODE (original module-first prototype flow).
+Use realistic mock data that matches the demo screenshot values EXACTLY for the Audi S7 + Audi A6, and generate additional dummy data to fill out tables and make the UI feel real.
+
+TECH STACK (MANDATORY)
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Recharts for charts
+- TanStack Table for tables
+- lucide-react icons
+- Desktop-first but responsive (mobile usable)
+- No backend; use mockData.ts + local state
+- Code must be modular and easy to swap mock data for API later
+
+BRAND (MAVERICK + TRUSTWORTHY INNOVATOR)
+- Premium dark header (charcoal/near-black) with crisp white type
+- Bold accent color (teal/green/blue) for “Dipstick energy”
+- Conventional risk colors: green/yellow/red for trust
+- Microcopy: bold but evidence-based. Examples:
+  - “Leverage you can prove.”
+  - “Based on 44 service records.”
+  - “Evidence linked below.”
+- No “admin vibe” in DTC Mode (hide delete buttons etc.). Demo Mode can expose debug controls.
+
+========================
+CRITICAL FLOW REQUIREMENTS (MUST MATCH JASON TRANSCRIPT)
+========================
+- The Comparator (portfolio compare) is the HOME / base page. Users land here first.
+- Users upload Carfax PDFs to add vehicles. Parser converts Carfax into structured records (services, inspections, purchase, registration/title events). Text should remain mostly unchanged; just structured into rows.
+- Clicking ANALYZE runs a step-by-step pipeline with a spinner/stepper:
+  1) Service history expert narrative
+  2) Routine maintenance schedule pulled from OEM
+  3) Unscheduled maintenance forecast pulled from guides
+  4) Gap analysis = routine minus service history
+  5) Risk evaluation = unscheduled minus service/repair history (reduce risk if repaired)
+  6) Market valuation (retail/private/trade-in) + depreciation curve
+  7) Total cost of ownership
+- As each step completes, drill-down pages become available.
+- Comparator tiles must show “$ you’re going to lose” for chosen horizon (3 yrs default) plus 1–2 bullet insights (“Well maintained”, “Significant gaps 2019–2022”), and a risk chip.
+- Optional fun loading state: “cars racing to a finish line” animation while analyzing.
+- Gap + Risk are the primary differentiators vs Carfax and must power “Negotiation Leverage”.
+
+========================
+INFORMATION ARCHITECTURE
+========================
+Global header includes:
+- Dipstick logo/title
+- Mode toggle: [DTC Mode] [Demo Mode]
+- Link: Comparator (Home)
+- Link: Add Vehicle
+
+ROUTES (DTC MODE DEFAULT)
+1) /  (Comparator Home)
+- This is the main experience.
+- Sections:
+  A) Ownership assumptions bar:
+     - Ownership years (default 3)
+     - Miles per year (default 12000)
+  B) Vehicle tiles grid (2–3 columns desktop):
+     Each tile shows:
+       - Vehicle identity (year make model trim)
+       - Current mileage
+       - Big metric: Total Loss over horizon (label: “$ you’ll lose”)
+       - 3-yr TCO (secondary)
+       - Risk level chip (Low/Moderate/High)
+       - Condition score badge (0–100) if available
+       - Top 2 bullets (from expert/gap/risk)
+       - Buttons: Open Report, Add to Compare (if needed)
+  C) Compare tray (appears when 2–3 vehicles selected) with CTA “Compare”
+  D) Analyze button (primary) that triggers stepper progress and unlocks drill-down.
+
+- Below tiles, show 2 core charts once analysis exists:
+  1) TCO breakdown stacked bars per vehicle
+  2) Total loss bar per vehicle
+- Hide any wide tables. Provide “Advanced tables” accordion if needed.
+
+2) /add (Upload + Parse)
+- Drag/drop Carfax PDF upload UI (fake upload).
+- Show parse status: “PDF parsed successfully! 44 service records found…” (for S7)
+- After upload, show stepper progress for Analyze pipeline (fake delay, but UI should show steps completing).
+- On completion, vehicle appears in portfolio and user is routed to /report/[id].
+
+3) /report/[id] (Drill-down Report)
+Tabs (consumer language):
+- Summary
+- Leverage
+- Costs
+- Evidence
+- Advanced (mirrors original demo modules)
+
+Summary tab:
+- Hero metric cards:
+  - Dipstick Score (0–100)
+  - Fair price range (private + retail)
+  - 3-yr TCO
+  - Risk counts (High/Moderate/Low)
+- Cards:
+  - What’s Good
+  - What’s Concerning
+  - What’s Missing
+- Top 3 leverage items as IssueCards with “Add to script”.
+
+Leverage tab:
+- Left: IssueCards list (ranked by severity * cost exposure)
+- Right: Leverage Drawer (side drawer on desktop, bottom sheet on mobile)
+  - Selected issues
+  - Auto-generated negotiation script (copy button)
+  - Target Offer calculator:
+    - Asking price input
+    - “Overpriced/Fair/Underpriced by $X” deal meter
+    - “Target offer: $Y” (asking minus justified discount)
+  - Show “Justified discount: ~$X–$Y” based on selected issues’ cost ranges.
+
+Costs tab:
+- Depreciation curve chart with:
+  - retail line + private party line
+  - tooltip
+  - marker at current mileage
+  - marker at projected mileage (years*milesPerYear + current)
+  - highlight “knee” around ~40k miles (annotation)
+- TCO breakdown chart (stacked or waterfall-like):
+  - Immediate cost burden
+  - Projected routine maintenance
+  - Expected unscheduled repairs (probability-weighted)
+  - Depreciation loss
+  - Total
+- Collapsible Assumptions card (asking price, years, miles/yr) + Recalculate.
+
+Evidence tab:
+- Timeline (grouped by year) + TanStack table.
+- Default hide Admin events (registration/title) until toggled.
+- Filter chips: All / Maintenance / Inspection / Repair / Admin
+- Search box.
+- Group by year collapsible.
+- Clicking any evidenceTag from an IssueCard filters and highlights matching rows.
+
+Advanced tab:
+- Show the original demo sections as separate panels:
+  - Parsed Service History
+  - Service History Analysis
+  - Routine Maintenance
+  - Unscheduled Maintenance Forecast
+  - Gap Analysis
+  - Risk Evaluation
+  - Market Valuation
+  - Total Cost of Ownership
+  - Comparator Metrics (demo tables)
+
+4) /compare (World-class Compare)
+- User compares 2–3 vehicles.
+- Top “Winner” banner:
+  - “Best 3-year deal: ____”
+  - Why bullets (lowest total loss, best condition, lowest risk)
+  - CTA: “Copy negotiation script for winner”
+- Charts:
+  - TCO breakdown stacked bars per vehicle
+  - Total loss bars
+  - Risk counts (chips)
+- Simple table (NO acronyms):
+  Columns: Vehicle | Asking Price | Fair Price | 3-yr TCO | Total Loss | Expected Sale Price | Risk Level | Condition Score | Deal Score
+- Provide an “Advanced tables” accordion that displays the exact demo tables with acronyms (ICB/EURC/C12) and tooltips defining them.
+
+ROUTES (DEMO MODE)
+- /demo/[id] replicates original left sidebar module flow:
+  Vehicle Info/Parse → Parsed Service History → Service History Analysis → Routine Maintenance → Unscheduled Forecast → Gap Analysis → Risk Evaluation → Market Valuation → TCO → Comparator + Results Tables.
+- In Demo Mode, show a subtle Debug accordion where admin items like “Delete Section” could appear.
+
+========================
+MOCK DATA (MUST MATCH SCREENSHOTS EXACTLY + ADD DUMMY DATA)
+========================
+Create /lib/mockData.ts exporting:
+- vehicles: Vehicle[]
+- comparisons: predefined compare scenario matching screenshot
+- helper functions to compute derived fields (projected mileage, deal meter, etc.)
+
+You MUST include at least two vehicles with these exact values:
+
+VEHICLE A: 2015 Audi S7 (72,300 mi)
+- id: audi-s7-2015
+- year: 2015
+- make: Audi
+- model: S7
+- trim: 4.0T QUATTRO
+- engine: 4.0L V8 F DOHC 32V
+- vin: WAUW2AFC9FN008411
+- mileage: 72300
+- parsedServiceHistoryCount: 44
+- parseSuccessMessage:
+  "PDF parsed successfully! 44 service records found. Vehicle info auto-populated above. Please verify and edit if needed."
+
+Parsed Service History table MUST start with these exact rows (then add realistic dummy rows to reach 44 total):
+1) date 2014-08-30, mileage null, type Manufacturing, desc "Vehicle manufactured and shipped to original dealer", location "-", cost null, category Admin
+2) date 2014-08-30, mileage null, type Purchase, desc "Vehicle purchase reported", location "Ohio Motor Vehicle Dept.", cost null, category Admin
+3) date 2014-09-11, mileage null, type Registration, desc "Title issued or updated, Registration issued or renewed, First owner reported", location "Chagrin Falls, OH", cost null, category Admin
+4) date 2014-11-26, mileage null, type Registration, desc "Registration issued or renewed", location "Chagrin Falls, OH", cost null, category Admin
+5) date 2015-01-21, mileage 5364, type Maintenance, desc "5,000 mile service performed", location "Audi of Bedford", cost null, category Maintenance
+6) date 2015-05-14, mileage 7457, type Tire Service, desc "Tire condition and pressure checked", location "Audi of Bedford", cost null, category Maintenance
+7) date 2015-11-23, mileage 11795, type Inspection, desc "Maintenance inspection completed, Tire condition and pressure checked", location "Audi of Bedford", cost null, category Inspection
+Add additional realistic records (maintenance/inspection/repair/admin) up to 44.
+
+Service History Expert Analysis MUST include these exact narrative points:
+- Anomalies & concerns:
+  - "Gaps in service history" between 2019 and 2022 (Concern: Medium)
+  - "Inconsistent mileage reporting" with several records missing mileage (Concern: High)
+- Services performed more than normal:
+  - "Tire condition and pressure checks" frequency: performed 10 times over 9 years
+- Expert Notes:
+  - Missing services: brake fluid changes and transmission fluid checks appear absent
+
+Routine Maintenance Schedule MUST include these exact rows (plus more dummy rows if desired):
+- Oil Change: intervalMiles 10000, intervalMonths 12, costRange "$100-$200", oemCost "$150-$300"
+- Air Filter Replacement: 20000/24, "$30-$60", "$50-$100"
+- Cabin Air Filter Replacement: 20000/24, "$30-$50", "$50-$80"
+- Fuel Filter Replacement: 40000/48, "$100-$150", "$150-$250"
+- Transmission Fluid Change: 40000/48, "$150-$300", "$250-$400"
+- Brake Fluid Flush: 20000/24, "$70-$120", "$100-$180"
+- Coolant Change: 40000/48, "$100-$150", "$150-$250"
+- Power Steering Fluid Change: 40000/48, "$50-$100", "$80-$150"
+- Spark Plug Replacement: 60000/72, "$200-$400", "$300-$500"
+- Belt Replacement (Serpentine/Timing): 60000/72, "$300-$600", "$500-$800"
+
+Unscheduled Maintenance Forecast MUST include these exact rows (plus optional extra):
+- Timing Chain Tensioner: window 60000-100000, prob 0.30, cost "$300-$600", oem "$500-$900"
+- Water Pump: 70000-120000, prob 0.25, cost "$400-$800", oem "$600-$1000"
+- Oil Leaks (Valve Cover Gaskets): 50000-90000, prob 0.40, cost "$200-$400", oem "$300-$600"
+- Oil Cooler: 80000-120000, prob 0.20, cost "$500-$900", oem "$700-$1100"
+- Fuel Pump: 60000-100000, prob 0.15, cost "$300-$600", oem "$500-$800"
+- Transmission Solenoids: 70000-120000, prob 0.20, cost "$200-$400", oem "$300-$600"
+- Brake Calipers: 50000-100000, prob 0.25, cost "$250-$500", oem "$400-$700"
+- Alternator: 80000-120000, prob 0.20, cost "$300-$600", oem "$500-$900"
+
+Gap Analysis summary MUST be:
+"Analyzed 13 maintenance items. Found 1 overdue, 0 due now, and 4 due in the near future."
+Include these exact items at minimum:
+- Oil Change: status NEAR FUTURE, dueIn "10,000 miles / 10 months", lastPerformed "72,300 miles (2025-10-13)", nextDue "82,300 miles (2026-10-13)", cost "$100-$200", oem "$150-$300"
+- Brake Fluid Flush: status NOT DUE, lastPerformed "Never", nextDue "79,200 miles (2026-10-09)", cost "$70-$120", oem "$100-$180"
+- Transmission Fluid Change: status NOT DUE, lastPerformed "Never", nextDue "112,300 miles (2029-12-24)", cost "$150-$300", oem "$250-$400"
+- Coolant Change: status NEAR FUTURE, lastPerformed "68,578 miles (2024-11-01)", nextDue "108,578 miles (2028-11-01)", cost "$100-$150", oem "$150-$250"
+Add dummy gap items to reach 13.
+
+Risk Evaluation summary MUST be:
+"Evaluated 26 unscheduled maintenance items. Found 1 already fixed/replaced, 0 critical risk, 4 high risk, 21 moderate risk, and 0 low risk."
+Include these exact risk rows:
+- Transmission Solenoids: window 70000-120000, prob 0.20, riskLevel HIGH, riskScore 75, alreadyFixed false, maintenanceQuality Fair, milesUntilFailure "Past by 300 miles"
+- Oil Leaks (Valve Cover Gaskets): 50000-90000, prob 0.40, riskLevel HIGH, riskScore 75, alreadyFixed false, maintenanceQuality Fair, milesUntilFailure "Past by 200 miles"
+- Water Pump: 70000-120000, prob 0.25, riskLevel MODERATE, riskScore 60, alreadyFixed false, maintenanceQuality Fair, milesUntilFailure "Past by 2,300 miles"
+- Fuel Pump: 60000-100000, prob 0.15, riskLevel MODERATE, riskScore 45, alreadyFixed false, maintenanceQuality Fair, milesUntilFailure "Past by 12,300 miles"
+- Power Steering Pump: 70000-120000, prob 0.15, riskLevel MODERATE, riskScore 45, alreadyFixed false, maintenanceQuality Fair, milesUntilFailure "Past by 2,300 miles"
+- Oxygen Sensors: 60000-100000, prob 0.25, riskLevel "ALREADY FIXED/REPLACED", riskScore 0, alreadyFixed true, maintenanceQuality Fair, milesUntilFailure "Past by 2,700 miles"
+Add dummy risk items to reach 26 and satisfy counts (4 high, 21 moderate, 1 fixed).
+
+Market Valuation & Depreciation MUST match exactly:
+Current valuation:
+- Retail: 35500 (range min 33000 max 38000)
+- Private party: 32500 (range min 30000 max 35000)
+- Trade-in: 27500 (range min 25000 max 30000)
+Depreciation stats:
+- MSRP 82000
+- Total depreciation 46500 (56.1%)
+- Annual depreciation rate 5.6%
+- Value retention 43.3%
+- Mileage impact "Average"
+Projected future values:
+- 1 year: retail 34000, private 31000
+- 2 years: retail 32000, private 29000
+- 3 years: retail 30000, private 27000
+- 5 years: retail 27000, private 24000
+Depreciation curve MUST include a tooltip example point:
+- mileage 30000: retail 62000, private 60000
+Vehicle position tiles:
+- currentMileage 72300
+- retailValue 35500
+- privateValue 32500
+- depreciationPhase "Mid depreciation phase"
+- valueRetention 43.3%
+- vsAverage "At average"
+- marketCondition "Stable"
+- marketTrend "Stable"
+- marketSegment "Luxury"
+Depreciation curve data should span 0 to 200k mileage with reasonable values and include the above 30k point.
+
+TCO input defaults:
+- ownershipYears 3
+- milesPerYear 12000
+
+VEHICLE B: 2018 Audi A6 Quattro Premium Plus
+- id: audi-a6-2018
+- name: "2018 Audi A6 Quattro Premium Plus"
+- mileage in compare: 72176
+You may fill other module data with dummy values, but comparison outputs must match exactly below.
+
+COMPARATOR DEMO SCENARIO MUST MATCH EXACTLY
+Assumptions:
+- years 3
+- milesPerYear 12000
+Asking prices:
+- S7 purchasePrice 25000
+- A6 purchasePrice 20000
+
+Comparison results (use in DTC compare “Advanced tables” and Demo comparator):
+S7:
+- currentValuePurchasePlusICB 7465
+- ICB 35
+- EURC 0
+- C12 35
+- totalCosts3yrs 8675
+- totalLoss 6675
+- conditionScore 81/100
+- riskLevel LOW
+A6:
+- currentValuePurchasePlusICB 8405
+- ICB 95
+- EURC 0
+- C12 95
+- totalCosts3yrs 8335
+- totalLoss 5335
+- conditionScore 100/100
+- riskLevel LOW
+
+Detailed cost breakdown:
+S7:
+- immediateCostBurden 35
+- projectedRoutineMaintenance 3140
+- expectedUnscheduledRepairs 0
+- depreciation 5500
+- totalCosts 8675
+- expectedSalePrice 27000
+A6:
+- immediateCostBurden 95
+- projectedRoutineMaintenance 2740
+- expectedUnscheduledRepairs 0
+- depreciation 5500
+- totalCosts 8335
+- expectedSalePrice 23000
+
+Also generate a third dummy vehicle (Toyota Camry or BMW) for the UI to feel alive, but ensure the screenshot-accurate two vehicles remain exact.
+
+========================
+CHARTS & VISUALIZATIONS (MUST IMPLEMENT)
+========================
+- Depreciation curve: retail + private lines, tooltips, markers at current/projection, annotation at ~40k “knee”.
+- TCO breakdown: stacked bars per vehicle (immediate + routine + expected repairs + depreciation).
+- Compare page: total loss bar chart + TCO stacked bar chart.
+- Risk view: include an MVP table AND a survivability curve toggle (probability vs mileage).
+
+========================
+COMPONENTS (REQUIRED)
+========================
+Create reusable components:
+- VehicleTile (Comparator card)
+- VehicleCard (Garage)
+- MetricCard
+- IssueCard (severity chip, cost range, evidence tags, add-to-script)
+- LeverageDrawer (selected items + script + copy)
+- DealMeter (overpriced/fair/underpriced + target offer)
+- DepreciationChart (Recharts)
+- TcoBreakdownChart (Recharts)
+- TotalLossChart (Recharts)
+- EvidenceTable (TanStack)
+- Timeline (year-grouped list)
+
+========================
+IMPLEMENTATION STEPS
+========================
+1) Scaffold app, install/config Tailwind + shadcn/ui, Recharts, TanStack Table.
+2) Implement mockData.ts exactly as specified.
+3) Implement Comparator Home (/): tiles + analyze stepper + charts + drill-down links.
+4) Implement /add with upload + parse + stepper flow.
+5) Implement /report/[id] tabs with linking between leverage items and evidence.
+6) Implement /compare with winner banner + charts + simple table + advanced tables accordion.
+7) Implement /demo/[id] module-first flow replicating original prototype sections using same data.
+
+OUTPUT
+Generate all required files and code. Ensure it runs without errors and all pages are populated with the demo-accurate data plus dummy data where needed.

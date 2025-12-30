@@ -1,0 +1,81 @@
+Yes — it needs a “how to use this” hover (and honestly a tiny onboarding tip the first time). Right now “Objection Response Engine” is powerful but not self-explanatory. A user won’t know:
+
+when to use it (before vs after objections),
+
+how it connects to the script phases,
+
+what “Pre-Butt Mode” actually does,
+
+whether responses are customized to their selected points.
+
+What it means (plain English)
+
+Search: type what the seller/dealer said (e.g., “priced to market”).
+
+The engine returns a ready reply that:
+
+acknowledges (de-escalates),
+
+uses your app’s evidence (selected leverage points),
+
+asks a calibrated question,
+
+offers a clean either/or close.
+
+Pre-Butt Mode: it generates an “accusation audit / pre-empt” line you can add to your message before they object (ex: “You’re probably thinking I’m nitpicking…”).
+
+That’s exactly what makes it feel bulletproof.
+
+Yes: add a hover + micro-onboarding
+1) Add an “ⓘ” info icon next to the header
+
+Hover tooltip copy (tight):
+
+How to use:
+
+Type what they said (“priced to market”)
+
+Copy the suggested reply (it uses your selected leverage points)
+
+If Pre-Butt Mode is on, it adds a pre-empt line to reduce pushback
+
+Click Add to Script to drop it into Phase 4: Objections
+
+2) Add 2 inline cues so it’s obvious it’s connected
+
+Under the search bar: “Powered by your selected points (4)”
+
+On each objection card: chips like “Uses: Service Gaps, Immediate Liability”
+
+3) Add “Add to Script” + “Copy Text/Email”
+
+Your UI already looks like it has a response block — but make the actions explicit:
+
+Copy as Text
+
+Copy as Email
+
+Insert into Phase 4: Objections
+
+4) Rename “Pre-Butt Mode” label (optional but recommended)
+
+“Pre-Butt” is insider talk. Users won’t get it.
+Better:
+
+Pre-empt objections
+with a smaller sublabel:
+
+“Adds a line that reduces defensiveness before you make your offer.”
+
+Replit copy/paste spec
+Add help UX for Objection Response Engine.
+
+- Add info icon (ⓘ) next to header with hover tooltip explaining:
+  search → reply generated from selected points → copy/insert → Pre-empt mode behavior.
+- Show “Powered by selected points (N)” under search bar.
+- On each objection response card, show chips: “Uses: <point names>”.
+- Add explicit actions: Copy Text / Copy Email / Insert into Phase 4: Objections.
+- Rename “Pre-Butt Mode” to “Pre-empt objections” with subtext explaining it.
+
+
+If you want, I’ll write the exact tooltip + empty-state copy (when no objection is searched) so it feels polished.

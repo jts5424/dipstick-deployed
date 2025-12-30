@@ -1,0 +1,144 @@
+ep — here are the extra bits from the transcript that you should add to your Replit “master direction” (these are the parts that were either missing, more specific, or stronger constraints than what we wrote before).
+
+Add these to the Replit spec (delta)
+1) Dipstick It (Comparator) must be simpler than you think
+
+They explicitly said the comparator UX got “too complicated” and should be basically “this one, this one…” (don’t overload with stats/leverage blocks). 
+
+Dipstick v2 round
+
+If you show anything above charts, keep it to small identifiers + the Compare button, then the charts do the talking. 
+
+Dipstick v2 round
+
+2) Dipstick It needs an explicit Compare button + “quick run” behavior
+
+Set ownership period + mileage → click Compare → it runs. 
+
+Dipstick v2 round
+
+This run is supposed to be fast once the car’s data exists. 
+
+Dipstick v2 round
+
+3) The “stats on car cards” problem: remove stats from Comparator cards
+
+They called out the comparator card having “deal score / oil change / gap service…” and said don’t put the stats in the car on compare. 
+
+Dipstick v2 round
+
+4) Garage cards can include “estimated total loss / 3-year total cost,” but Comparator shouldn’t
+
+Garage = cards only; you can add rollups like estimated total loss on the card. 
+
+Dipstick v2 round
+
+They briefly flirted with “total cost in comparator,” then backed off (“too complicated”). 
+
+Dipstick v2 round
+
+5) Comparator chart behavior: it must react to mileage/years with a “you are here” marker
+
+“Both depreciation curves… showing you are here and you are here.” 
+
+Dipstick v2 round
+
+“Total cost of ownership graph below.” 
+
+Dipstick v2 round
+
+Marker logic: when they plug miles/years, it shows where each car lands on the curve. 
+
+Dipstick v2 round
+
+6) Upload vs Compare: you need to implement the two-stage computation UX
+
+Uploading CARFAX does heavy aggregation and can take ~1 minute → that’s “ad space.” 
+
+Dipstick v2 round
+
+That data is stored “behind that car” in Garage. 
+
+Dipstick v2 round
+
+Compare is then near-instant recalculation. 
+
+Dipstick v2 round
+
+They raised the explicit design choice: show processing to user vs background it. 
+
+Dipstick v2 round
+
+7) Generate Script / Smart Script Builder has two issues, not one
+
+Modal can’t scroll unless the browser is tiny. 
+
+Dipstick v2 round
+
+It was built at ~70–75% Chrome zoom, which likely caused the overflow bug. 
+
+Dipstick v2 round
+
+Also: “Even when you click Generate Script, it doesn’t pull up the Smart Script Builder” (a functional/UI state bug). 
+
+Dipstick v2 round
+
+8) Offer Mode / Build Strategy / Objection Handler must be consistent across cars
+
+Offer Mode includes offer calculator + risk tolerance slider (low/high) + “Build Strategy.” 
+
+Dipstick v2 round
+
+Build Strategy produces different tones and “all the leverage points.” 
+
+Dipstick v2 round
+
+Objection Handler was discussed but might appear only for one car and wasn’t reachable due to scroll. Make it available + reachable for every car. 
+
+Dipstick v2 round
+
+9) Leverage Builder positioning: it’s a talk track, not “dealer will cave”
+
+“Leverage is… making points, not that they’re going to succeed to your points.” 
+
+Dipstick v2 round
+
+“Half the battle… arm them with a talk track… exposing the truth of what they deserve.” 
+
+Dipstick v2 round
+
+
+This should shape copy + expectations inside Leverage Builder/Strategy.
+
+10) Styling direction: base it on Buildium UX guidelines; don’t over-maverick it
+
+They used Buildium UX design team guidelines to get the look. 
+
+Dipstick v2 round
+
+Pushing “maverick” made it feel sketchy/crypto; keep it legit. 
+
+Dipstick v2 round
+
+Possibly too many colors; consider yellow instead of green and keep navy. 
+
+Dipstick v2 round
+
+11) Share feature nuance: tier-gating/credit card was floated
+
+Sharing was discussed as potentially tiered or requiring a payment flow if sharing to someone. 
+
+Dipstick v2 round
+
+But it must be not anonymous; it’s to send to the person you’re buying from. 
+
+Dipstick v2 round
+
+12) Extra “Jason-y” product thought: inject frameworks into leverage builder
+
+“Get all of Oko’s secrets… inject it into different frameworks… put it into that leverage builder to help frame.” 
+
+Dipstick v2 round
+
+
+This is more “phase 2,” but it was explicitly mentioned.

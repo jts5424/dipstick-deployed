@@ -1,0 +1,152 @@
+You’re asking the right question. If the only thing that changes when you move tone/risk tolerance is price, the product stays mid. The leverage builder has to change behavioral variables: what you say, what you ask, what you reveal, what you hold back, and how you close.
+
+Here are the variables that should change when you scale it (even if price stays the same).
+
+1) Tone (Friendly / Firm / Hard) should change THESE variables
+A) Opener style
+
+Friendly: rapport + appreciation
+
+Firm: professional + direct
+
+Hard: boundary + urgency
+
+B) “Asks” type
+
+Friendly: calibrated questions (“How can we make this fair?”)
+
+Firm: anchored statement + calibrated question (“I’m at X. How do we make that work?”)
+
+Hard: either/or close (“X price or fix Y — which?”)
+
+C) Evidence depth
+
+Friendly: fewer points, softer wording
+
+Firm: top 3 points, factual
+
+Hard: only dealbreakers, no fluff
+
+D) Close structure
+
+Friendly: collaborative next step
+
+Firm: timebox-lite
+
+Hard: explicit timebox + walkaway
+
+E) Objection handlers
+
+Same objection, different reply style (empathetic vs firm vs boundary).
+
+2) Risk Tolerance (Low / Medium / High) should change THESE variables
+
+This should NOT just move the offer number. It should change which leverage points get surfaced and how the script frames risk.
+
+A) Leverage point selection
+
+Low risk tolerance: overweight recalls, reliability, service gaps, high-probability failures
+
+High risk tolerance: overweight valuation delta, depreciation, immediate maintenance only
+
+B) Framing language
+
+Low: “I’m not comfortable proceeding without X verified.”
+
+High: “I’m fine with some work—price just needs to reflect it.”
+
+C) Evidence threshold
+
+Low: require confidence/evidence for claims; ask for receipts
+
+High: less verification, more “price reflects condition”
+
+D) Deal structure preference
+
+Low: prefer repairs completed / verification over price cuts
+
+High: prefer discount and DIY repairs
+
+3) Seller Type (Dealer vs Private) must change THESE variables
+
+Right now your script reads like a private-party negotiation. Dealers require different tactics.
+
+Dealer
+
+Ask for out-the-door price
+
+Objections include: “priced to market,” “fees,” “we can’t negotiate”
+
+Close is appointment-based: “If you can do X OTD, I’ll come at 6pm.”
+
+Private seller
+
+Ask for records, title status, why selling
+
+Close is trust-based: “If you can do X, I can meet today with cash.”
+
+4) Channel (Text vs Email vs Talk Track) should change structure
+
+Not just formatting — the strategy changes.
+
+Text: 2–4 lines max, one question, one close
+
+Email: evidence + bullets + clear offer
+
+Talk track: short phrases + pauses + “shut up” prompts
+
+5) Negotiation stage (Verify → Offer → Objection → Close)
+
+This is the biggest scaling lever. The builder should generate different scripts by stage:
+
+Receipt Request (verify first)
+
+Reality Check Questions
+
+Offer
+
+Objection Replies
+
+Close & Logistics
+
+Same leverage points, different script.
+
+What should your “scale” actually do?
+
+When the user changes Tone/Risk/Seller type, update these outputs:
+
+Output 1: Selected points (auto)
+
+reorder + add/remove based on risk tolerance
+
+Output 2: Script skeleton
+
+Friendly uses labels + calibrated questions
+
+Firm uses accusation audit + anchor + calibrated question
+
+Hard uses boundary + either/or + timebox
+
+Output 3: Question set
+
+1 killer question per leverage point (changes by tone)
+
+Output 4: Objection pack
+
+Different replies for “priced to market / sold as-is / already discounted”
+
+Dealer vs private versions
+
+Output 5: Close
+
+timebox + logistics changes
+
+Replit-ready checklist (copy/paste)
+When scaling Leverage Builder, Tone/Risk Tolerance must change more than price.
+
+Implement behavioral variable changes:
+- tone controls: opener style, ask type (calibrated vs anchored vs either/or), evidence depth, close structure, objection reply style
+- risk tolerance controls: leverage point selection weighting, framing language, evidence threshold, prefer repair-vs-discount deal structure
+- seller type controls: dealer vs private templates + objections + close logistics
+- channel controls: text/email/talk track structure differences
+- stage controls: generate scripts for verify→offer→objection→close (not one monolithic script)

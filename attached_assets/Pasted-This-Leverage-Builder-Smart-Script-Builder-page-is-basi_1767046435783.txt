@@ -1,0 +1,118 @@
+This Leverage Builder / Smart Script Builder page is basically the right concept and it matches the “talk track” value Jason described — you’ve got:
+
+Approach slider (Friendly → Firm → Hard)
+
+Deal mathematics (asking price, identified leverage, target offer)
+
+Leverage points list
+
+Objection Handlers section
+
+Live script preview + copy
+That’s the core of what he wanted from “Build Strategy” and leverage. 
+
+Dipstick v2 round
+
+ 
+
+Dipstick v2 round
+
+So: Yes, it’s good.
+
+But it’s missing 3 “Jason-critical” things and 2 UX fixes.
+
+What’s missing vs transcript
+1) Risk tolerance slider (low ↔ high)
+
+Jason explicitly called out risk tolerance in Offer Mode/strategy. 
+
+Dipstick v2 round
+
+
+Right now I only see the tone/approach slider. Add risk tolerance because it changes what the talk track emphasizes (risk warnings vs price fairness vs maintenance).
+
+Add: Risk tolerance (Low / Medium / High) that affects:
+
+which leverage points are selected by default
+
+how aggressive the target offer is
+
+how “alarmist” the copy is
+
+2) “Build Strategy” button/output
+
+He described “Build Strategy” producing different tones + leverage points. 
+
+Dipstick v2 round
+
+
+Right now the user is manually selecting leverage points; there’s no explicit “generate a strategy” action.
+
+Add: a button like “Build Strategy” that:
+
+auto-selects leverage points (top 3–5)
+
+chooses a recommended tone
+
+generates the script from those selections
+
+3) Objection Handler must be real and reachable
+
+You have an “Objection Handlers” section — good — but earlier the problem was it wasn’t reachable/consistent across cars due to scroll/modal issues. 
+
+Dipstick v2 round
+
+Make sure:
+
+It is populated (not empty placeholder)
+
+It expands with actual objection/response pairs
+
+It’s consistent for every car
+
+UX problems I see (even from this screenshot)
+4) This page is too narrow / too much empty space
+
+The content is centered in a skinny column. It makes it feel like a form, not a “negotiation engine.”
+
+Fix: Use a 2-column layout at desktop:
+
+Left: controls (approach, risk tolerance, math, leverage points, objections)
+
+Right: live script preview (sticky)
+
+5) Script preview needs “modes”
+
+Right now it’s one block of text. Jason’s point is utility.
+
+Add toggles:
+
+Text Message vs Email vs In-person talk track
+
+Optional: Seller vs Dealer tone templates
+
+This reinforces the “arm them with a talk track” framing. 
+
+Dipstick v2 round
+
+One content fix (important)
+
+You already have a “Pro tip” style line — good — but make it explicit that leverage doesn’t guarantee concessions (Jason said: it’s points, not guaranteed results). 
+
+Dipstick v2 round
+
+Replit copy/paste
+Leverage Builder is mostly correct (talk track engine + math + leverage points + script preview).
+To match transcript, add:
+
+1) Risk tolerance slider (low/med/high) that changes default leverage points + target offer aggressiveness + script tone.
+2) Explicit “Build Strategy” button that auto-selects top leverage points and generates the script (different tones).
+3) Ensure Objection Handlers are real + expandable + present for every car (not placeholder).
+
+UX:
+- Use 2-column desktop layout: left controls, right sticky script preview.
+- Add script output modes: Text vs Email vs In-person talk track (and optionally Seller vs Dealer).
+- Keep disclaimer framing: leverage is credibility/talk track, not guaranteed concessions.
+
+
+If you send the Vehicle History tab screenshot next, I’ll confirm whether it matches the “narrative + gaps summary” requirement and whether any “anomaly detection” is incorrectly living in Summary instead of History.

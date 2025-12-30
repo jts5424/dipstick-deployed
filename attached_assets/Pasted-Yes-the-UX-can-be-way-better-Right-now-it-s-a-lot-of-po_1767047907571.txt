@@ -1,0 +1,127 @@
+Yes — the UX can be way better. Right now it’s “a lot of power in a skinny column,” and the user’s eyes have no clear path. The fix is to make it feel like a command center: controls on the left, big readable output on the right, and objections as a drawer.
+
+Here’s a clean upgrade plan you can hand to Replit.
+
+1) Make it a true 2-column workspace
+Current problem
+
+Everything is stacked and small.
+
+Script preview is too narrow to read comfortably.
+
+Objections compete for attention.
+
+Fix
+
+Desktop layout:
+
+Left (35%) = Strategy controls + Selected Points + Objections
+
+Right (65%) = Live Script Preview (big, readable, sticky)
+
+And make the script preview sticky so it stays visible while editing.
+
+2) Turn “Live Strategy” into a stepper that actually feels like a process
+
+You already have the phases. Make them visual:
+
+Stepper across top of preview: 1 Verify → 2 Reality → 3 Offer → 4 Objections → 5 Close
+
+Each step shows a short purpose line:
+
+Verify: “Ask for receipts”
+
+Offer: “Anchor + calibrated question”
+
+Close: “Timebox + logistics”
+
+Add Next / Back buttons.
+
+3) Objection Engine should be a drawer (not always open)
+
+Right now it’s stealing vertical space.
+
+Change it to:
+
+Collapsed by default as “Objections (12)” with search
+
+Clicking opens a right-side drawer or bottom sheet with:
+
+search
+
+categories
+
+copy / insert buttons
+
+This makes the main page feel less busy.
+
+4) Selected Points needs the three-state legend (and less height)
+
+You already started this. Make it compact:
+
+Show Selected (4) as pills, not tall cards
+
+Each pill shows:
+
+name
+
+$ exposure
+
+confidence icon
+
+IN SCRIPT badge
+
+Add “+ Add point” to pull in more.
+
+5) Make the script preview feel like an editor, not a static box
+
+Add:
+
+Copy Text / Copy Email / Copy Talk Track buttons (separate)
+
+Inline highlights tied to selected points (click highlight → jumps to point)
+
+“Send to: Seller / Dealer” toggle (changes language)
+
+And increase font size and line height.
+
+6) Add a “Quick Actions” strip (this is huge)
+
+Top-right above the preview:
+
+Regenerate (same settings)
+
+Make shorter
+
+Make more firm
+
+Add timebox
+
+Insert pre-butt
+
+Add 1 more leverage point
+
+These should modify variables, not just regenerate.
+
+7) Fix the whitespace + centering
+
+You have a ton of empty space around a narrow central card.
+
+Expand the main container width on desktop
+
+Reduce top padding
+
+Move “Vehicle Analysis” header into a compact bar so the content starts higher
+
+Replit copy/paste spec
+Leverage Builder layout improvements:
+
+- Switch to 2-column desktop layout:
+  Left (strategy controls + selected points + objections), Right (large sticky script preview).
+- Make Live Strategy a true stepper (Verify → Reality → Offer → Objections → Close) with Next/Back + short purpose labels.
+- Move Objection Response Engine into a collapsible drawer/sheet (not always expanded).
+- Compact Selected Points into pills with 3-state indicator (Selected / In Script) and exposure/confidence metadata.
+- Upgrade script preview to an editor-like experience:
+  bigger typography, inline highlights mapped to points, separate Copy buttons for Text/Email/Talk Track, and Seller/Dealer toggle.
+- Add Quick Actions strip: Regenerate, Shorten, More firm, Add timebox, Pre-butt, Add point.
+- Expand container width + reduce wasted whitespace/padding at top.

@@ -1,0 +1,138 @@
+Got it — if you want multi-car compare, you can’t rely on “select/deselect tiles” at the top. That will collapse under 10 cars.
+
+You need a Comparison Set model.
+
+The right UX model for multiple cars
+Core idea: “Compare Set” (like a playlist)
+
+Users build a set of cars to compare (2–10+).
+
+Dipstick It always shows:
+
+Ranked results (winner + ordering)
+
+Charts that can handle N cars without turning into spaghetti
+
+Where the set lives
+
+Best place: Garage
+
+Each car card has a checkbox: Add to Compare
+
+Sticky bar appears: Compare Set (3) → “Compare” button
+
+Clicking Compare opens Dipstick It with that set preloaded
+
+This scales naturally because Garage is where selection belongs.
+
+Dipstick It layout for multi-car (what to build)
+A) Top: Compare Set controls
+
+Selected cars as pills (scrollable):
+
+2015 S7 ✕ 2018 A6 ✕ 2017 Q5 ✕ …
+
++ Add car (opens a search dropdown from Garage list)
+
+Clear all
+
+Inputs: Ownership years + Annual mileage
+
+Optional: Market price per car (edit inline on each pill)
+
+B) Results: “Leaderboard” (must exist)
+
+Instead of one “winner card,” show a ranked list:
+
+Ranked Results
+
+2015 S7 — Dipstick 81 — Low Risk — 3-yr TCO $8,675
+
+2018 A6 — Dipstick 74 — Med Risk — 3-yr TCO $9,980
+
+…
+
+This is the “executive summary” for multi-car. It replaces the current dashboard feel.
+
+C) Charts: avoid spaghetti
+
+With 6–10 cars, multi-line charts get unreadable. So:
+
+Chart 1: Depreciation curves (N lines, but with focus)
+
+Default: show top 4 by score
+
+Others are muted until clicked
+
+Clicking a car in the leaderboard highlights its curve (bold) and dims others
+
+Chart 2: TCO comparison (bars scale better than lines)
+
+Horizontal bars sorted by lowest cost
+
+Toggle: “Total” vs “By year (1/2/3)”
+
+Chart 3: Cost breakdown (stacked bars per car)
+
+Depreciation / Maintenance / Repairs stacked bars for each car
+
+This scales well to 10 cars.
+
+D) Performance scorecard (table, not little bars)
+
+For multiple cars, your current scorecard becomes a table:
+
+Car	Value Retention	Reliability	Maint Economy	Condition	Deal Rating
+
+Sort by any column.
+
+Handling “10 cars” without chaos
+Hard UX limits (do these)
+
+Allow up to 10 cars in the set
+
+But only show top 4 curves at once in the depreciation chart
+
+Everything else is accessible via highlight/filter, not always visible
+
+Quick filters
+
+“Show top 3”
+
+“Show lowest risk only”
+
+“Hide cars missing VIN / missing history report” (optional quality control)
+
+How it “adds up” (calculation model)
+
+When you click Compare, compute per car:
+
+Dipstick score
+
+3-yr TCO (based on ownership years + mileage input)
+
+Repair exposure (risk tolerance can affect how you weight this)
+
+Depreciation loss at horizon
+Then sort for leaderboard + render charts.
+
+Copy/paste spec for Replit
+Implement multi-car comparison as a “Compare Set”.
+
+Garage:
+- Add checkbox “Add to Compare” on car cards
+- Sticky bar: “Compare Set (N)” + Compare button
+- Compare opens Dipstick It with selected set
+
+Dipstick It:
+- Top: pills for selected cars (remove with X), “+ Add car” dropdown, Clear, inputs (years + mileage), Compare CTA
+- Executive Summary becomes a leaderboard (ranked cars with Dipstick score + risk + 3-yr TCO)
+- Charts:
+  1) Depreciation curves: show top 4 by default; clicking a car highlights its curve; others muted
+  2) TCO: horizontal bars sorted
+  3) Cost breakdown: stacked bars per car (dep/maint/repairs)
+- Performance scorecard becomes a sortable table across cars
+- Avoid spaghetti: never show 10 bold lines at once; use highlight/mute behavior
+
+
+If you want this to feel insanely good: add “Pin winner” so the top car stays highlighted while you toggle others on/off.

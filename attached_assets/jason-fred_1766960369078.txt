@@ -1,0 +1,359 @@
+Jason (00:04.632)
+Fuck.
+
+Fred Tracy (00:05.982)
+what?
+
+Hey Hannah baby, can I call you back? I'm on with Jason.
+
+You okay?
+
+Jason (00:21.326)
+We are recording. We are recording, Hannah, baby.
+
+Fred Tracy (00:26.892)
+Ha!
+
+Jason (00:28.206)
+all right
+
+Fred Tracy (00:30.718)
+I'll you, you little baby, you okay? Alright, I'll take care of it.
+
+Jason (00:32.894)
+Haha. Haha.
+
+Jason (00:38.456)
+All right, so.
+
+Fred Tracy (00:41.534)
+Good call, yeah.
+
+Jason (00:43.394)
+Yeah. Okay. So this is, this is just a, we're gonna, we're gonna go through the user journey of, of a prototype implementation for dipstick. basically this, this prototype just outlines the different modules that we want to implement.
+
+more comprehensively in the back end, but we want to show this as a demo for front end UI UX development so that we can try and build out that front end in the most standard best practice UI UX manner. But basically,
+
+We're just outlining the user journey here and the different kind of visual hierarchy that we want to portray. That makes sense. Do you want to any anything else you want to touch upon for me?
+
+Fred Tracy (01:54.15)
+Yeah, I think and you're so your, vision for dipstick is for people who aren't car enthusiasts. It's what do they need before even entering the platform? Or is there anything that they need to do before getting to this screen here?
+
+Jason (02:12.14)
+No, this would be like the first screen. I mean, yeah, there'd be like a website, you know, and you'd log in on a website and then it would take you here. And this would be your user.
+
+Fred Tracy (02:14.494)
+Okay.
+
+Jason (02:29.508)
+the usage, I don't know what you call it, from a...
+
+Fred Tracy (02:31.26)
+Yeah, it's your,
+
+Fred Tracy (02:39.678)
+This is the platform.
+
+Jason (02:41.1)
+Yeah, yeah, it's the usage platform. So I don't think this is just for people that are not car enthusiasts. think if anything, this is this would actually be more we would based on conversations with people, I get more positive feedback from people that are car and quote unquote car guys or car enthusiasts, because they understand the value prop here.
+
+Fred Tracy (03:05.939)
+Mm-hmm.
+
+Jason (03:10.756)
+and whereas people that are not car enthusiasts, I think they would need to learn a little more about like vehicle purchase and value and that but I mean both customers, but I think I think the immediate recognition of value will come from car enthusiasts. But okay, so initially all this will just be like empty, right?
+
+And the idea is that like you could enter this in yourself, but easiest thing to do is you would go in, would choose like you would save your car facts or anything, any PDF file that has information about the car you're looking at and you would just upload it, click open, upload. I already uploaded, so I'm not gonna do it right now, because it takes time to parse, but.
+
+So it just goes in here and you click parse. When you click parse, it takes that document and that document is meant to be vehicle history.
+
+whether that's, you know, as a car facts, which is kind of what we're basing this off of, you have everything from services to inspections. The idea is that that would also include like ownership title changes, anything like that would come up in this vehicle history. Right now it's only showing like services, but purchase, right? But like.
+
+Registration it would be everything Basically just taking that car facts document and turning it into a structured data table So that's step one
+
+Fred Tracy (05:00.222)
+Do you think it would be helpful to like pull up or like the specs and criteria for what needs to be shown when you say everything? Do we need to like define that?
+
+Jason (05:12.44)
+No, it's just Carfax. It's just like basically for now, it's just like you pull up the car. Yeah, yeah, like you just go into the Carfax. Like this is an example of Carfax. Like you just save this to your computer or to your phone, wherever, and you just upload it. That's it. The prompt is...
+
+Fred Tracy (05:17.694)
+everything that's in that car fax document.
+
+Jason (05:40.202)
+is meant to recognize that it is a car fax and it is meant to parse it as such.
+
+Fred Tracy (05:49.192)
+So that's just one example of one uploaded car fact.
+
+Jason (05:49.528)
+So like.
+
+Yeah, so this is just one uploaded Carfax. And the idea is just like, you have all the information about each record and like most of this data is a direct will be completely like unchanged from the document, just putting it into a tabular form.
+
+Right now, it's either a PDF as text or image-based. So you gotta take that data and make it data-rich, so we can actually use the information in it rather than just, you know, when it...
+
+The computer needs to read the data inside of it and analyze it. In order to do that, we have to put it into a tabular form or table form where it knows this record from this record and their different records. Whereas if it's in a PDF, it doesn't really know that. It doesn't think about data like that. yeah, that's the data. And then once you click analyze,
+
+then all these other steps are completed. So when you click and I'm gonna click analyze at the end. so basically, because like it takes a while. So basically you click analyze and like, it should be kind of like a spinning wheel, like service history analysis being completed, route pulling routine maintenance records from OEM, unscheduled maintenance from, you know, whatever expert.
+
+Jason (07:31.264)
+expert
+
+Audi guides or some shit like that, you know, or like, then performing gap analysis between service history and routine maintenance schedule, performing risk evaluation from unscheduled maintenance and previous repairs. And then, and then performing market evaluation of, you know, Kelly Blue Book value or some shit like that. And then, and then calculating total cost of ownership based off of all those, like I think of like when you click analyze, there should be
+
+Like a wheel here spinning and then like it says like okay, it's doing this. All right, it's moved on to this Okay, it's moved on to this and then as it moves on these things become selectable That's kind of the way it's doing it right now and I could show you at the end I just don't want to run it yet because I'm gonna be able to select so service history analysis, this is basically just like a narrative of What's in the car facts? So like, know a
+
+Okay, you can look at a car fax. What does any of that mean if you see like multiple times this sensor has been replaced? What would an expert say about that? Like is it suspicious that you know, this thing might need to be replaced all the time that something else is going on
+
+Is it interesting that, you know, have they have they done OEM schedule oil changes or are doing every 5,000 miles? Are they up to date just like general narrative from the perspective of an expert of that car and an expert of vehicle maintenance?
+
+Fred Tracy (09:06.184)
+So it buckets it into suspicious patterns or do these things, these variables changes like anomaly and concerns, does that all stay consistent?
+
+Jason (09:14.756)
+Yeah, I think you know, yes, we should have titles like this should stay consistent
+
+Fred Tracy (09:24.016)
+any other sets of criteria that could pop up or is it just this?
+
+Jason (09:28.144)
+I think that could be yes, I think we should build build this if we you know Build it build it as this but make it so we can add more, you know like But like yeah, we could just build it like like let's say, know, okay every time overall evaluation suspicious patterns anomalies and concerns services perform and then maybe like you could have another one that's like Positive
+
+Fred Tracy (09:33.106)
+just as this, as is right now.
+
+Jason (09:58.125)
+I don't know, something like a positive feet like section where it's like a, not just negative, positive, like a positive and negative review of the car facts. What looks good in the car facts, what looks bad in the car facts.
+
+Fred Tracy (10:02.174)
+It's not just the negative, it's showing the upside of...
+
+Jason (10:14.028)
+And we, think we'll need to, definitely will need to define that criteria more specifically. But for now, I think in the, in the UI UX development, let's just say that we have, you know, something like five, five to 10 categories that we're going to report on.
+
+Jason (10:36.708)
+Does that make sense? I was like placeholders almost.
+
+Fred Tracy (10:38.014)
+Perfect, yes.
+
+Jason (10:42.756)
+Routine maintenance, is, so after everyone runs this part, this pulls routine maintenance schedule for that car. For that specific vehicle type, make model year, Like that trim, whatever, or engine, exactly what all the scheduled routine maintenance is in specific tabulated line items.
+
+Jason (11:16.356)
+Very basic this is used in the future Same thing with unscheduled maintenance same idea here different criteria These are like repairs things that typically break and are basically saying like okay these items break What's the probability that they break? Forecasted mileage now this is going I want to be more complicated. I want this to show This would really be these two things would be a curve
+
+you can maybe like click this and then a curve would pop up probability of failure at x miles and you show it's called survivability analysis basically saying probabilities on your y-axis and x-axis would be mileage and it basically says at a certain point in time at a certain mileage you have a certain probability of that failing and that changes as you go up in miles
+
+So I do want to implement something like that. That's more of like thinking hierarchical visualizations. We could just start with something like this and just say like, you know, average probability of failure around the most likely timeline of failure.
+
+And then gap analysis is think of gap analysis as routine maintenance minus service history. So like when I say minus, mean, what, what is the, what has, what is supposed to be performed at a certain time that hasn't been performed? So what thing, what things need to be done now and like,
+
+an overall sense of things that haven't been done, what does that mean for the owner? Like let's say, let's say the power steering fluid was never changed, but it was due 20,000 miles ago. What does that mean in terms of like risk? And that's just on the routine side. So then risk evaluation is on the unscheduled side. that routine is think of it as
+
+Jason (13:29.54)
+risk evaluation think of it as On schedule maintenance minus service history. So Service history isn't just services. It's also repairs Repairs of things that you know, just they broke they weren't part of the routine maintenance But they did them and it's documented that they replaced the water pump or something
+
+Okay, well water pumps supposed to go at 60,000 miles or 70,000 miles and it was replaced already on this car so well here it says that it wasn't but just say it was and like So what's the what's the future risk projected risk in the next, know, whatever miles? And basically just have a line by line so every single
+
+Every like routine the risk evaluation will have everything that's in unscheduled maintenance Just with a narrative based on the service history Same thing with gap analysis every single item in routine maintenance is in gap analysis, but with a narrative based on service history So yeah, that's like that's what Those two things like gap analysis and risk evaluation
+
+are the first two biggest abstractions from the tool and capability-wise. The next...
+
+Fred Tracy (15:01.374)
+The differentiator would you say even to what you could get from, nevermind.
+
+Jason (15:08.696)
+Yeah, yeah, I would say those two are the biggest differentiators from what else is out there. Because car, like you look at Carfax, that's what Carfax doesn't tell you. Carfax doesn't tell, it just tells you what's been done on the car. doesn't tell you what should have been done or what might be due in the future.
+
+Fred Tracy (15:22.6)
+Yep.
+
+Jason (15:23.032)
+That's what tells you like, you know, if you see high risk, right? Like this is really needs to be done or you see like gap analysis Like this has never been done on the car then that's that's could be your negotiation leverage site Like you know, I'm in the next 10,000 miles. I'm gonna need to do this based on OEM Scheduled maintenance or you know this car there's a every single one of these cars has a water pump failure and This one hasn't had it replaced yet
+
+And it's right around that time. So like I know you you know you go to the dealership I know you're not gonna pay for that right now. I'm just based on based on these things This is why I think this car shouldn't be priced at you know You're about to fall off the depreciation curve because of that something you know you can kind of like Do your negotiation based off of that information But you know that that line of thinking is we're not building into this yet. We're just providing the data
+
+And then the next big piece of this, next big leg of how to calculate total ownership is market valuation. So basically when you're value of a car, you can sell the car in different ways. You can sell the car retail from a dealership, private party or traded.
+
+So trade in is like, want to give this car to a dealership, right? So not buying from a dealership, but you can kind of think about it, like based on what the retail value is, what was the trade in value? Like, okay, the dealership probably got it for this much and they're selling it for this much above retail. Like, you know, sort of think about it in that way. And then private party values, you know, buying from an individual. And what...
+
+basically We have this says like okay as we go on in miles the card appreciates Well, what is that depreciation look like this one's pretty linear, but a lot of them look like a hockey stick so when When you know the hockey stick we call it the knee at 40,000 miles it starts to level off, right so
+
+Jason (17:44.677)
+If that's the case, know, you can, the user can look at this and say, all right, well, if I buy this car at 30,000 miles and the next 10,000 miles, I'm going to drop $10,000 in value versus if I buy it at 50, I'm only going to drop, I don't know, $3,000 in value depending on that curve. So this is just, this gets baked into total ownership cost.
+
+Because you'll plug in that data in the cut the calculation will use the data of how many miles and whatnot and and how many miles you're gonna drive a year and how many years you want to own it and sit and that'll That'll feed the calculation of how much is this car gonna cost me if I want to sell it at this point time? So
+
+Yeah, just kind of like general information sort of about value but really this is kind of How this is the the bones of this it's like the appreciation curve Value today what the value is going to be in the future
+
+So yeah, and then you could use this and say just as a single analysis, me, if I'm gonna buy this car for $25,000, three years, 12,000 miles a year, it's not working here, but it'll work in comparator.
+
+So let's say you do two different cars. You plug in S7, you plug in A6, you come to the comparator, you do what I was just about to do in the single car view. Same thing, just you're comparing two cars together.
+
+Fred Tracy (19:25.992)
+So every car that you analyze goes to the comparator.
+
+Jason (19:29.622)
+Yeah. And this is where this is, this is the, like, I kind of walked through all the detailed information, but a lot of people are just going to come here. Right? Like,
+
+That's the details of everything if you want to really understand use the information to your advantage You can look into all that stuff. But if you just want to say, okay what car I'm looking at these two different cars. I want to compare them What's the better value I would buy either of them. I like them equally Which one am I going to lose less money on or save the most money on over? A three-year period where I drive 12,000 miles a year I want to compare this one to this one and this one costs more
+
+this one costs less or maybe the other way around and the differences in prices will lead at differences in prices and mileage and depreciation and maintenance are going to lead to different ownership costs.
+
+So you run that and it just does a simple calculation that says, okay, we got to purchase price. Current value is based on depreciation.
+
+Right and we can look at detailed cost breakdown first like immediate cost burden would be like, okay You need to do this maintenance right now like routine maintenance This is due. It hasn't been done Projected routine maintenance over that period of time is what you're gonna have to do like did like an oil change on one car is gonna cost more than an oil change on another so That is factored in here expect expected unscheduled repairs, right? Like these are things that right now I mean the software
+
+Jason (21:17.862)
+where it's not fully working 100 % on everything, but it would identify things that would break and might break and...
+
+might do like some probable probabilistic fact scale factor to it like if something costs $30,000 or something costs like $5,000 repair but there's only a 20 % chance that it breaks within the next 10,000 miles that maybe we apply like a point two to that 5,000 right like so so I don't know exactly how it's gonna work but something like that we're going to unscheduled repairs and then depreciation is just follows that curve based on where the my is today
+
+Where mileage is gonna be in three years how much money you lose and then you roll up into total cost and then expected sale price and then you You would you would see how much you're gonna lose and then you know, this is kind of high level that's kind of what this is doing and then Yeah, I mean these things are definitely all this is
+
+I don't know, there's definitely some things that need to be adjusted and changed and fixed, but the general idea is that this page compares total ownership costs, factoring in these costs into a comparative visualization of whatever cars you select in your portfolio.
+
+Fred Tracy (22:39.228)
+Yep. So this is, yep, okay.
+
+And that's it, right? That's great. And this is awesome. So do you think this is like, you had a rank in order of the visualization. It's this page and then which other ones, I guess, or I guess what, what do you know was working? What do you know probably has to change from a visual or higher, or what does your gut say from a visual or hierarchical standpoint?
+
+Jason (22:45.688)
+That's it, yeah.
+
+Jason (23:15.616)
+I think like everything should be the comparator. Like the comparator should be the base page. Plug in this card, plug in this card, plug in however many cards you want to plug in and just click analyze and it runs them all.
+
+Fred Tracy (23:31.762)
+Hmm.
+
+Jason (23:32.208)
+And it just gives you, it gives you the analysis. It gives the page where you plug in the cars is the page where you get all the analysis. Right. And then you can click on a car and go into the details, you know, but everything is the comparator page. And then from, know, you click S seven in comparator, like, you know, you run this, you click 25 K.
+
+Fred Tracy (23:40.135)
+Yeah.
+
+Fred Tracy (23:45.02)
+Yeah. Yep.
+
+Jason (24:01.285)
+Okay, and then you whatever however, like, you know, this will be like this won't this won't look like this We maybe do like boxes something visually appealing, you know, like a table of like s7 a6 2016 20 something like that and and Then you would click that tile and then it would go into this stuff
+
+Fred Tracy (24:22.578)
+Yep.
+
+Jason (24:25.782)
+and you would see why that, the details of why that car and the recommendations of it, you know, and then maybe like on the tile, it would show like risk, you know, or like red, green, yellow type of thing, who knows? Some shit like that.
+
+Fred Tracy (24:48.232)
+how long does it actually take? Or I guess for this prototype, do you want them to do that version? Or do you think like in terms of how it's coded, like do you want it to be what this is right now and like beautified or do you want like an actual UX of the vision you just laid out there?
+
+Jason (25:11.032)
+I think we want an actual UX of that vision, but I don't think we need. No, I think we can do it with compared to like main page. And then all this data that is analyzed is in the back. When you click it, let's do it like that. Let's do it from a user perspective. Like just like how we want it. it, don't, I think I want to roll something out quick and.
+
+Fred Tracy (25:14.504)
+But it needs to be this first, right?
+
+Fred Tracy (25:22.396)
+Okay.
+
+Fred Tracy (25:26.928)
+Okay, okay. Okay.
+
+Fred Tracy (25:32.583)
+Okay.
+
+Jason (25:40.229)
+to get users on it immediately. So I think the details of, you know, the nitty gritty science behind UI UX, we can do the bare minimum of that or like, you know, do a little bit of that, but not like go full thread where, you know, UI UX costs 20,000, 25,000, you know, just like make it look.
+
+Fred Tracy (25:59.496)
+Mm-hmm.
+
+Jason (26:09.164)
+like an adequate professional user interface.
+
+Fred Tracy (26:13.31)
+Okay. So all that stuff in that hierarchy still kind of stays when you drill into the car.
+
+Jason (26:19.574)
+Yes, yeah, yeah. And then maybe like each tile on the comparator is like the most important information. Like S7, like well maintained, just like one bullet for each of those. know, like, where is history analysis? Well maintained or like significant gaps in maintenance.
+
+Fred Tracy (26:29.342)
+correct.
+
+Fred Tracy (26:37.96)
+for each one of these, yes. So, for service, yeah.
+
+Jason (26:46.55)
+And then like gap analysis says, yeah, like that would be like significant gaps in maintenance, like high level bullet point abstractions on the tile.
+
+Fred Tracy (26:56.03)
+Okay. Do we need to identify the most important parts of each part of that or no? For like service history analysis, if you click into that. Please.
+
+Jason (27:09.252)
+I don't know yet. I just think, I think let's just get going on the structure of the UI UX and just like think about putting placeholders in.
+
+Fred Tracy (27:18.598)
+Okay, okay, okay.
+
+Fred Tracy (27:23.998)
+Okay. I guess what I'm saying is you think it's going to be enough. Well, I guess they could click to expand and see it.
+
+Jason (27:31.148)
+Yeah Yeah, no, I mean it's just like in the compare in the tiles it'll like I just it should just be like Let's just give them an idea of you know, and then they can I don't think we need to have a lot of information on that page I want to give I want this to be like this is your this is dollar sign. You're going to lose
+
+Or like we could even do like kind of like the commercial that I had, the idea I have for the commercial where like when you click analyze, it like shows these different cars racing each other down a finish line.
+
+Fred Tracy (28:09.458)
+Yeah, with place advertisement as it's loading.
+
+Jason (28:13.004)
+Yeah, yeah, yeah. But yeah, just beautify it, have it be user usability focused.
+
+Jason (28:30.68)
+but it doesn't like names, like how you name things when we drill down, it doesn't matter. those things are going to change. Like the number of fields in this table, like what we name these things might change, but just like having the structure of the user journey in a more complete comprehensive, like user interface.
+
+I think we need to get going on because once we have the backend all figured out, we just want to take that backend, plug it in, and put whatever level of information we need in these different places, and then we'll deploy it.
+
+Fred Tracy (29:21.95)
+Is there any other things that they need to know what this is built with like?
+
+Jason (29:30.884)
+No, I mean, I don't think there's any like, I think we will need like, oh, that's a good point. Like disclaimers. We might need, you know, if I use vehicle databases, they'll, yeah. I mean, definitely that we definitely want to think about the legal side of it and what we need to disclaim. Yeah. I need to figure that out.
+
+Fred Tracy (29:46.227)
+Yeah.
+
+Fred Tracy (29:55.25)
+But that's natural. Yeah, okay. Okay. Okay.
+
+Is there any way where if like, let's say I get someone to do this, they can actually like plug and play like, is this like deployed where like I could like go onto a website and use it yet or no?
+
+Jason (30:14.948)
+not yet. Yeah, I'll have to, I'll have to deploy it on Versel and like next. Yes. I've never done it before, but I don't think it's that hard.
+
+Fred Tracy (30:17.675)
+Is there any way in which I could give access for someone to use this or no?
+
+Fred Tracy (30:30.11)
+instead of pain.
+
+Fred Tracy (30:35.902)
+Famous last words.
+
+Jason (30:38.486)
+I really don't. It's just like...
+
+No, I don't think it's hard. We need it. We need like a domain though.
+
+Fred Tracy (30:49.202)
+That's okay, you get one now.
+
+Jason (30:51.478)
+Yeah, you wanna do that though? Should we stop recording?
+
+Fred Tracy (30:54.172)
+Yeah.
+
