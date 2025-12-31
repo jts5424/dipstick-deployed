@@ -10,7 +10,7 @@ import { Upload, FileText, CheckCircle2, AlertCircle, Car, ArrowRight, Loader2, 
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { parsePdf, savePortfolio } from "@/lib/api";
+import { parsePdf, savePortfolio, analyzeServiceHistory } from "@/lib/api";
 
 type AddMethod = 'upload' | 'vin' | 'manual' | null;
 type ParsingState = 'idle' | 'uploading' | 'extracting' | 'detecting' | 'building' | 'complete';
@@ -107,11 +107,15 @@ export default function AddVehicle() {
   });
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('[Frontend] 📁 File input changed');
     const file = e.target.files?.[0];
+    console.log('[Frontend] 📄 Selected file:', file?.name, file?.type, file ? `(${(file.size / 1024).toFixed(2)} KB)` : 'NO FILE');
     if (file && file.type === 'application/pdf') {
+      console.log('[Frontend] ✅ Valid PDF, setting file and opening dialog');
       setPdfFile(file);
       setIsParsingDialogOpen(true);
     } else {
+      console.log('[Frontend] ❌ Invalid file type');
       toast({
         title: "Invalid File",
         description: "Please select a PDF file.",
@@ -121,66 +125,183 @@ export default function AddVehicle() {
   };
 
   const handleParsePdf = async () => {
-    if (!pdfFile) return;
+    console.log('[Frontend] 🚀 handleParsePdf called');
+    if (!pdfFile) {
+      console.log('[Frontend] ❌ No PDF file to parse');
+      return;
+    }
 
+    console.log('[Frontend] 📤 Starting PDF parse for:', pdfFile.name);
+    
+    // Close dialog and ensure we're on step 2
     setIsParsingDialogOpen(false);
-    setParsingState('uploading');
-    setDetailedStatus("Scanning document structure...");
+    setStep(2);
+    
+    // Set parsing state immediately to show loading screen
     setProgress(0);
+    setDetailedStatus("Scanning document structure...");
+    setParsingState('uploading');
+    
+    console.log('[Frontend] 📊 State updated - parsingState: uploading, step: 2, progress: 0');
+    
+    // Force multiple renders to ensure React processes the state updates
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    
+    console.log('[Frontend] 📊 After delay - checking if loading screen should show');
 
     try {
       // Update progress states
       setParsingState('extracting');
       setDetailedStatus("Extracting service dates...");
       setProgress(20);
+      console.log('[Frontend] 📊 Progress: 20%, state: extracting');
 
       // Call real API
-      const result = await parsePdf(pdfFile);
+      console.log('[Frontend] 📡 Calling parsePdf API...');
+      let result;
+      try {
+        result = await parsePdf(pdfFile);
+        console.log('[Frontend] ✅ API call completed, result:', result);
+      } catch (apiError) {
+        console.error('[Frontend] ❌ API call failed:', apiError);
+        throw apiError;
+      }
       
       setProgress(60);
       setDetailedStatus("Normalizing mileage data...");
+      console.log('[Frontend] 📊 Progress: 60%');
       
       setProgress(80);
       setDetailedStatus("Checking for major gaps...");
+      console.log('[Frontend] 📊 Progress: 80%');
       
       setParsingState('detecting');
       setDetailedStatus("Analyzing maintenance intervals...");
+      console.log('[Frontend] 📊 Parsing state: detecting');
       
       setProgress(90);
       setDetailedStatus("Generating risk score...");
+      console.log('[Frontend] 📊 Progress: 90%');
       
       // Store parsed service history
-      setParsedServiceHistory(result.serviceHistory || result);
+      const serviceHistory = result.serviceHistory || result;
+      console.log('[Frontend] 💾 Storing parsed service history:', {
+        hasRecords: !!serviceHistory?.records,
+        recordCount: serviceHistory?.records?.length || 0,
+        hasVehicleInfo: !!serviceHistory?.vehicleInfo
+      });
+      setParsedServiceHistory(serviceHistory);
       
       // Extract vehicle info if available
       const vehicleInfo = result.serviceHistory?.vehicleInfo || result.vehicleInfo || {};
       const metadata = result.serviceHistory?.metadata || result.metadata || {};
       const highestMileage = metadata.mileageRange?.highest || null;
 
+      // Prepare updated form data with vehicle info
+      const updatedFormData = {
+        make: vehicleInfo.make || formData.make,
+        model: vehicleInfo.model || formData.model,
+        year: vehicleInfo.year?.toString() || formData.year,
+        trim: vehicleInfo.trim || formData.trim,
+        engine: vehicleInfo.engine || formData.engine,
+        vin: vehicleInfo.vin || formData.vin,
+        mileage: highestMileage ? highestMileage.toString() : formData.mileage
+      };
+
       // Auto-populate form if vehicle info exists
       if (vehicleInfo.make || vehicleInfo.model || vehicleInfo.year) {
-        setFormData(prev => ({
-          ...prev,
-          make: vehicleInfo.make || prev.make,
-          model: vehicleInfo.model || prev.model,
-          year: vehicleInfo.year?.toString() || prev.year,
-          trim: vehicleInfo.trim || prev.trim,
-          engine: vehicleInfo.engine || prev.engine,
-          vin: vehicleInfo.vin || prev.vin,
-          mileage: highestMileage ? highestMileage.toString() : prev.mileage
-        }));
+        setFormData(updatedFormData);
       }
 
       setProgress(100);
       setParsingState('complete');
       setDetailedStatus("Analysis complete!");
       
-      toast({
-        title: "PDF Parsed Successfully",
-        description: `Found ${result.serviceHistory?.records?.length || 0} service records`,
+      console.log('[Frontend] ✅ Parsing complete!', {
+        records: result.serviceHistory?.records?.length || 0,
+        vehicleInfo: vehicleInfo,
+        parsedData: result.serviceHistory,
+        updatedFormData: updatedFormData
       });
+      
+      // Auto-save portfolio immediately after parsing
+      try {
+        const vehicleData = {
+          make: updatedFormData.make.trim() || '',
+          model: updatedFormData.model.trim() || '',
+          year: updatedFormData.year ? parseInt(updatedFormData.year) : new Date().getFullYear(),
+          mileage: updatedFormData.mileage ? parseInt(updatedFormData.mileage.replace(/,/g, '')) : (highestMileage ? parseInt(highestMileage.toString().replace(/,/g, '')) : 0),
+          trim: updatedFormData.trim?.trim() || undefined,
+          engine: updatedFormData.engine?.trim() || undefined,
+          vin: updatedFormData.vin?.trim() || undefined
+        };
+
+        // Validate we have minimum required data
+        if (!vehicleData.make || !vehicleData.model || !vehicleData.year || !vehicleData.mileage) {
+          console.warn('[Frontend] ⚠️ Missing required vehicle data, will wait for user to fill form');
+          toast({
+            title: "PDF Parsed Successfully",
+            description: `Found ${result.serviceHistory?.records?.length || 0} service records. Please confirm vehicle details.`,
+          });
+        } else {
+          // Step 1: Analyze service history (this is done during parsing)
+          console.log('[Frontend] 🔍 Analyzing service history...');
+          let serviceHistoryAnalysis = null;
+          try {
+            const analysisResult = await analyzeServiceHistory(vehicleData, serviceHistory);
+            if (analysisResult && analysisResult.analysis) {
+              serviceHistoryAnalysis = analysisResult.analysis;
+              console.log('[Frontend] ✅ Service history analysis complete');
+            }
+          } catch (analysisError) {
+            console.error('[Frontend] ⚠️ Service history analysis failed:', analysisError);
+            // Continue anyway - we still have parsed history
+          }
+          
+          // Save portfolio with parsed service history AND analysis
+          const portfolioData = {
+            vehicleData,
+            parsedServiceHistory: serviceHistory || null,
+            serviceHistoryAnalysis: serviceHistoryAnalysis,
+            routineMaintenance: null,
+            unscheduledMaintenance: null,
+            gapAnalysis: null,
+            riskEvaluation: null,
+            marketValuation: null,
+            totalCostOfOwnership: null
+          };
+
+          console.log('[Frontend] 💾 Auto-saving portfolio after parsing...', portfolioData);
+          const saveResponse = await savePortfolio(portfolioData);
+          const portfolioId = saveResponse.portfolioId || saveResponse.portfolio?.portfolioId;
+          
+          console.log('[Frontend] ✅ Portfolio auto-saved!', portfolioId);
+          
+          toast({
+            title: "PDF Parsed Successfully",
+            description: `Found ${result.serviceHistory?.records?.length || 0} service records. Redirecting to vehicle history...`,
+          });
+          
+          // Redirect to report page with history tab
+          setTimeout(() => {
+            setLocation(`/report/${portfolioId}?tab=history`);
+          }, 1000);
+        }
+      } catch (saveError: any) {
+        console.error('[Frontend] ❌ Error auto-saving portfolio:', saveError);
+        toast({
+          title: "PDF Parsed Successfully",
+          description: `Found ${result.serviceHistory?.records?.length || 0} service records. Please save manually.`,
+        });
+      }
     } catch (error: any) {
-      console.error('Error parsing PDF:', error);
+      console.error('[Frontend] ❌ Error parsing PDF:', error);
+      console.error('[Frontend] Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
       setParsingState('idle');
       setProgress(0);
       toast({
@@ -192,14 +313,19 @@ export default function AddVehicle() {
   };
 
   const handleMethodSelect = (selectedMethod: AddMethod) => {
+    console.log('[Frontend] 🎯 handleMethodSelect called with:', selectedMethod);
     setMethod(selectedMethod);
     setStep(2);
     
     if (selectedMethod === 'upload') {
       // Trigger file input
+      console.log('[Frontend] 📁 Attempting to trigger file input...');
       const fileInput = document.getElementById('pdf-file-input') as HTMLInputElement;
       if (fileInput) {
+        console.log('[Frontend] ✅ File input found, clicking...');
         fileInput.click();
+      } else {
+        console.error('[Frontend] ❌ File input element not found!');
       }
     } else if (selectedMethod === 'vin') {
       setParsingState('complete');
@@ -289,6 +415,12 @@ export default function AddVehicle() {
   };
 
   const handleSave = async () => {
+    console.log('[Frontend] 💾 handleSave called', {
+      method,
+      formData,
+      hasParsedHistory: !!parsedServiceHistory
+    });
+    
     // Validate required fields
     if (method === 'manual') {
         if (!formData.make || !formData.model || !formData.year || !formData.mileage) {
@@ -362,14 +494,25 @@ export default function AddVehicle() {
         totalCostOfOwnership: null
       };
 
-      await savePortfolio(portfolioData);
+      console.log('[Frontend] 📤 Saving portfolio...', portfolioData);
+      const saveResponse = await savePortfolio(portfolioData);
+      
+      console.log('[Frontend] ✅ Portfolio saved successfully!', saveResponse);
+      
+      if (!saveResponse || (!saveResponse.portfolioId && !saveResponse.success)) {
+        console.error('[Frontend] ❌ Invalid save response:', saveResponse);
+        throw new Error('Failed to save portfolio - invalid response');
+      }
+      
+      const portfolioId = saveResponse.portfolioId || saveResponse.portfolio?.portfolioId;
       
       toast({
         title: "Vehicle Saved",
-        description: "Vehicle added to garage. Click 'Run Analysis' to generate full report.",
+        description: "Vehicle added to garage successfully!",
       });
       
-      // Redirect to Garage
+      // Redirect to Garage - the ?new=true will trigger a reload
+      console.log('[Frontend] 🏠 Navigating to home page with portfolioId:', portfolioId);
       setLocation("/?new=true");
     } catch (error: any) {
       console.error('Error saving vehicle:', error);
@@ -403,7 +546,10 @@ export default function AddVehicle() {
         {/* Option A: Upload PDF */}
         <Card 
           className="relative cursor-pointer hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all duration-300 group border-2 border-dashed border-emerald-500/20"
-          onClick={() => handleMethodSelect('upload')}
+          onClick={() => {
+            console.log('[Frontend] 🖱️ Upload PDF card clicked');
+            handleMethodSelect('upload');
+          }}
         >
           <div className="absolute top-4 right-4">
             <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-0">Recommended</Badge>
@@ -582,8 +728,37 @@ export default function AddVehicle() {
   );
 
   const renderStep2 = () => {
-    if (method === 'upload' && parsingState !== 'complete') {
+    console.log('[Frontend] 🎨 renderStep2 called', {
+      method,
+      parsingState,
+      hasPdfFile: !!pdfFile,
+      hasParsedHistory: !!parsedServiceHistory,
+      step: 2
+    });
+    
+    // Show parsing UI if we're actually parsing (uploading, extracting, detecting, building)
+    const isParsing = parsingState === 'uploading' || parsingState === 'extracting' || parsingState === 'detecting' || parsingState === 'building';
+    const shouldShowParsing = method === 'upload' && isParsing;
+    
+    console.log('[Frontend] 🔍 Should show parsing UI?', shouldShowParsing, {
+      method,
+      parsingState,
+      isParsing,
+      condition: `method === 'upload' (${method === 'upload'}) && isParsing (${isParsing})`
+    });
+    
+    if (shouldShowParsing) {
+      console.log('[Frontend] 📊 ✅ RETURNING parsing state UI - loading screen should show now!');
       return renderParsingState();
+    } else {
+      console.log('[Frontend] 📊 ❌ NOT showing parsing UI, showing form instead');
+    }
+    
+    // If upload method but no file selected yet, go back to step 1
+    if (method === 'upload' && !pdfFile) {
+      console.log('[Frontend] ⚠️ Upload method selected but no file - going back to step 1');
+      setStep(1);
+      return null;
     }
 
     let title = "Confirm vehicle details";
@@ -593,7 +768,7 @@ export default function AddVehicle() {
 
     if (method === 'vin') {
         title = "Confirm VIN details";
-        subtext = "We’ll decode the vehicle and enable recall checks.";
+        subtext = "We'll decode the vehicle and enable recall checks.";
         banner = (
             <Card className="bg-amber-500/5 border-amber-500/20 mb-6">
                 <CardContent className="py-4 px-4 flex items-start gap-3">
@@ -625,10 +800,16 @@ export default function AddVehicle() {
             </Card>
         );
         cta = "Save vehicle";
-    } else if (method === 'upload') {
+    } else if (method === 'upload' && parsedServiceHistory) {
+        // ONLY show success if we actually have parsed data
         title = "Looks good?";
         subtext = "We extracted these details from your report.";
         cta = "Save & build analysis";
+    } else if (method === 'upload') {
+        // Upload method but no parsed data - show message to parse
+        title = "Select PDF file";
+        subtext = "Please select a PDF file to parse.";
+        cta = "Go back";
     }
 
     return (
@@ -645,20 +826,24 @@ export default function AddVehicle() {
           </div>
         </div>
 
-        {method === 'upload' && (
+        {method === 'upload' && parsedServiceHistory && (
           <Card className="bg-emerald-500/5 border-emerald-500/20">
             <CardContent className="pt-6">
-                  {/* Parsing Success Summary for Upload Method */}
-                  {method === 'upload' ? (
+                  {/* Parsing Success Summary for Upload Method - ONLY show if parsed */}
+                  {parsedServiceHistory ? (
                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                         <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                         <div>
                             <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Parsed successfully</h3>
                             <div className="flex gap-4 text-sm text-emerald-800/80 dark:text-emerald-200/80 mt-1">
-                                <span>Records found: 44</span>
-                                <span className="w-1 h-1 rounded-full bg-emerald-500/50 self-center" />
-                                <span>Gaps detected: 1</span>
+                                <span>Records found: {parsedServiceHistory?.records?.length || 0}</span>
+                                {parsedServiceHistory?.metadata?.gapCount !== undefined && (
+                                  <>
+                                    <span className="w-1 h-1 rounded-full bg-emerald-500/50 self-center" />
+                                    <span>Gaps detected: {parsedServiceHistory.metadata.gapCount}</span>
+                                  </>
+                                )}
                             </div>
                         </div>
                         </div>
@@ -873,7 +1058,10 @@ export default function AddVehicle() {
     <Layout>
       <div className="min-h-[80vh] flex flex-col justify-center py-10">
         {step === 1 && renderStep1()}
-        {step === 2 && renderStep2()}
+        {step === 2 && (() => {
+          console.log('[Frontend] 🎬 Rendering step 2, parsingState:', parsingState, 'method:', method);
+          return renderStep2();
+        })()}
       </div>
     </Layout>
   );

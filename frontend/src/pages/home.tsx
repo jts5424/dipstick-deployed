@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import Layout from "@/components/Layout";
-import { vehicles as mockVehicles } from "@/lib/mockData";
+// Removed mockVehicles import - garage only shows real data from database
 import { getAllPortfolios, getPortfolio, savePortfolio, analyzeServiceHistory, getRoutineMaintenance, getUnscheduledMaintenance, performGapAnalysis, evaluateUnscheduledMaintenanceRisk, getMarketValuation } from "@/lib/api";
 import { portfolioToVehicle } from "@/lib/portfolioTransform";
 import type { Vehicle } from "@/lib/mockData";
@@ -14,12 +14,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles); // Start with mock data as fallback
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]); // Start empty - load from API
   const [portfolios, setPortfolios] = useState<any[]>([]); // Store raw portfolios to check analysis status
   const [selectedForCompare, setSelectedForCompare] = useState<string[]>([]);
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const [isProcessingNew, setIsProcessingNew] = useState(false);
+  // Removed isProcessingNew - no longer needed
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -27,9 +27,12 @@ export default function Home() {
     const loadPortfolios = async () => {
       try {
         setIsLoading(true);
+        console.log('[Home] 📡 Loading portfolios from API...');
         const result = await getAllPortfolios();
+        console.log('[Home] 📦 API response:', result);
         
         if (result.portfolios && result.portfolios.length > 0) {
+          console.log('[Home] ✅ Found', result.portfolios.length, 'portfolios');
           // Store raw portfolios
           setPortfolios(result.portfolios);
           // Transform portfolios to vehicles
@@ -38,20 +41,22 @@ export default function Home() {
           // Select all by default for comparison
           setSelectedForCompare(transformedVehicles.map(v => v.id));
         } else {
-          // No portfolios yet, keep mock data
-          setVehicles(mockVehicles);
-          setSelectedForCompare(mockVehicles.map(v => v.id));
+          // No portfolios yet - show empty state, NO mock data
+          setVehicles([]);
+          setPortfolios([]);
+          setSelectedForCompare([]);
         }
       } catch (error) {
         console.error('Error loading portfolios:', error);
         toast({
           title: "Error Loading Vehicles",
-          description: "Using demo data. Make sure the backend is running.",
+          description: "Make sure the backend is running.",
           variant: "destructive"
         });
-        // Fallback to mock data on error
-        setVehicles(mockVehicles);
-        setSelectedForCompare(mockVehicles.map(v => v.id));
+        // No fallback to mock data - show empty state
+        setVehicles([]);
+        setPortfolios([]);
+        setSelectedForCompare([]);
       } finally {
         setIsLoading(false);
       }
@@ -59,21 +64,20 @@ export default function Home() {
 
     loadPortfolios();
 
-    // Check for 'new=true' query param
+    // Check for 'new=true' query param - reload immediately
     if (window.location.search.includes('new=true')) {
-        setIsProcessingNew(true);
-        // Clean up URL
+        // Clean up URL immediately
         window.history.replaceState({}, '', '/');
         
-        // Reload portfolios after adding new one
-        setTimeout(() => {
-            setIsProcessingNew(false);
-            loadPortfolios();
+        // Reload portfolios immediately to show the new vehicle
+        console.log('[Home] 🔄 Reloading portfolios after new vehicle added');
+        loadPortfolios().then(() => {
+            console.log('[Home] ✅ Portfolios reloaded, new vehicle should appear');
             toast({
-                title: "Analysis Complete",
-                description: "Your vehicle has been fully analyzed.",
+                title: "Vehicle Added",
+                description: "Your vehicle has been added to the garage.",
             });
-        }, 3000);
+        });
     }
   }, [toast]);
 
@@ -101,129 +105,13 @@ export default function Home() {
     setLocation(`/compare?ids=${ids}`);
   };
 
-  const handleRunAnalysis = async (vehicleId: string) => {
-    try {
-      // Find portfolio ID from vehicle ID (vehicle.id is portfolio ID)
-      const portfolioId = vehicleId;
-      
-      // Get current portfolio
-      const portfolioResult = await getPortfolio(portfolioId);
-      if (!portfolioResult.portfolio) {
-        toast({
-          title: "Vehicle Not Found",
-          description: "Could not find vehicle data.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const portfolio = portfolioResult.portfolio;
-      const vehicleData = portfolio.vehicleData;
-      const serviceHistory = portfolio.parsedServiceHistory;
-
-      if (!serviceHistory) {
-        toast({
-          title: "No Service History",
-          description: "Please upload and parse a PDF first.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      toast({
-        title: "Starting Analysis",
-        description: "Running full analysis workflow...",
-      });
-
-      // Run full analysis workflow
-      // Step 1: Analyze service history
-      const analysisResult = await analyzeServiceHistory(vehicleData, serviceHistory);
-      
-      // Step 2: Get routine maintenance
-      const routineResult = await getRoutineMaintenance(vehicleData);
-      
-      // Step 3: Get unscheduled maintenance
-      const unscheduledResult = await getUnscheduledMaintenance(vehicleData);
-      
-      // Step 4: Perform gap analysis
-      const gapResult = await performGapAnalysis(vehicleData, serviceHistory, routineResult.routineMaintenance || []);
-      
-      // Step 5: Evaluate risk
-      const riskResult = await evaluateUnscheduledMaintenanceRisk(
-        vehicleData,
-        serviceHistory,
-        analysisResult.analysis,
-        unscheduledResult.unscheduledMaintenance || []
-      );
-      
-      // Step 6: Get market valuation
-      const valuationResult = await getMarketValuation(vehicleData);
-
-      // Step 7: Save updated portfolio with all analysis data
-      await savePortfolio({
-        portfolioId,
-        vehicleData,
-        parsedServiceHistory: serviceHistory,
-        serviceHistoryAnalysis: analysisResult.analysis,
-        routineMaintenance: routineResult.routineMaintenance,
-        unscheduledMaintenance: unscheduledResult.unscheduledMaintenance,
-        gapAnalysis: gapResult.gapAnalysis,
-        riskEvaluation: riskResult.riskEvaluation,
-        marketValuation: valuationResult.valuation || valuationResult
-      });
-
-      toast({
-        title: "Analysis Complete",
-        description: "Full analysis has been generated. Refreshing...",
-      });
-
-      // Reload portfolios to show updated data
-      const result = await getAllPortfolios();
-      if (result.portfolios && result.portfolios.length > 0) {
-        setPortfolios(result.portfolios);
-        const transformedVehicles = result.portfolios.map(portfolioToVehicle);
-        setVehicles(transformedVehicles);
-      }
-    } catch (error: any) {
-      console.error('Error running analysis:', error);
-      toast({
-        title: "Analysis Failed",
-        description: error.message || "Failed to run analysis. Please try again.",
-        variant: "destructive"
-      });
-    }
+  const handleRunAnalysis = (portfolioId: string) => {
+    // Redirect to report page with runAnalysis query param
+    const fullPortfolioId = portfolioId.startsWith('portfolio_') ? portfolioId : `portfolio_${portfolioId}`;
+    setLocation(`/report/${fullPortfolioId}?runAnalysis=true`);
   };
 
-  // Mock vehicle for processing state
-  const processingVehicle = {
-      id: "processing-1",
-      make: "Audi",
-      model: "S7",
-      year: 2015,
-      trim: "Prestige",
-      vin: "WAU2GFAFC7FN01234",
-      mileage: 84320,
-      location: "San Francisco, CA",
-      imageUrl: "https://images.unsplash.com/photo-1603584173870-7b299f589836?auto=format&fit=crop&q=80&w=2070",
-      scores: {
-        conditionScore: 0,
-        riskLevel: "Processing" as const,
-        historyScore: 0
-      },
-      tco: {
-        totalCost: 0,
-        totalLoss: 0,
-        costPerMile: 0
-      },
-      leverageItems: [],
-      history: {
-          owners: 0,
-          accidents: 0,
-          serviceRecords: 0,
-          lastServiceDate: "",
-          titleBrand: false
-      }
-  };
+  // Removed processingVehicle - no dummy data in garage
 
   if (isLoading) {
     return (
@@ -259,37 +147,39 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
-          {/* Show Processing Card if new vehicle added */}
-          {isProcessingNew && (
-             <div className="relative animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="absolute inset-0 z-20 bg-background/50 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-xl border-2 border-primary/20">
-                    <div className="bg-background p-4 rounded-full shadow-lg mb-3 border border-border">
-                        <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                    </div>
-                    <h3 className="text-lg font-bold text-foreground">Analyzing Vehicle...</h3>
-                    <p className="text-sm text-muted-foreground">Building risk model</p>
-                </div>
-                {/* @ts-ignore - Mocking vehicle prop partially */}
-                <VehicleCard vehicle={processingVehicle} />
-             </div>
-          )}
-
-          {vehicles.map((vehicle) => {
+          {/* Only show real vehicles from database - NO dummy data */}
+          {vehicles.length === 0 ? (
+            <div className="col-span-full text-center py-20">
+              <p className="text-muted-foreground">No vehicles in garage yet. Click "Add Vehicle" to get started.</p>
+            </div>
+          ) : (
+            vehicles.map((vehicle) => {
             // Check if portfolio has full analysis (has serviceHistoryAnalysis)
-            const portfolio = portfolios.find(p => p.portfolioId === vehicle.id);
+            // vehicle.id has 'portfolio_' prefix stripped, so we need to find by matching
+            const portfolio = portfolios.find(p => {
+              const portfolioIdWithoutPrefix = p.portfolioId.replace('portfolio_', '');
+              return portfolioIdWithoutPrefix === vehicle.id || p.portfolioId === vehicle.id;
+            });
             const hasFullAnalysis = portfolio?.serviceHistoryAnalysis !== null && portfolio?.serviceHistoryAnalysis !== undefined;
+            
+            if (!portfolio) {
+              console.error('Portfolio not found for vehicle:', vehicle.id);
+              return null;
+            }
             
             return (
               <VehicleCard 
                 key={vehicle.id} 
                 vehicle={vehicle} 
+                portfolioId={portfolio.portfolioId}
                 onCompareToggle={handleCompareToggle}
                 isSelectedForCompare={selectedForCompare.includes(vehicle.id)}
                 onRunAnalysis={handleRunAnalysis}
                 hasFullAnalysis={hasFullAnalysis}
               />
             );
-          })}
+          }).filter(Boolean)
+          )}
           
           {/* Add New Placeholder - Redesigned */}
           <Link href="/add">

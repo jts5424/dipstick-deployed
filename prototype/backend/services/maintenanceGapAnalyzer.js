@@ -43,8 +43,20 @@ ANALYSIS TASKS:
 1. Has this maintenance item been performed? (YES if you find ANY matching service record)
 2. If YES, what is the MOST RECENT date it was performed? (from the matching service record)
 3. If YES, what mileage was it performed at? (from the matching service record)
-4. Based on the interval (${maintenanceItem.intervalMiles || 'N/A'} miles / ${maintenanceItem.intervalMonths || 'N/A'} months), calculate when it should be done next
-5. Is it overdue, due now, or due in the near future (next 10,000 miles or 12 months)?
+4. If NEVER performed, set lastPerformedMileage = 0
+5. Calculate delta: delta = lastPerformedMileage + recommendedIntervalMiles - currentMileage (${currentMileage})
+6. If delta < 0: item is OVERDUE by abs(delta) miles. Set overdueByMiles = abs(delta), dueInMiles = null
+7. If delta >= 0: item is due in delta miles. Set overdueByMiles = null, dueInMiles = delta
+8. Calculate nextDueMileage: nextDueMileage = lastPerformedMileage + recommendedIntervalMiles (this is when it SHOULD be done)
+9. Determine status:
+   - "Overdue" if delta < 0 (overdue by abs(delta) miles)
+   - "Due Now" if delta is between 0 and 1000 miles OR if never performed (lastPerformedMileage = 0)
+   - "Near Future" if delta is between 1000 and 10,000 miles
+   - "Not Due" if delta > 10,000 miles
+
+CRITICAL FORMULA: delta = (lastPerformedMileage || 0) + intervalMiles - currentMileage
+- Negative delta = overdue by abs(delta) miles
+- Positive delta = due in delta miles
 
 Return ONLY a JSON object with this exact structure:
 {

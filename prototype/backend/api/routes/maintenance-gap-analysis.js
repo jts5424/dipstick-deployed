@@ -110,12 +110,24 @@ router.post('/',
             last_performed: item.lastPerformedMileage 
               ? `${item.lastPerformedMileage.toLocaleString()} miles${item.lastPerformedDate ? ` (${item.lastPerformedDate})` : ''}`
               : 'Never',
+            lastPerformedMileage: item.lastPerformedMileage || null, // Include raw mileage for calculations
+            last_performed_date: item.lastPerformedDate || null, // Include raw date
             interval: `${item.recommendedIntervalMiles ? item.recommendedIntervalMiles.toLocaleString() : 'N/A'} miles / ${item.recommendedIntervalMonths || 'N/A'} months`,
+            recommendedIntervalMiles: item.recommendedIntervalMiles || null, // Include raw interval
+            recommendedIntervalMonths: item.recommendedIntervalMonths || null,
             next_due: item.nextDueMileage ? `${item.nextDueMileage.toLocaleString()} miles${item.nextDueDate ? ` (${item.nextDueDate})` : ''}` : 'N/A',
+            nextDueMileage: item.nextDueMileage || null, // Include raw next due mileage (when it SHOULD be done)
+            next_due_date: item.nextDueDate || null, // Include raw date
+            overdueByMiles: item.overdueByMiles || null, // Include how many miles overdue
+            overdueByMonths: item.overdueByMonths || null,
+            dueInMiles: item.dueInMiles || null, // How many miles until due (if not overdue)
+            dueInMonths: item.dueInMonths || null,
             severity: item.severity || 'Medium',
             risk_note: item.riskNote || '',
             cost_range: item.costRange ? `$${item.costRange.min}-$${item.costRange.max}` : 'N/A',
+            costRange: item.costRange || { min: 0, max: 0 }, // Include raw cost range
             oem_cost: item.oemCost ? `$${item.oemCost.min}-$${item.oemCost.max}` : 'N/A',
+            oemCost: item.oemCost || { min: 0, max: 0 }, // Include raw OEM cost
             should_complete_before_purchase: item.shouldCompleteBeforePurchase ? 'Yes' : 'No'
           }
         }),

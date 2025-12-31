@@ -115,9 +115,11 @@ export const vehicleDataSchema = Joi.object({
  * Validates that a PDF file was uploaded
  */
 export const validatePDFFile = (req, res, next) => {
+  console.log('[PDF Parse] 🔍 Validation middleware: Checking file...')
   const file = req.file
 
   if (!file) {
+    console.log('[PDF Parse] ❌ Validation failed: No file in request')
     return res.status(400).json({
       error: 'Validation failed',
       details: [{
@@ -126,6 +128,8 @@ export const validatePDFFile = (req, res, next) => {
       }]
     })
   }
+  
+  console.log('[PDF Parse] ✅ Validation passed:', file.originalname)
 
   // Check file extension
   const allowedExtensions = ['.pdf']

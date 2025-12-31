@@ -22,13 +22,14 @@ import { Separator } from "@/components/ui/separator";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  portfolioId: string;
   onCompareToggle?: (id: string, selected: boolean) => void;
   isSelectedForCompare?: boolean;
   onRunAnalysis?: (vehicleId: string) => void;
   hasFullAnalysis?: boolean;
 }
 
-export default function VehicleCard({ vehicle, onCompareToggle, isSelectedForCompare, onRunAnalysis, hasFullAnalysis = true }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, portfolioId, onCompareToggle, isSelectedForCompare, onRunAnalysis, hasFullAnalysis = true }: VehicleCardProps) {
   const riskColor = 
     vehicle.scores.riskLevel === 'Low' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
     vehicle.scores.riskLevel === 'Moderate' ? 'bg-amber-100 text-amber-800 border-amber-200' :
@@ -39,8 +40,17 @@ export default function VehicleCard({ vehicle, onCompareToggle, isSelectedForCom
     vehicle.scores.riskLevel === 'Moderate' ? Shield :
     ShieldAlert;
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on buttons or interactive elements
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('a')) {
+      return;
+    }
+    window.location.href = `/report/${portfolioId}`;
+  };
+
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/60 group">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/60 group cursor-pointer" onClick={handleCardClick}>
       <div className="relative h-48 w-full overflow-hidden bg-muted">
         {vehicle.imageUrl ? (
           <img 
@@ -118,7 +128,7 @@ export default function VehicleCard({ vehicle, onCompareToggle, isSelectedForCom
 
       <CardFooter className="pt-4 flex gap-3 bg-muted/5 relative z-10">
         {hasFullAnalysis ? (
-          <Link href={`/report/${vehicle.id}`} className="flex-1">
+          <Link href={`/report/${portfolioId}`} className="flex-1">
             <Button className="w-full font-bold shadow-md hover:shadow-lg group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:-translate-y-0.5" size="sm">
               View Analysis <ArrowRight className="w-4 h-4 ml-1.5 opacity-70 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -126,7 +136,10 @@ export default function VehicleCard({ vehicle, onCompareToggle, isSelectedForCom
         ) : (
           onRunAnalysis && (
             <Button 
-              onClick={() => onRunAnalysis(vehicle.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRunAnalysis(portfolioId);
+              }}
               className="flex-1 font-bold shadow-md bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-300" 
               size="sm"
             >
@@ -140,7 +153,10 @@ export default function VehicleCard({ vehicle, onCompareToggle, isSelectedForCom
              <Button 
                 variant="outline"
                 size="sm"
-                onClick={() => onCompareToggle(vehicle.id, !isSelectedForCompare)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCompareToggle(vehicle.id, !isSelectedForCompare);
+                }}
                 className={`transition-all duration-300 ${isSelectedForCompare ? "bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 hover:text-white ring-2 ring-emerald-500/20" : "text-muted-foreground border-dashed hover:border-primary hover:text-primary"}`}
              >
                 {isSelectedForCompare ? (

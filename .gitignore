@@ -42,6 +42,10 @@ desktop.ini
 *.db
 *.sqlite
 *.sqlite3
+# Keep data directory structure but ignore DB files
+prototype/backend/data/*.db
+prototype/backend/data/*.sqlite
+prototype/backend/data/*.sqlite3
 
 # Uploads and temporary files
 uploads/
@@ -62,9 +66,30 @@ coverage/
 # Personal notes
 my_car.txt
 test-*.md
+!prototype/**/*.md
 *-notes.txt
+CLEANUP_PLAN.md
+CLEANUP_COMPLETE.md
+INTEGRATION_GUIDE.md
+DEPLOYMENT_SETUP.md
+
+# Keep all prototype documentation
+!prototype/**/*.md
 
 # Admin and sensitive documents
 admin/
+
+# Legacy/unused directories (consider removing)
+frontend-legacy/
+attached_assets/
+
+# Keep these for Railway + Supabase deployment:
+# server/ - Production server for Railway
+# shared/ - Drizzle schema for Supabase PostgreSQL
+
+# Backup files
+*.backup
+*.bak
+*~
 
 

@@ -5,12 +5,14 @@ Complete guide for deploying the Dipstick application to Railway.
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
-2. [Architecture Overview](#architecture-overview)
-3. [Step-by-Step Deployment](#step-by-step-deployment)
-4. [Environment Variables Setup](#environment-variables-setup)
-5. [Verification & Testing](#verification--testing)
-6. [Troubleshooting](#troubleshooting)
-7. [Quick Reference](#quick-reference)
+2. [Critical Pre-Deployment Checklist](#critical-pre-deployment-checklist)
+3. [Architecture Overview](#architecture-overview)
+4. [Step-by-Step Deployment](#step-by-step-deployment)
+5. [Environment Variables Setup](#environment-variables-setup)
+6. [Verification & Testing](#verification--testing)
+7. [Troubleshooting](#troubleshooting)
+8. [Database & Storage Considerations](#database--storage-considerations)
+9. [Quick Reference](#quick-reference)
 
 ---
 
@@ -20,6 +22,24 @@ Complete guide for deploying the Dipstick application to Railway.
 - ✅ Railway account (sign up at [railway.app](https://railway.app) if needed)
 - ✅ OpenAI API key (for prototype backend)
 - ✅ Anthropic API key (optional, for dev backend if using Claude API)
+
+## Critical Pre-Deployment Checklist
+
+Before deploying, ensure:
+
+- ✅ **Backend Port Configuration**: `prototype/backend/server.js` uses `process.env.PORT` (already fixed)
+- ✅ **Frontend Static Serving**: `serve` package is in `frontend/package.json` dependencies (already present)
+- ✅ **Railway Config Files**: `railway.json` and `nixpacks.toml` exist for all services (already present)
+
+### Important Notes
+
+- **Database**: Currently using SQLite. Data is **ephemeral** (lost on redeploy). For production, consider:
+  - Migrating to Supabase PostgreSQL (recommended)
+  - Using Railway Volumes to persist SQLite database
+  
+- **File Uploads**: Currently using local filesystem. Files will be **lost on redeploy**. For production, consider:
+  - Railway Volumes for persistent storage
+  - External storage (S3, Cloudflare R2, etc.)
 
 ---
 
@@ -216,7 +236,11 @@ See [Step-by-Step Deployment](#step-by-step-deployment) for detailed instruction
 - Prototype Backend: `OPENAI_MODEL` (default: `gpt-4o-mini`), `MAX_FILE_SIZE` (default: `10485760`)
 - Dev Backend: `ANTHROPIC_API_KEY` (if using Claude API)
 
-**Note:** Railway automatically sets `PORT` - no need to set it manually.
+**Important Notes:**
+- Railway automatically sets `PORT` - **do not set it manually**
+- All URLs must use `https://` (not `http://`)
+- No trailing slashes in URLs (e.g., `https://example.com` not `https://example.com/`)
+- Variable names are case-sensitive
 
 ---
 
@@ -562,6 +586,52 @@ If you want custom domains for your API backends (e.g., `api.dipstick.com`):
 - Make sure you updated `CORS_ORIGIN` in both backends to include your custom domain
 - Wait for backends to redeploy after updating CORS_ORIGIN
 
+## Database & Storage Considerations
+
+### Current Setup
+- **Database**: SQLite (`prototype/backend/data/executionLog.db`)
+- **File Uploads**: Local filesystem (`prototype/backend/uploads/`)
+
+### Production Recommendations
+
+#### Option 1: Migrate to Supabase PostgreSQL (Recommended)
+
+1. **Set Up Supabase:**
+   - Create account at [supabase.com](https://supabase.com)
+   - Create new project
+   - Get connection string from Settings → Database → Connection string
+
+2. **Update Backend:**
+   - Install PostgreSQL driver: `npm install pg`
+   - Update `prototype/backend/services/executionLogger.js`:
+     - Replace SQLite with PostgreSQL connection
+     - Convert SQLite syntax to PostgreSQL (e.g., `INTEGER PRIMARY KEY AUTOINCREMENT` → `SERIAL PRIMARY KEY`)
+     - Update `INSERT OR REPLACE` to PostgreSQL `INSERT ... ON CONFLICT`
+
+3. **Environment Variables:**
+   - Add `DATABASE_URL` to Railway (use Supabase connection string)
+
+4. **Run Migrations:**
+   - Use Drizzle ORM (already in project) or create migration scripts
+   - Run migrations on first deploy
+
+#### Option 2: Use Railway Volumes (For SQLite)
+
+1. **Add Volume in Railway:**
+   - Service → Settings → Volumes
+   - Add volume: `/app/data`
+   - Update `dbPath` in `executionLogger.js` to use volume path
+
+2. **File Uploads:**
+   - Add volume: `/app/uploads`
+   - Files will persist across redeploys
+
+#### Option 3: External Storage (For File Uploads)
+
+- Use Cloudflare R2, AWS S3, or similar
+- Update multer configuration to upload directly to external storage
+- Update API routes to serve files from external storage
+
 ## Next Steps
 
 Once everything is deployed and working:
@@ -569,8 +639,9 @@ Once everything is deployed and working:
 - ✅ Test all functionality
 - ✅ Set up custom domain (see above)
 - ✅ Configure monitoring/alerts
-- ✅ Set up database backups (if using SQLite, consider PostgreSQL)
+- ✅ Set up database backups (if using PostgreSQL)
 - ✅ Review Railway usage and costs
+- ✅ Consider migrating to PostgreSQL for production
 
 ---
 

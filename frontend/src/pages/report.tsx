@@ -3,7 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useRoute, useLocation } from "wouter";
 import Layout from "@/components/Layout";
 import MissionBriefing from "@/components/MissionBriefing";
-import { getVehicle } from "@/lib/mockData";
+import { getPortfolio, analyzeServiceHistory, getRoutineMaintenance, getUnscheduledMaintenance, performGapAnalysis, evaluateUnscheduledMaintenanceRisk, getMarketValuation, savePortfolio } from "@/lib/api";
+import { portfolioToVehicle } from "@/lib/portfolioTransform";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,6 +62,7 @@ import EvidenceTable from "@/components/EvidenceTable";
 import SurvivabilityChart from "@/components/SurvivabilityChart";
 import CumulativeCostChart from "@/components/CumulativeCostChart";
 import HistoryTimeline from "@/components/HistoryTimeline";
+import MaintenanceCostChart from "@/components/MaintenanceCostChart";
 import RiskUrgencyMap from "@/components/RiskUrgencyMap";
 import { GlossaryTooltip } from "@/components/GlossaryTooltip";
 import { 
@@ -201,22 +203,38 @@ function QuickSummary({
 export default function VehicleReport() {
   const [match, params] = useRoute("/report/:id");
   const [location, setLocation] = useLocation();
-  const vehicle = getVehicle(params?.id || "");
+  const [vehicle, setVehicle] = useState<any>(null);
+  const [portfolio, setPortfolio] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check URL for mode=offer
+  // Check URL for mode=offer and runAnalysis
   const searchParams = new URLSearchParams(window.location.search);
   const initialMode = searchParams.get('mode') === 'offer';
   const initialTab = searchParams.get('tab') || (initialMode ? 'leverage' : 'summary');
+  const shouldRunAnalysis = searchParams.get('runAnalysis') === 'true';
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(initialTab);
   const [offerMode, setOfferMode] = useState(initialMode); 
   const { toast } = useToast();
-
-  // Scroll to top on mount
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [match]);
+  
+  // Analysis workflow state
+  const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState<{
+    serviceHistory: boolean;
+    routineMaintenance: boolean;
+    unscheduledMaintenance: boolean;
+    gapAnalysis: boolean;
+    riskEvaluation: boolean;
+    marketValuation: boolean;
+  }>({
+    serviceHistory: false,
+    routineMaintenance: false,
+    unscheduledMaintenance: false,
+    gapAnalysis: false,
+    riskEvaluation: false,
+    marketValuation: false,
+  });
 
   // Offer Calculator State
   const [negotiationStyle, setNegotiationStyle] = useState<'Conservative' | 'Balanced' | 'Aggressive'>('Balanced');
@@ -224,11 +242,10 @@ export default function VehicleReport() {
   const [isPdfOpen, setIsPdfOpen] = useState(false);
   const [userPrice, setUserPrice] = useState<number | null>(null);
 
-  if (!vehicle) {
-    return <Layout><div className="p-8">Vehicle not found</div></Layout>;
-  }
+  // Leverage Logic - must be before early returns
+  const [selectedLeverageIds, setSelectedLeverageIds] = useState<string[]>([]);
 
-  // Calculate Target Offer
+  // Calculate Target Offer - must be before early returns
   const targetOffer = React.useMemo(() => {
     if (!vehicle) return 0;
     // Aggressive = higher discount (factor 1.2)
@@ -236,16 +253,366 @@ export default function VehicleReport() {
     const riskFactor = negotiationStyle === 'Aggressive' ? 1.2 : negotiationStyle === 'Balanced' ? 1.0 : 0.8;
     const timeFactor = timeHorizon === 1 ? 0.6 : timeHorizon === 3 ? 1.0 : 1.3;
     
-    const effectivePrice = userPrice || vehicle.tco.askingPrice;
+    const effectivePrice = userPrice || vehicle.tco?.askingPrice || 0;
 
     // Simple algo: Ask - (TotalLoss * Factors)
-    return Math.floor(effectivePrice - (vehicle.leverageItems.reduce((acc, i) => acc + i.costMin, 0) * riskFactor));
+    const leverageItems = vehicle.leverageItems || [];
+    return Math.floor(effectivePrice - (leverageItems.reduce((acc: number, i: { costMin?: number }) => acc + (i.costMin || 0), 0) * riskFactor));
   }, [vehicle, negotiationStyle, timeHorizon, userPrice]);
 
-  // Leverage Logic
-  const [selectedLeverageIds, setSelectedLeverageIds] = useState<string[]>(
-    vehicle.leverageItems.filter(i => i.id).map(i => i.id) 
-  );
+  // Load portfolio data from API
+  React.useEffect(() => {
+    const loadPortfolio = async () => {
+      if (!params?.id) return;
+      
+      try {
+        setIsLoading(true);
+        const result = await getPortfolio(params.id);
+        
+        if (result.portfolio) {
+          setPortfolio(result.portfolio);
+          // Transform portfolio to vehicle format for compatibility
+          const transformedVehicle = portfolioToVehicle(result.portfolio);
+          setVehicle(transformedVehicle);
+          // Update leverage IDs when vehicle loads
+          const leverageIds = (transformedVehicle.leverageItems || []).filter((i: any) => i.id).map((i: any) => i.id);
+          setSelectedLeverageIds(leverageIds);
+        } else {
+          toast({
+            title: "Vehicle Not Found",
+            description: "Could not find vehicle data.",
+            variant: "destructive"
+          });
+        }
+      } catch (error) {
+        console.error('Error loading portfolio:', error);
+        toast({
+          title: "Error Loading Vehicle",
+          description: "Failed to load vehicle data.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPortfolio();
+    window.scrollTo(0, 0);
+  }, [params?.id, toast]);
+
+  // Run analysis workflow if requested
+  React.useEffect(() => {
+    const runAnalysisWorkflow = async () => {
+      if (!shouldRunAnalysis || !portfolio || !vehicle || isRunningAnalysis || !params?.id) return;
+      
+      const vehicleData = portfolio.vehicleData;
+      const serviceHistory = portfolio.parsedServiceHistory;
+
+      if (!serviceHistory) {
+        toast({
+          title: "No Service History",
+          description: "Please upload and parse a PDF first.",
+          variant: "destructive"
+        });
+        window.history.replaceState({}, '', `/report/${params.id}`);
+        return;
+      }
+
+      setIsRunningAnalysis(true);
+      toast({
+        title: "Starting Analysis",
+        description: "Running full analysis workflow...",
+      });
+
+      // Build up portfolio data incrementally
+      let updatedPortfolio = { ...portfolio };
+      
+      if (!params?.id) {
+        throw new Error('Portfolio ID is missing');
+      }
+      
+      // Helper function to save portfolio with merged data
+      const savePortfolioWithMerge = async (newData: Partial<any>) => {
+        // Fetch current portfolio to preserve existing data
+        const currentResult = await getPortfolio(params.id);
+        const currentPortfolio = currentResult.portfolio || portfolio;
+        
+        // Merge existing data with new data
+        const mergedData = {
+          portfolioId: params.id,
+          vehicleData: newData.vehicleData || currentPortfolio.vehicleData || vehicleData,
+          parsedServiceHistory: newData.parsedServiceHistory !== undefined ? newData.parsedServiceHistory : ((currentPortfolio as any).parsedServiceHistory || serviceHistory),
+          serviceHistoryAnalysis: newData.serviceHistoryAnalysis !== undefined ? newData.serviceHistoryAnalysis : (currentPortfolio as any).serviceHistoryAnalysis,
+          routineMaintenance: newData.routineMaintenance !== undefined ? newData.routineMaintenance : currentPortfolio.routineMaintenance,
+          unscheduledMaintenance: newData.unscheduledMaintenance !== undefined ? newData.unscheduledMaintenance : currentPortfolio.unscheduledMaintenance,
+          gapAnalysis: newData.gapAnalysis !== undefined ? newData.gapAnalysis : currentPortfolio.gapAnalysis,
+          riskEvaluation: newData.riskEvaluation !== undefined ? newData.riskEvaluation : currentPortfolio.riskEvaluation,
+          marketValuation: newData.marketValuation !== undefined ? newData.marketValuation : currentPortfolio.marketValuation
+        };
+        
+        await savePortfolio(mergedData as any);
+        return mergedData;
+      };
+      
+      try {
+        // Check if service history analysis already exists (from parsing)
+        let serviceHistoryAnalysis = portfolio.serviceHistoryAnalysis || (portfolio as any).serviceHistoryAnalysis;
+        if (!serviceHistoryAnalysis) {
+          // Only run if it doesn't exist
+          setAnalysisProgress(prev => ({ ...prev, serviceHistory: true }));
+          console.log('[Report] 📊 Analyzing service history (not found in database)...');
+          const analysisResult = await analyzeServiceHistory(vehicleData, serviceHistory);
+          if (!analysisResult || !analysisResult.analysis) {
+            throw new Error('Service history analysis failed');
+          }
+          serviceHistoryAnalysis = analysisResult.analysis;
+          // Save to database
+          const savedData0 = await savePortfolioWithMerge({
+            serviceHistoryAnalysis: serviceHistoryAnalysis
+          });
+          updatedPortfolio = { ...updatedPortfolio, ...savedData0 };
+          setPortfolio(updatedPortfolio);
+          const transformedVehicle0 = portfolioToVehicle(updatedPortfolio);
+          setVehicle(transformedVehicle0);
+          setAnalysisProgress(prev => ({ ...prev, serviceHistory: false }));
+        } else {
+          console.log('[Report] ✅ Service history analysis already exists, skipping...');
+        }
+        
+        // Step 1: Get routine maintenance schedule
+        setAnalysisProgress(prev => ({ ...prev, routineMaintenance: true }));
+        console.log('[Report] 📊 STEP 1: Getting routine maintenance schedule...');
+        const routineResult = await getRoutineMaintenance(vehicleData);
+        console.log('[Report] ✅ STEP 1: Routine maintenance result:', routineResult);
+        // Save to database immediately with merged data
+        const savedData1 = await savePortfolioWithMerge({
+          routineMaintenance: routineResult.routineMaintenance || routineResult.schedule || routineResult
+        });
+        updatedPortfolio = { ...updatedPortfolio, ...savedData1 };
+        setPortfolio(updatedPortfolio);
+        const transformedVehicle1 = portfolioToVehicle(updatedPortfolio);
+        setVehicle(transformedVehicle1);
+        setAnalysisProgress(prev => ({ ...prev, routineMaintenance: false }));
+        
+        // Step 2: Perform gap analysis (uses routine maintenance + service history) → Maintenance & Due Now tab
+        setAnalysisProgress(prev => ({ ...prev, gapAnalysis: true }));
+        console.log('[Report] 📊 STEP 2: Performing gap analysis...');
+        try {
+          console.log('[Report] 🔍 Running gap analysis...', {
+            vehicleData,
+            hasServiceHistory: !!serviceHistory,
+            routineMaintenance: routineResult.routineMaintenance || routineResult.schedule || []
+          });
+          
+          const gapResult = await performGapAnalysis(
+            vehicleData, 
+            serviceHistory, 
+            routineResult.routineMaintenance || routineResult.schedule || []
+          );
+          
+          console.log('[Report] ✅ Gap analysis result:', gapResult);
+          
+          // Extract gap analysis data - handle different response structures
+          const rawGapAnalysis = gapResult?.gapAnalysis || gapResult?.gap_analysis || gapResult;
+          
+          if (!rawGapAnalysis || (typeof rawGapAnalysis === 'object' && Object.keys(rawGapAnalysis).length === 0)) {
+            console.warn('[Report] ⚠️ Gap analysis returned empty result:', gapResult);
+            toast({
+              title: "Gap Analysis Warning",
+              description: "Gap analysis completed but returned no data. Continuing with workflow...",
+              variant: "default"
+            });
+          } else {
+            // Transform backend response to match frontend structure
+            // Backend returns: { allItems: [...], summary: "..." }
+            // Frontend expects: { items: [...], totalItems: number, overdue: number, dueNow: number, dueSoon: number }
+            const allItems = rawGapAnalysis.allItems || rawGapAnalysis.items || [];
+            const overdueCount = allItems.filter((item: any) => item.status === 'Overdue' || item.status === 'overdue').length;
+            const dueNowCount = allItems.filter((item: any) => item.status === 'Due Now' || item.status === 'dueNow').length;
+            const dueSoonCount = allItems.filter((item: any) => item.status === 'Near Future' || item.status === 'dueSoon').length;
+            
+            const gapAnalysisData = {
+              items: allItems,
+              totalItems: allItems.length,
+              overdue: overdueCount,
+              dueNow: dueNowCount,
+              dueSoon: dueSoonCount,
+              summary: rawGapAnalysis.summary
+            };
+            
+            console.log('[Report] 📊 Transformed gap analysis:', gapAnalysisData);
+            
+            // Save to database immediately with merged data
+            const savedData4 = await savePortfolioWithMerge({
+              gapAnalysis: gapAnalysisData
+            });
+            updatedPortfolio = { ...updatedPortfolio, ...savedData4 };
+            setPortfolio(updatedPortfolio);
+            const transformedVehicle4 = portfolioToVehicle(updatedPortfolio);
+            setVehicle(transformedVehicle4);
+          }
+          setAnalysisProgress(prev => ({ ...prev, gapAnalysis: false }));
+        } catch (gapError: any) {
+          console.error('[Report] ❌ Gap analysis error:', gapError);
+          toast({
+            title: "Gap Analysis Error",
+            description: gapError.message || "Gap analysis failed. Continuing with remaining steps...",
+            variant: "destructive"
+          });
+          // Continue workflow even if gap analysis fails
+          setAnalysisProgress(prev => ({ ...prev, gapAnalysis: false }));
+        }
+        
+        // Step 3: Get unscheduled maintenance (typical failures)
+        setAnalysisProgress(prev => ({ ...prev, unscheduledMaintenance: true }));
+        console.log('[Report] 📊 STEP 3: Getting unscheduled maintenance (typical failures)...');
+        const unscheduledResult = await getUnscheduledMaintenance(vehicleData);
+        console.log('[Report] ✅ STEP 3: Unscheduled maintenance result:', unscheduledResult);
+        // Save to database immediately with merged data
+        const savedData3 = await savePortfolioWithMerge({
+          unscheduledMaintenance: unscheduledResult.unscheduledMaintenance || unscheduledResult.items || unscheduledResult
+        });
+        updatedPortfolio = { ...updatedPortfolio, ...savedData3 };
+        setPortfolio(updatedPortfolio);
+        const transformedVehicle3 = portfolioToVehicle(updatedPortfolio);
+        setVehicle(transformedVehicle3);
+        setAnalysisProgress(prev => ({ ...prev, unscheduledMaintenance: false }));
+        
+        // Step 4: Risk assessment (uses service history analysis + unscheduled maintenance) → Projected Future Repairs tab
+        setAnalysisProgress(prev => ({ ...prev, riskEvaluation: true }));
+        try {
+          console.log('[Report] 📊 STEP 4: Running risk assessment...', {
+            vehicleData,
+            hasServiceHistory: !!serviceHistory,
+            hasAnalysis: !!serviceHistoryAnalysis,
+            unscheduledMaintenance: unscheduledResult.unscheduledMaintenance || unscheduledResult.items || []
+          });
+          
+          const riskResult = await evaluateUnscheduledMaintenanceRisk(
+            vehicleData,
+            serviceHistory,
+            serviceHistoryAnalysis,
+            unscheduledResult.unscheduledMaintenance || unscheduledResult.items || []
+          );
+          
+          console.log('[Report] ✅ Risk evaluation result:', riskResult);
+          
+          // Extract risk evaluation data - handle different response structures
+          const riskEvaluationData = riskResult?.riskEvaluation || riskResult?.risk_evaluation || riskResult;
+          
+          if (!riskEvaluationData || (typeof riskEvaluationData === 'object' && Object.keys(riskEvaluationData).length === 0)) {
+            console.warn('[Report] ⚠️ Risk evaluation returned empty result:', riskResult);
+            toast({
+              title: "Risk Evaluation Warning",
+              description: "Risk evaluation completed but returned no data. Continuing with workflow...",
+              variant: "default"
+            });
+          }
+          
+          // Save to database immediately with merged data
+          const savedData5 = await savePortfolioWithMerge({
+            riskEvaluation: riskEvaluationData
+          });
+          updatedPortfolio = { ...updatedPortfolio, ...savedData5 };
+          setPortfolio(updatedPortfolio);
+          const transformedVehicle5 = portfolioToVehicle(updatedPortfolio);
+          setVehicle(transformedVehicle5);
+          const leverageIds5 = (transformedVehicle5.leverageItems || []).filter((i: any) => i.id).map((i: any) => i.id);
+          setSelectedLeverageIds(leverageIds5);
+          setAnalysisProgress(prev => ({ ...prev, riskEvaluation: false }));
+        } catch (riskError: any) {
+          console.error('[Report] ❌ Risk evaluation error:', riskError);
+          toast({
+            title: "Risk Evaluation Error",
+            description: riskError.message || "Risk evaluation failed. Continuing with remaining steps...",
+            variant: "destructive"
+          });
+          // Continue workflow even if risk evaluation fails
+          setAnalysisProgress(prev => ({ ...prev, riskEvaluation: false }));
+        }
+        
+        // Step 5: Market evaluation → Market Valuation tab
+        setAnalysisProgress(prev => ({ ...prev, marketValuation: true }));
+        try {
+          console.log('[Report] 📊 STEP 5: Running market evaluation...', { vehicleData });
+          
+          const valuationResult = await getMarketValuation(vehicleData);
+          
+          console.log('[Report] ✅ Market valuation result:', valuationResult);
+          
+          // Extract market valuation data - API returns { success: true, valuation: {...} }
+          // Backend service returns { currentValuation, depreciation, depreciationCurve, ... }
+          // The API wrapper already extracts .valuation, so valuationResult is the actual data
+          const marketValuationData = valuationResult;
+          
+          if (!marketValuationData || (typeof marketValuationData === 'object' && Object.keys(marketValuationData).length === 0)) {
+            console.warn('[Report] ⚠️ Market valuation returned empty result:', valuationResult);
+            toast({
+              title: "Market Valuation Warning",
+              description: "Market valuation completed but returned no data.",
+              variant: "default"
+            });
+          }
+          
+          // Save to database immediately with merged data (final save with all data)
+          const savedData6 = await savePortfolioWithMerge({
+            marketValuation: marketValuationData
+          });
+          updatedPortfolio = { ...updatedPortfolio, ...savedData6 };
+          setPortfolio(updatedPortfolio);
+          const transformedVehicle6 = portfolioToVehicle(updatedPortfolio);
+          setVehicle(transformedVehicle6);
+          setAnalysisProgress(prev => ({ ...prev, marketValuation: false }));
+        } catch (valuationError: any) {
+          console.error('[Report] ❌ Market valuation error:', valuationError);
+          toast({
+            title: "Market Valuation Error",
+            description: valuationError.message || "Market valuation failed.",
+            variant: "destructive"
+          });
+          // Continue even if valuation fails
+          setAnalysisProgress(prev => ({ ...prev, marketValuation: false }));
+        }
+
+        toast({
+          title: "Analysis Complete",
+          description: "Full analysis has been generated.",
+        });
+
+        window.history.replaceState({}, '', `/report/${params.id}`);
+      } catch (error: any) {
+        console.error('Error running analysis:', error);
+        toast({
+          title: "Analysis Failed",
+          description: error.message || "Failed to run analysis. Please try again.",
+          variant: "destructive"
+        });
+        // Reset all progress flags on error
+        setAnalysisProgress({
+          serviceHistory: false,
+          routineMaintenance: false,
+          unscheduledMaintenance: false,
+          gapAnalysis: false,
+          riskEvaluation: false,
+          marketValuation: false,
+        });
+      } finally {
+        setIsRunningAnalysis(false);
+      }
+    };
+
+    if (portfolio && vehicle && shouldRunAnalysis && !isRunningAnalysis) {
+      runAnalysisWorkflow();
+    }
+  }, [shouldRunAnalysis, portfolio, vehicle, params?.id, isRunningAnalysis, toast]);
+
+  if (isLoading) {
+    return <Layout><div className="p-8">Loading vehicle data...</div></Layout>;
+  }
+
+  if (!vehicle || !portfolio) {
+    return <Layout><div className="p-8">Vehicle not found</div></Layout>;
+  }
 
   const handleToggleLeverage = (id: string) => {
     if (selectedLeverageIds.includes(id)) {
@@ -255,7 +622,28 @@ export default function VehicleReport() {
     }
   };
 
-  const selectedLeverageItems = vehicle.leverageItems.filter(i => selectedLeverageIds.includes(i.id));
+  const handleRunAnalysis = () => {
+    if (!params?.id) return;
+    if (isRunningAnalysis) return;
+    
+    // Check if service history exists
+    if (!portfolio?.parsedServiceHistory) {
+      toast({
+        title: "No Service History",
+        description: "Please upload and parse a PDF first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Navigate to the same page with runAnalysis=true to trigger the workflow
+    setLocation(`/report/${params.id}?runAnalysis=true`);
+  };
+
+  // Check if vehicle has full analysis
+  const hasFullAnalysis = portfolio?.riskEvaluation && portfolio?.marketValuation && portfolio?.serviceHistoryAnalysis;
+
+  const selectedLeverageItems = vehicle?.leverageItems?.filter((i: { id?: string }) => selectedLeverageIds.includes(i.id || '')) || [];
 
   return (
     <Layout>
@@ -311,6 +699,48 @@ export default function VehicleReport() {
           title="Vehicle Analysis"
           directive="Review the vehicle's history, value, and future risks to negotiate the best price."
         />
+
+        {/* Run Analysis Button - Show if analysis hasn't been run or is incomplete */}
+        {(!hasFullAnalysis || isRunningAnalysis) && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h3 className="font-bold text-foreground mb-1 flex items-center gap-2">
+                    {isRunningAnalysis ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        Analysis in Progress
+                      </>
+                    ) : (
+                      <>
+                        <Activity className="w-4 h-4 text-primary" />
+                        {hasFullAnalysis ? 'Re-run Analysis' : 'Run Full Analysis'}
+                      </>
+                    )}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {isRunningAnalysis 
+                      ? 'Analyzing vehicle data. This may take a few moments...'
+                      : hasFullAnalysis
+                        ? 'Generate a fresh analysis with updated data.'
+                        : 'Generate comprehensive analysis including risk evaluation, market valuation, and maintenance forecasts.'}
+                  </p>
+                </div>
+                {!isRunningAnalysis && (
+                  <Button
+                    onClick={handleRunAnalysis}
+                    className="ml-4 bg-primary text-primary-foreground hover:bg-primary/90 font-bold shadow-md"
+                    disabled={!portfolio?.parsedServiceHistory}
+                  >
+                    <Activity className="w-4 h-4 mr-2" />
+                    {hasFullAnalysis ? 'Re-run Analysis' : 'Run Analysis'}
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Offer Mode Calculator Banner */}
         {offerMode && (
@@ -630,27 +1060,51 @@ export default function VehicleReport() {
                 value="maintenance" 
                 className="px-1 pb-3 pt-2 h-auto rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Maintenance & Due Now
+                <div className="flex items-center gap-2">
+                  Maintenance & Due Now
+                  {(analysisProgress.routineMaintenance || analysisProgress.gapAnalysis) && (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  )}
+                </div>
               </TabsTrigger>
               <TabsTrigger 
                 value="leverage" 
                 className="px-1 pb-3 pt-2 h-auto rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Leverage Builder
+                <div className="flex items-center gap-2">
+                  Leverage Builder
+                  {analysisProgress.riskEvaluation && (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  )}
+                </div>
               </TabsTrigger>
               <TabsTrigger 
                 value="history" 
                 className="px-1 pb-3 pt-2 h-auto rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Vehicle History
+                <div className="flex items-center gap-2">
+                  Vehicle History
+                  {analysisProgress.serviceHistory && (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  )}
+                </div>
               </TabsTrigger>
             </TabsList>
           </div>
 
           {/* 1. SUMMARY TAB */}
           <TabsContent value="summary" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-             
-             {/* Executive Summary Card */}
+            {(analysisProgress.serviceHistory || analysisProgress.riskEvaluation || analysisProgress.marketValuation) && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Analyzing vehicle data...</p>
+                </div>
+              </Card>
+            )}
+            {!(analysisProgress.serviceHistory || analysisProgress.riskEvaluation || analysisProgress.marketValuation) && (
+              <>
+            {/* Executive Summary Card */}
              <Card className="border border-border/60 bg-gradient-to-br from-white to-slate-50 shadow-sm relative overflow-hidden">
                <div className="absolute top-0 right-0 p-32 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
                <CardContent className="p-8 relative z-10">
@@ -821,11 +1275,22 @@ export default function VehicleReport() {
 
              {/* Vehicle History Summary Chart */}
              <HistoryTimeline records={vehicle.serviceRecords} />
+              </>
+            )}
           </TabsContent>
 
           {/* 2. MARKET VALUATION TAB */}
           <TabsContent value="valuation" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-             
+            {analysisProgress.marketValuation && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Calculating market valuation...</p>
+                </div>
+              </Card>
+            )}
+            {!analysisProgress.marketValuation && (
+              <>
              <QuickSummary 
                title="Valuation Analysis"
                verdict={vehicle.tco.askingPrice > vehicle.valuation.privateParty ? "Currently Overpriced" : "Fairly Priced"}
@@ -961,15 +1426,26 @@ export default function VehicleReport() {
                   </div>
                 </CardContent>
              </Card>
+              </>
+            )}
           </TabsContent>
 
           {/* 3. PROJECTED FUTURE REPAIRS TAB */}
           <TabsContent value="repairs" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-             
+            {(analysisProgress.unscheduledMaintenance || analysisProgress.riskEvaluation) && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Analyzing repair risks...</p>
+                </div>
+              </Card>
+            )}
+            {!(analysisProgress.unscheduledMaintenance || analysisProgress.riskEvaluation) && (
+              <>
              <QuickSummary 
                title="Risk Forecast"
-               verdict={`${vehicle.risks.filter(r => r.riskLevel === 'High').length} High Probability Failures Detected`}
-               details={`Based on mileage trends for this model, you are entering a high-risk window for ${vehicle.risks.find(r => r.riskLevel === 'High')?.name || 'major components'}. Total projected exposure is $${vehicle.tco.expectedUnscheduledRepairCost.toLocaleString()}.`}
+               verdict={`${vehicle.risks.filter((r: any) => r.riskLevel === 'High').length} High Probability Failures Detected`}
+               details={`Based on mileage trends for this model, you are entering a high-risk window for ${vehicle.risks.find((r: any) => r.riskLevel === 'High')?.name || 'major components'}. Total projected exposure is $${vehicle.tco.expectedUnscheduledRepairCost.toLocaleString()}.`}
                sentiment="warning"
                subDetails={
                   <div>
@@ -1005,166 +1481,189 @@ export default function VehicleReport() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent blur-xl opacity-30 pointer-events-none" />
                 <SurvivabilityChart currentMileage={vehicle.mileage} items={vehicle.unscheduledForecast} />
              </div>
+              </>
+            )}
           </TabsContent>
 
           {/* 4. MAINTENANCE & DUE NOW TAB */}
           <TabsContent value="maintenance" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-             
-             {/* 1. Urgency Cards Stack */}
-             <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-primary" /> Maintenance Urgency
-                    </h3>
-                    <div className="text-xs text-muted-foreground">
-                        Sorted by priority based on service history gaps
-                    </div>
+            {(analysisProgress.routineMaintenance || analysisProgress.gapAnalysis) && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Analyzing maintenance schedule...</p>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* RED: Past Due */}
-                    {(() => {
-                        const overdue = vehicle.gapAnalysis.items.filter(i => i.status === 'overdue' || i.status === 'dueNow');
-                        return overdue.map(item => (
-                            <div key={item.id} className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                <div className="absolute top-0 right-0 w-16 h-16 bg-red-500/10 rounded-full blur-2xl -mr-4 -mt-4 pointer-events-none" />
-                                <div className="flex justify-between items-start mb-2 relative z-10">
-                                    <Badge variant="destructive" className="font-bold uppercase text-[10px] tracking-wide">Past Due</Badge>
-                                    <div className="text-xs font-mono font-bold text-red-700 dark:text-red-400">
-                                        ${item.costRange[0]} - ${item.costRange[1]}
-                                    </div>
-                                </div>
-                                <h4 className="font-bold text-foreground mb-1 relative z-10">{item.item}</h4>
-                                <div className="text-xs text-red-600 dark:text-red-400 font-medium mb-3 relative z-10">
-                                    Overdue by {(vehicle.mileage - (item.lastDoneMiles || 0)).toLocaleString()} miles
-                                </div>
-                                <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    className="w-full h-8 text-xs border-red-200 text-red-700 hover:bg-red-100 hover:text-red-800 bg-white/50"
-                                    onClick={() => handleToggleLeverage(item.id)}
-                                >
-                                    {selectedLeverageIds.includes(item.id) ? (
-                                        <><Check className="w-3 h-3 mr-1" /> Added to Plan</>
-                                    ) : (
-                                        <><ShieldAlert className="w-3 h-3 mr-1" /> Add to Leverage</>
-                                    )}
-                                </Button>
-                            </div>
-                        ));
-                    })()}
-
-                    {/* YELLOW: Due Soon */}
-                    {(() => {
-                        const dueSoon = vehicle.gapAnalysis.items.filter(i => i.status === 'dueSoon');
-                        return dueSoon.map(item => (
-                            <div key={item.id} className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                                <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-full blur-2xl -mr-4 -mt-4 pointer-events-none" />
-                                <div className="flex justify-between items-start mb-2 relative z-10">
-                                    <Badge variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200 font-bold uppercase text-[10px] tracking-wide">Due Soon</Badge>
-                                    <div className="text-xs font-mono font-bold text-amber-700 dark:text-amber-400">
-                                        ${item.costRange[0]} - ${item.costRange[1]}
-                                    </div>
-                                </div>
-                                <h4 className="font-bold text-foreground mb-1 relative z-10">{item.item}</h4>
-                                <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-3 relative z-10">
-                                    Due in {((item.lastDoneMiles || 0) + 10000 - vehicle.mileage).toLocaleString()} miles
-                                </div>
-                                <div className="text-xs text-muted-foreground bg-white/50 p-1.5 rounded relative z-10">
-                                    Plan budget for next service visit.
-                                </div>
-                            </div>
-                        ));
-                    })()}
-
-                    {/* GREEN: Later (Dynamic) */}
-                    {(() => {
-                        // Find items that are NOT in the overdue/dueSoon list to show as "Later"
-                        const problematicIds = vehicle.gapAnalysis.items.map(i => i.item); // Using name for matching since IDs might differ
-                        const upcomingItems = vehicle.routineMaintenanceSchedule.filter(
-                            item => !problematicIds.some(prob => prob.includes(item.item) || item.item.includes(prob))
-                        ).slice(0, 1); // Just show one example
-
-                        return upcomingItems.map(item => (
-                            <div key={item.id} className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-900/30 rounded-xl p-4 shadow-sm relative overflow-hidden opacity-80 hover:opacity-100 transition-opacity">
-                                <div className="flex justify-between items-start mb-2">
-                                    <Badge variant="outline" className="text-emerald-700 border-emerald-200 bg-emerald-100/50 font-bold uppercase text-[10px] tracking-wide">Later</Badge>
-                                    <div className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                                        ${item.costRange[0]} - ${item.costRange[1]}
-                                    </div>
-                                </div>
-                                <h4 className="font-bold text-foreground mb-1">{item.item}</h4>
-                                <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-3">
-                                    Due at {(item.intervalMiles + 60000).toLocaleString()} miles
-                                </div>
-                                <div className="text-xs text-muted-foreground bg-white/50 p-1.5 rounded">
-                                    {((item.intervalMiles + 60000) - vehicle.mileage).toLocaleString()} miles remaining. No action needed.
-                                </div>
-                            </div>
-                        ));
-                    })()}
-                </div>
-             </div>
-
-             <Separator />
-
-             {/* 2. Gap Analysis Grid (Replaces Table) */}
+              </Card>
+            )}
+            {!(analysisProgress.routineMaintenance || analysisProgress.gapAnalysis) && (
+              <>
+             {/* Complete Maintenance Schedule - All Items */}
              <Card>
                <CardHeader>
-                 <CardTitle>Maintenance Gap Analysis</CardTitle>
+                 <CardTitle>Complete Maintenance Schedule</CardTitle>
                  <CardDescription>
-                    Visual comparison of usage vs. interval. <span className="text-emerald-600 font-medium">Green bar</span> = Life remaining. <span className="text-red-600 font-medium">Red bar</span> = Overdue.
+                    All routine maintenance items with urgency based on service history. <span className="text-red-600 font-medium">Red</span> = Overdue, <span className="text-amber-600 font-medium">Amber</span> = Due Soon, <span className="text-emerald-600 font-medium">Green</span> = Not Due.
                  </CardDescription>
                </CardHeader>
                <CardContent>
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                     {vehicle.routineMaintenanceSchedule.map((item) => {
-                        // Mock Gap Logic
-                        let lastDone = "Unknown";
-                        let status: 'Overdue' | 'Due Soon' | 'Good' = 'Good';
-                        let percentage = 0;
-                        let lastDoneMiles = 0;
+                 {vehicle.gapAnalysis.items.length === 0 ? (
+                   <div className="text-center py-8 text-muted-foreground">
+                     <p>No maintenance gap analysis data available.</p>
+                     <p className="text-sm mt-2">Run the analysis workflow to generate maintenance schedule data.</p>
+                   </div>
+                 ) : (
+                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                     {vehicle.gapAnalysis.items.map((item: any) => {
+                        // Calculate percentage based on actual gap analysis data
+                        const lastDoneMiles = item.lastDoneMiles || 0;
+                        const milesSinceLastService = vehicle.mileage - lastDoneMiles;
+                        const percentage = item.intervalMiles > 0 
+                          ? (milesSinceLastService / item.intervalMiles) * 100 
+                          : 0;
                         
-                        // Mocking logic for visuals
-                        if (item.item.includes("Oil")) {
-                            lastDone = "62,300 mi";
-                            lastDoneMiles = 62300;
-                            status = 'Overdue';
-                            percentage = 110; // Overdue
-                        } else if (item.item.includes("Filter")) {
-                            lastDone = "62,300 mi";
-                            lastDoneMiles = 62300;
-                            status = 'Due Soon';
-                            percentage = 90;
-                        } else if (item.item.includes("Belt")) {
-                             lastDone = "Original";
-                             lastDoneMiles = 0;
-                             status = 'Overdue';
-                             percentage = 120;
+                        // Determine status and colors based on miles until due
+                        // Red: Overdue, Yellow: 0-1000 miles until due, Green: Otherwise
+                        let status: 'Overdue' | 'Due Soon' | 'Good' = 'Good';
+                        let statusColor = 'bg-emerald-500';
+                        let statusBadge = 'outline';
+                        
+                        // Calculate miles until due or overdue
+                        let milesUntilDue = 0;
+                        let isOverdue = false;
+                        
+                        if (item.lastDoneMiles === null || item.lastDoneMiles === 0) {
+                          // Never performed - calculate overdue
+                          const overdueMiles = vehicle.mileage > item.intervalMiles
+                            ? vehicle.mileage - item.intervalMiles
+                            : 0;
+                          if (overdueMiles > 0) {
+                            isOverdue = true;
+                            milesUntilDue = -overdueMiles; // Negative for overdue
+                          } else {
+                            milesUntilDue = item.intervalMiles - vehicle.mileage; // Due soon
+                          }
+                        } else if (item.overdueByMiles && item.overdueByMiles > 0) {
+                          isOverdue = true;
+                          milesUntilDue = -item.overdueByMiles; // Negative for overdue
+                        } else if (item.nextDueMiles) {
+                          if (item.nextDueMiles <= vehicle.mileage) {
+                            isOverdue = true;
+                            milesUntilDue = -(vehicle.mileage - item.nextDueMiles); // Negative for overdue
+                          } else {
+                            milesUntilDue = item.nextDueMiles - vehicle.mileage; // Positive for due in future
+                          }
                         } else {
-                            lastDone = "60k Svc";
-                            lastDoneMiles = 60000;
-                            status = 'Good';
-                            percentage = ((vehicle.mileage - lastDoneMiles) / item.intervalMiles) * 100;
+                          // Fallback: calculate from lastDoneMiles + interval
+                          const nextDue = item.lastDoneMiles + item.intervalMiles;
+                          if (nextDue <= vehicle.mileage) {
+                            isOverdue = true;
+                            milesUntilDue = -(vehicle.mileage - nextDue);
+                          } else {
+                            milesUntilDue = nextDue - vehicle.mileage;
+                          }
+                        }
+                        
+                        // Set status and colors based on miles until due
+                        if (isOverdue || milesUntilDue < 0) {
+                          status = 'Overdue';
+                          statusColor = 'bg-red-500';
+                          statusBadge = 'destructive';
+                        } else if (milesUntilDue >= 0 && milesUntilDue <= 1000) {
+                          status = 'Due Soon';
+                          statusColor = 'bg-amber-400';
+                          statusBadge = 'secondary';
+                        } else {
+                          status = 'Good';
+                          statusColor = 'bg-emerald-500';
+                          statusBadge = 'default'; // Use default variant for green
                         }
 
-                        // Cap percentage for bar visual
-                        const barWidth = Math.min(percentage, 100);
-                        const isOverdue = percentage > 100;
+                        // Cap percentage for bar visual (overdue items show full bar)
+                        const barWidth = percentage > 100 ? 100 : Math.min(percentage, 100);
+                        const isOverdueForBar = isOverdue || milesUntilDue < 0;
+                        const milesRemaining = item.intervalMiles > 0 
+                          ? Math.max(0, item.intervalMiles - milesSinceLastService)
+                          : 0;
 
+                        // Determine border color based on status
+                        const borderColor = status === 'Overdue' 
+                          ? 'border-red-500/50 dark:border-red-500/30' 
+                          : status === 'Due Soon'
+                          ? 'border-amber-400/50 dark:border-amber-400/30'
+                          : 'border-emerald-500/50 dark:border-emerald-500/30';
+                        
                         return (
-                           <div key={item.id} className="border border-border/60 rounded-xl p-4 bg-background hover:shadow-sm transition-all flex flex-col gap-3">
+                           <div key={item.id} className={`border-2 ${borderColor} rounded-xl p-4 bg-background hover:shadow-sm transition-all flex flex-col gap-3`}>
                                 <div className="flex justify-between items-start">
-                                    <div>
+                                    <div className="flex-1">
                                         <div className="text-xs font-bold uppercase text-muted-foreground tracking-wider mb-1">
                                             {item.item}
                                         </div>
-                                        <div className="text-sm font-medium">
-                                            Last: {lastDone}
-                                        </div>
+                                        {/* Show overdue/due information here instead of "Last" */}
+                                        {(() => {
+                                          // Check if never performed FIRST - calculate overdue miles
+                                          if (item.lastDoneMiles === null || item.lastDoneMiles === 0) {
+                                            const overdueMiles = vehicle.mileage > item.intervalMiles
+                                              ? vehicle.mileage - item.intervalMiles
+                                              : 0;
+                                            if (overdueMiles > 0) {
+                                              return (
+                                                <div className="text-sm font-medium text-red-600 dark:text-red-400">
+                                                  Overdue by {overdueMiles.toLocaleString()} miles
+                                                </div>
+                                              );
+                                            } else {
+                                              return (
+                                                <div className="text-sm font-medium text-red-600 dark:text-red-400">
+                                                  Due now
+                                                </div>
+                                              );
+                                            }
+                                          }
+                                          
+                                          // Check if overdue - always show miles overdue
+                                          if (item.overdueByMiles && item.overdueByMiles > 0) {
+                                            return (
+                                              <div className="text-sm font-medium text-red-600 dark:text-red-400">
+                                                Overdue by {item.overdueByMiles.toLocaleString()} miles
+                                              </div>
+                                            );
+                                          }
+                                          
+                                          // Check if due now (nextDueMiles is in the past or at current mileage)
+                                          if (item.nextDueMiles && item.nextDueMiles <= vehicle.mileage) {
+                                            const overdue = vehicle.mileage - item.nextDueMiles;
+                                            return (
+                                              <div className="text-sm font-medium text-red-600 dark:text-red-400">
+                                                Overdue by {overdue.toLocaleString()} miles
+                                              </div>
+                                            );
+                                          }
+                                          
+                                          // Check if due in the future
+                                          if (item.nextDueMiles && item.nextDueMiles > vehicle.mileage) {
+                                            const milesUntilDue = item.nextDueMiles - vehicle.mileage;
+                                            return (
+                                              <div className="text-sm font-medium text-muted-foreground">
+                                                Due in {milesUntilDue.toLocaleString()} miles
+                                              </div>
+                                            );
+                                          }
+                                          
+                                          return null;
+                                        })()}
                                     </div>
-                                    <div className="text-right">
-                                         <Badge variant={status === 'Overdue' ? 'destructive' : (status === 'Due Soon' ? 'secondary' : 'outline')} className="font-bold text-[10px] uppercase">
+                                    <div className="text-right ml-4">
+                                         <Badge 
+                                           variant={statusBadge as any} 
+                                           className={`font-bold text-[10px] uppercase ${
+                                             status === 'Good' 
+                                               ? 'bg-emerald-500 text-white border-emerald-600' 
+                                               : status === 'Due Soon'
+                                               ? 'bg-amber-400 text-white border-amber-500'
+                                               : ''
+                                           }`}
+                                         >
                                             {status}
                                          </Badge>
                                          <div className="text-xs font-mono text-muted-foreground mt-1">
@@ -1177,30 +1676,55 @@ export default function VehicleReport() {
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
                                         <span>Usage</span>
-                                        <span>{isOverdue ? 'Overdue' : `${Math.round(100 - percentage)}% Rem.`}</span>
                                     </div>
                                     <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
                                         <div 
-                                            className={`h-full rounded-full transition-all duration-500 ${status === 'Overdue' ? 'bg-red-500' : (status === 'Due Soon' ? 'bg-amber-400' : 'bg-emerald-500')}`}
+                                            className={`h-full rounded-full transition-all duration-500 ${statusColor}`}
                                             style={{ width: `${barWidth}%` }}
                                         />
+                                        {isOverdueForBar && (
+                                          <div className="absolute inset-0 bg-red-500 opacity-50" style={{ width: '100%' }} />
+                                        )}
                                     </div>
                                     <div className="flex justify-between text-[10px] text-muted-foreground">
-                                        <span>0%</span>
-                                        <span>Interval: {item.intervalMiles.toLocaleString()} mi</span>
+                                        <span>Last: {item.lastPerformed || 'Never'}</span>
+                                        <span>Interval: {item.intervalMiles.toLocaleString()} mi / {item.intervalMonths} mo</span>
                                     </div>
                                 </div>
+
+                                {item.riskNote && (
+                                  <div className="text-xs text-muted-foreground bg-muted/30 p-2 rounded border border-border/40">
+                                    <span className="font-semibold">Risk:</span> {item.riskNote}
+                                  </div>
+                                )}
                            </div>
                         );
                      })}
-                 </div>
+                   </div>
+                 )}
                </CardContent>
              </Card>
 
+             <Separator />
+
+             {/* 3. Maintenance Cost Outlook Chart */}
+             <MaintenanceCostChart vehicle={vehicle} milesPerYear={12000} />
+              </>
+            )}
           </TabsContent>
 
           {/* 6. LEVERAGE BUILDER TAB */}
           <TabsContent id="leverage-builder-section" value="leverage" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {analysisProgress.riskEvaluation && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Evaluating negotiation leverage...</p>
+                </div>
+              </Card>
+            )}
+            {!analysisProgress.riskEvaluation && (
+              <>
              <LeverageDrawer 
                isOpen={true} 
                onOpenChange={() => {}} 
@@ -1215,10 +1739,22 @@ export default function VehicleReport() {
                negotiationStyle={negotiationStyle}
                targetOffer={targetOffer}
              />
+              </>
+            )}
           </TabsContent>
 
              {/* 7. VEHICLE HISTORY TAB */}
           <TabsContent value="history" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {analysisProgress.serviceHistory && (
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-muted-foreground font-medium">Analyzing service history...</p>
+                </div>
+              </Card>
+            )}
+            {!analysisProgress.serviceHistory && (
+              <>
              
              {/* The Requested Chart */}
              <HistoryTimeline records={vehicle.serviceRecords} />
@@ -1349,6 +1885,8 @@ export default function VehicleReport() {
                  <EvidenceTable data={vehicle.serviceRecords} />
                </CardContent>
              </Card>
+              </>
+            )}
           </TabsContent>
 
         </Tabs>
@@ -1386,3 +1924,4 @@ export default function VehicleReport() {
     </Layout>
   );
 }
+

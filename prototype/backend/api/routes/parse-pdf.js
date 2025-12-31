@@ -9,7 +9,13 @@ const router = express.Router()
 router.post('/', 
   validatePDFFile, // Validate PDF file
   async (req, res) => {
+    console.log('[PDF Parse] 📥 Received PDF upload request')
     const pdfFile = req.file
+    if (!pdfFile) {
+      console.log('[PDF Parse] ❌ No file in request')
+      return res.status(400).json({ error: 'No file uploaded' })
+    }
+    console.log('[PDF Parse] 📄 File received:', pdfFile.originalname, `(${(pdfFile.size / 1024).toFixed(2)} KB)`)
     const cleanupFile = () => {
       if (pdfFile?.path) {
         try {

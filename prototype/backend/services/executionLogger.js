@@ -94,7 +94,7 @@ export async function initializeDatabase() {
         )
       `)
 
-      // Portfolio table - stores complete car analysis data
+      // Portfolio table - stores only vehicle info (analysis data in separate tables)
       database.run(`
         CREATE TABLE IF NOT EXISTS portfolio (
           portfolio_id TEXT PRIMARY KEY,
@@ -106,31 +106,80 @@ export async function initializeDatabase() {
           engine TEXT,
           vin TEXT,
           parsed_service_history TEXT,
-          service_history_analysis TEXT,
-          routine_maintenance TEXT,
-          unscheduled_maintenance TEXT,
-          gap_analysis TEXT,
-          risk_evaluation TEXT,
-          market_valuation TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `)
+
+      // Service history analysis table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS service_history_analysis (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
+        )
+      `)
+
+      // Routine maintenance table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS routine_maintenance (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
+        )
+      `)
+
+      // Gap analysis table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS gap_analysis (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
+        )
+      `)
+
+      // Unscheduled maintenance table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS unscheduled_maintenance (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
+        )
+      `)
+
+      // Risk evaluation table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS risk_evaluation (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
+        )
+      `)
+
+      // Market valuation table
+      database.run(`
+        CREATE TABLE IF NOT EXISTS market_valuation (
+          portfolio_id TEXT PRIMARY KEY,
+          data TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (portfolio_id) REFERENCES portfolio(portfolio_id) ON DELETE CASCADE
         )
       `, (err) => {
         if (err) {
           reject(err)
         } else {
-          // Add market_valuation column if it doesn't exist (migration for existing databases)
-          database.run(`
-            ALTER TABLE portfolio 
-            ADD COLUMN market_valuation TEXT
-          `, (alterErr) => {
-            // Ignore error if column already exists (SQLite error: "duplicate column name")
-            if (alterErr && !alterErr.message.includes('duplicate column') && !alterErr.message.includes('duplicate column name')) {
-              console.warn('Could not add market_valuation column:', alterErr.message)
-            }
-            // Always resolve - column either added successfully or already exists
-            resolve()
-          })
+          resolve()
         }
       })
     })
@@ -253,42 +302,87 @@ export async function logGeneratedReport(sessionId, reportType, reportData) {
   })
 }
 
-export async function savePortfolio(portfolioData) {
+// Helper function to save analysis data to separate table
+async function saveAnalysisData(tableName, portfolioId, data) {
   return new Promise((resolve, reject) => {
+    if (!data) {
+      resolve() // Skip if no data
+      return
+    }
     const database = getDatabase()
-    const portfolioId = portfolioData.portfolioId || `portfolio_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
     database.run(
-      `INSERT OR REPLACE INTO portfolio (
-        portfolio_id, vehicle_make, vehicle_model, vehicle_year, mileage, trim, engine, vin,
-        parsed_service_history, service_history_analysis, routine_maintenance,
-        unscheduled_maintenance, gap_analysis, risk_evaluation, market_valuation, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-      [
-        portfolioId,
-        portfolioData.vehicleData?.make || null,
-        portfolioData.vehicleData?.model || null,
-        portfolioData.vehicleData?.year || null,
-        portfolioData.vehicleData?.mileage || null,
-        portfolioData.vehicleData?.trim || null,
-        portfolioData.vehicleData?.engine || null,
-        portfolioData.vehicleData?.vin || null,
-        JSON.stringify(portfolioData.parsedServiceHistory || null),
-        JSON.stringify(portfolioData.serviceHistoryAnalysis || null),
-        JSON.stringify(portfolioData.routineMaintenance || null),
-        JSON.stringify(portfolioData.unscheduledMaintenance || null),
-        JSON.stringify(portfolioData.gapAnalysis || null),
-        JSON.stringify(portfolioData.riskEvaluation || null),
-        JSON.stringify(portfolioData.marketValuation || null)
-      ],
+      `INSERT OR REPLACE INTO ${tableName} (portfolio_id, data, updated_at)
+       VALUES (?, ?, CURRENT_TIMESTAMP)`,
+      [portfolioId, JSON.stringify(data)],
       function(err) {
         if (err) {
           reject(err)
         } else {
-          resolve(portfolioId)
+          resolve()
         }
       }
     )
+  })
+}
+
+export async function savePortfolio(portfolioData) {
+  return new Promise(async (resolve, reject) => {
+    const database = getDatabase()
+    const portfolioId = portfolioData.portfolioId || `portfolio_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    try {
+      // Save vehicle data to portfolio table
+      database.run(
+        `INSERT OR REPLACE INTO portfolio (
+          portfolio_id, vehicle_make, vehicle_model, vehicle_year, mileage, trim, engine, vin,
+          parsed_service_history, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [
+          portfolioId,
+          portfolioData.vehicleData?.make || null,
+          portfolioData.vehicleData?.model || null,
+          portfolioData.vehicleData?.year || null,
+          portfolioData.vehicleData?.mileage || null,
+          portfolioData.vehicleData?.trim || null,
+          portfolioData.vehicleData?.engine || null,
+          portfolioData.vehicleData?.vin || null,
+          JSON.stringify(portfolioData.parsedServiceHistory || null)
+        ],
+        async function(err) {
+          if (err) {
+            reject(err)
+            return
+          }
+
+          // Save analysis data to separate tables
+          try {
+            if (portfolioData.serviceHistoryAnalysis) {
+              await saveAnalysisData('service_history_analysis', portfolioId, portfolioData.serviceHistoryAnalysis)
+            }
+            if (portfolioData.routineMaintenance) {
+              await saveAnalysisData('routine_maintenance', portfolioId, portfolioData.routineMaintenance)
+            }
+            if (portfolioData.gapAnalysis) {
+              await saveAnalysisData('gap_analysis', portfolioId, portfolioData.gapAnalysis)
+            }
+            if (portfolioData.unscheduledMaintenance) {
+              await saveAnalysisData('unscheduled_maintenance', portfolioId, portfolioData.unscheduledMaintenance)
+            }
+            if (portfolioData.riskEvaluation) {
+              await saveAnalysisData('risk_evaluation', portfolioId, portfolioData.riskEvaluation)
+            }
+            if (portfolioData.marketValuation) {
+              await saveAnalysisData('market_valuation', portfolioId, portfolioData.marketValuation)
+            }
+            resolve(portfolioId)
+          } catch (saveErr) {
+            reject(saveErr)
+          }
+        }
+      )
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 
@@ -312,42 +406,87 @@ export async function getAllPortfolios() {
   })
 }
 
-export async function getPortfolio(portfolioId) {
+// Helper function to get analysis data from separate table
+async function getAnalysisData(tableName, portfolioId) {
   return new Promise((resolve, reject) => {
+    const database = getDatabase()
+    database.get(
+      `SELECT data FROM ${tableName} WHERE portfolio_id = ?`,
+      [portfolioId],
+      (err, row) => {
+        if (err) {
+          reject(err)
+        } else if (!row || !row.data) {
+          resolve(null)
+        } else {
+          try {
+            resolve(JSON.parse(row.data))
+          } catch (parseErr) {
+            reject(parseErr)
+          }
+        }
+      }
+    )
+  })
+}
+
+export async function getPortfolio(portfolioId) {
+  return new Promise(async (resolve, reject) => {
     const database = getDatabase()
 
     database.get(
       `SELECT * FROM portfolio WHERE portfolio_id = ?`,
       [portfolioId],
-      (err, row) => {
+      async (err, row) => {
         if (err) {
           reject(err)
         } else if (!row) {
           resolve(null)
         } else {
-          // Parse JSON fields
-          const portfolio = {
-            portfolioId: row.portfolio_id,
-            vehicleData: {
-              make: row.vehicle_make,
-              model: row.vehicle_model,
-              year: row.vehicle_year,
-              mileage: row.mileage,
-              trim: row.trim,
-              engine: row.engine,
-              vin: row.vin
-            },
-            parsedServiceHistory: row.parsed_service_history ? JSON.parse(row.parsed_service_history) : null,
-            serviceHistoryAnalysis: row.service_history_analysis ? JSON.parse(row.service_history_analysis) : null,
-            routineMaintenance: row.routine_maintenance ? JSON.parse(row.routine_maintenance) : null,
-            unscheduledMaintenance: row.unscheduled_maintenance ? JSON.parse(row.unscheduled_maintenance) : null,
-            gapAnalysis: row.gap_analysis ? JSON.parse(row.gap_analysis) : null,
-            riskEvaluation: row.risk_evaluation ? JSON.parse(row.risk_evaluation) : null,
-            marketValuation: row.market_valuation ? JSON.parse(row.market_valuation) : null,
-            createdAt: row.created_at,
-            updatedAt: row.updated_at
+          try {
+            // Get analysis data from separate tables
+            const [
+              serviceHistoryAnalysis,
+              routineMaintenance,
+              gapAnalysis,
+              unscheduledMaintenance,
+              riskEvaluation,
+              marketValuation
+            ] = await Promise.all([
+              getAnalysisData('service_history_analysis', portfolioId),
+              getAnalysisData('routine_maintenance', portfolioId),
+              getAnalysisData('gap_analysis', portfolioId),
+              getAnalysisData('unscheduled_maintenance', portfolioId),
+              getAnalysisData('risk_evaluation', portfolioId),
+              getAnalysisData('market_valuation', portfolioId)
+            ])
+
+            // Combine portfolio and analysis data
+            const portfolio = {
+              portfolioId: row.portfolio_id,
+              vehicleData: {
+                make: row.vehicle_make,
+                model: row.vehicle_model,
+                year: row.vehicle_year,
+                mileage: row.mileage,
+                trim: row.trim,
+                engine: row.engine,
+                vin: row.vin
+              },
+              parsedServiceHistory: row.parsed_service_history ? JSON.parse(row.parsed_service_history) : null,
+              serviceHistoryAnalysis: serviceHistoryAnalysis,
+              routineMaintenance: routineMaintenance,
+              unscheduledMaintenance: unscheduledMaintenance,
+              gapAnalysis: gapAnalysis,
+              riskEvaluation: riskEvaluation,
+              marketValuation: marketValuation,
+              createdAt: row.created_at,
+              updatedAt: row.updated_at
+            }
+            resolve(portfolio)
+          } catch (error) {
+            reject(error)
           }
-          resolve(portfolio)
         }
       }
     )

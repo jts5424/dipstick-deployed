@@ -30,9 +30,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const app = express()
-// Use port 5001 by default to avoid conflicts with the main server (port 5000)
-// Can be overridden with PROTOTYPE_BACKEND_PORT environment variable
-const PORT = process.env.PROTOTYPE_BACKEND_PORT || process.env.PORT || 5001
+// Use Railway's PORT environment variable, fallback to 5001 for local development
+const PORT = process.env.PORT || 5001
 
 // Configure CORS
 const corsOptions = {
@@ -52,6 +51,12 @@ const maxFileSize = parseInt(process.env.MAX_FILE_SIZE || '10485760') // Default
 const upload = multer({ 
   dest: join(__dirname, 'uploads/'),
   limits: { fileSize: maxFileSize }
+})
+
+// Log all requests to /api/parse-pdf
+app.use('/api/parse-pdf', (req, res, next) => {
+  console.log(`[PDF Parse] 🌐 ${req.method} ${req.path} - Content-Type: ${req.headers['content-type']}`)
+  next()
 })
 
 // Routes

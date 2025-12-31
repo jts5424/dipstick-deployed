@@ -43,9 +43,13 @@ export async function getPortfolio(portfolioId: string): Promise<{ portfolio: Po
 }
 
 // Save/Update portfolio
-export async function savePortfolio(portfolioData: Partial<Portfolio>): Promise<{ portfolio: Portfolio }> {
+export async function savePortfolio(portfolioData: Partial<Portfolio>): Promise<{ success: boolean; portfolioId: string }> {
+  console.log('[API] 💾 Saving portfolio to:', `${API_BASE_URL}/portfolio`);
+  console.log('[API] 📦 Portfolio data:', portfolioData);
   const res = await apiRequest('POST', `${API_BASE_URL}/portfolio`, portfolioData);
-  return res.json();
+  const result = await res.json();
+  console.log('[API] ✅ Save response:', result);
+  return result;
 }
 
 // Delete portfolio
@@ -58,11 +62,28 @@ export async function parsePdf(pdfFile: File): Promise<any> {
   const formData = new FormData();
   formData.append('serviceHistory', pdfFile);
 
-  const res = await fetch(`${API_BASE_URL}/parse-pdf`, {
+  const url = `${API_BASE_URL}/parse-pdf`;
+  console.log('[Frontend] 📤 Calling PDF parse API:', url);
+  console.log('[Frontend] 📄 File:', pdfFile.name, `(${(pdfFile.size / 1024).toFixed(2)} KB)`);
+
+  const res = await fetch(url, {
     method: 'POST',
     body: formData,
     credentials: 'include',
   });
+  
+  console.log('[Frontend] 📥 Response status:', res.status, res.statusText);
+  
+  if (!res.ok) {
+    const text = await res.text();
+    console.error('[Frontend] ❌ API error response:', text);
+    throw new Error(`${res.status}: ${text}`);
+  }
+
+  const json = await res.json();
+  console.log('[Frontend] ✅ API response JSON:', json);
+  console.log('[Frontend] 📦 Returning result with serviceHistory:', json.serviceHistory ? 'YES' : 'NO');
+  return json;
 
   if (!res.ok) {
     const text = await res.text();
@@ -129,7 +150,9 @@ export async function evaluateUnscheduledMaintenanceRisk(
 // Get market valuation
 export async function getMarketValuation(vehicleData: VehicleData): Promise<any> {
   const res = await apiRequest('POST', `${API_BASE_URL}/market-valuation`, vehicleData);
-  return res.json();
+  const data = await res.json();
+  // API returns { success: true, valuation: {...} }, return just the valuation object
+  return data.valuation || data;
 }
 
 // Calculate total cost of ownership

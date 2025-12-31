@@ -20,10 +20,10 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: parseInt(process.env.PORT || "3000", 10),
+    port: 3000, // Always use port 3000
     proxy: {
       '/api/prototype': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:5001', // Always proxy to backend on port 5001
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/prototype/, '/api'),
       },
