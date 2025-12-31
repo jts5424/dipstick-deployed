@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "cd .. && rm -rf node_modules/.cache 2>/dev/null || true && npm ci && npm run build",
+    "build": "cd .. && npm run build",
     "start": "cd .. && npx serve -s dist/public -l $PORT"
   },
   "dependencies": {
