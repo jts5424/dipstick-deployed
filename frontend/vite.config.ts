@@ -21,6 +21,13 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: parseInt(process.env.PORT || "3000", 10),
+    proxy: {
+      '/api/prototype': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/prototype/, '/api'),
+      },
+    },
   },
 });
 

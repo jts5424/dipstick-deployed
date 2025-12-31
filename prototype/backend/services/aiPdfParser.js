@@ -18,20 +18,25 @@ function getOpenAIClient() {
  */
 export async function parsePDFWithAI(pdfPath) {
   try {
+    console.log('[PDF Parse] Step 1/3: Reading PDF file...')
     // Read PDF file
     const pdfBuffer = fs.readFileSync(pdfPath)
     
+    console.log('[PDF Parse] Step 2/3: Extracting text from PDF...')
     // Option 1: Convert PDF to text first, then use AI to structure it
     // This is more cost-effective than vision API
     const pdfData = await pdfParse(pdfBuffer)
     const pdfText = pdfData.text
+    console.log(`[PDF Parse]   Extracted ${pdfText.length} characters of text`)
 
     if (!pdfText || pdfText.trim().length === 0) {
       throw new Error('PDF appears to be empty or could not extract text')
     }
 
+    console.log('[PDF Parse] Step 3/3: Sending to OpenAI for parsing (this may take 10-30 seconds)...')
     // Use OpenAI to extract structured service history from the text
     const structuredData = await extractServiceHistoryWithAI(pdfText)
+    console.log('[PDF Parse]   ✅ OpenAI parsing complete')
 
     return {
       rawText: pdfText,

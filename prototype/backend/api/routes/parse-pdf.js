@@ -32,8 +32,14 @@ router.post('/',
         })
       }
 
+      console.log(`[PDF Parse] Starting parse for file: ${pdfFile.originalname} (${(pdfFile.size / 1024).toFixed(2)} KB)`)
+      
       // Parse PDF with AI
       const serviceHistory = await parsePDFWithAI(pdfFile.path)
+      
+      console.log(`[PDF Parse] ✅ Successfully parsed PDF`)
+      console.log(`[PDF Parse]   - Found ${serviceHistory.records?.length || 0} service records`)
+      console.log(`[PDF Parse]   - Vehicle: ${serviceHistory.vehicleInfo?.year || '?'} ${serviceHistory.vehicleInfo?.make || '?'} ${serviceHistory.vehicleInfo?.model || '?'}`)
       
       // Clean up uploaded file
       cleanupFile()

@@ -11,7 +11,8 @@ import {
   ShieldCheck,
   Shield,
   ArrowRight,
-  Plus
+  Plus,
+  Activity
 } from "lucide-react";
 import { Vehicle } from "@/lib/mockData";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
