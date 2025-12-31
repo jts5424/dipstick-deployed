@@ -7,7 +7,6 @@
     "test": "node tests/run-all.js",
     "test:maintenance-records": "node modules/vehicle-history-events/services/maintenance-records/test.js",
     "dev:server": "node framework/api-server.js",
-    "start": "node server.js",
     "examples": "node examples/basic-usage.js"
   },
   "dependencies": {
