@@ -14,10 +14,18 @@ const app = express()
 const PORT = process.env.PORT || process.env.DEV_PORT || 5001
 
 // Configure CORS
+const isProduction = process.env.NODE_ENV === 'production'
+const corsOrigin = process.env.CORS_ORIGIN
+
+if (isProduction && !corsOrigin) {
+  console.error('ERROR: CORS_ORIGIN environment variable is required in production')
+  process.exit(1)
+}
+
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN 
-    ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-    : '*', // Allow all origins in development if not specified
+  origin: corsOrigin 
+    ? corsOrigin.split(',').map(origin => origin.trim())
+    : 'http://localhost:3000', // Safe default for development
   credentials: true
 }
 
