@@ -144,3 +144,4 @@ function MethodComparator({ modules, selectedModule, onModuleSelect }) {
 
 export default MethodComparator
 
+
