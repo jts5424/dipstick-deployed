@@ -183,6 +183,9 @@ Each service runs independently and communicates via HTTP APIs.
    **Variable 2:**
    - Name: `VITE_PROTOTYPE_API_URL`
    - Value: `https://your-prototype-backend-url.railway.app` (from Step 2.4, no trailing slash!)
+   - **Important**: This should be the full backend URL WITHOUT `/api` at the end
+   - Example: `https://dipstick-prototype-backend-production.up.railway.app`
+   - The frontend will automatically append `/api` to this URL
    - Click **"Add"**
 
    **Variable 3:**
@@ -376,9 +379,15 @@ Expected response:
 
 **Solution:**
 1. Check backend service is running (Status should be "Active")
-2. Verify backend URL in frontend environment variables
+2. Verify `VITE_PROTOTYPE_API_URL` is set correctly:
+   - Should be the full backend URL (e.g., `https://your-backend.railway.app`)
+   - Should NOT include `/api` at the end
+   - Should NOT have a trailing slash
+   - Should use `https://` not `http://`
 3. Test backend directly: `https://your-backend.railway.app/api/health`
-4. Check Railway logs for errors
+4. Check browser console for the actual API URL being used (look for `[API] 🔗 Using backend URL:`)
+5. Check Railway logs for errors
+6. Verify CORS is configured correctly (backend should allow frontend origin)
 
 #### Error: Frontend shows blank page
 
@@ -463,9 +472,14 @@ When asking for help, provide:
 ### Common Issues Quick Fix
 
 **Frontend can't connect to backend?**
-- Check `VITE_PROTOTYPE_API_URL` and `VITE_DEV_API_URL` are set correctly
+- Check `VITE_PROTOTYPE_API_URL` is set correctly:
+  - Should be full backend URL: `https://your-backend.railway.app`
+  - Should NOT include `/api` at the end
+  - Should NOT have trailing slash
 - Verify backend services are running (check logs)
-- Ensure URLs don't have trailing slashes
+- Check browser console for API URL being used
+- Test backend health endpoint directly: `https://your-backend.railway.app/api/health`
+- Verify CORS_ORIGIN in backend matches frontend URL
 
 **CORS errors?**
 - Update `CORS_ORIGIN` in both backends to match frontend URL exactly

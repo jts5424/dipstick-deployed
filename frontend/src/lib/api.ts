@@ -1,9 +1,29 @@
 import { apiRequest } from "./queryClient";
 
 // Base URL for the prototype backend API
-// In development, this will proxy through the server
-// In production, use environment variable or relative path
-const API_BASE_URL = import.meta.env.VITE_PROTOTYPE_API_URL || '/api/prototype';
+// In development: uses vite proxy at /api/prototype (which rewrites to /api)
+// In production: uses full backend URL from VITE_PROTOTYPE_API_URL
+// Backend routes are at /api/* (e.g., /api/portfolio, /api/parse-pdf)
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_PROTOTYPE_API_URL;
+  
+  if (envUrl) {
+    // Production: VITE_PROTOTYPE_API_URL should be the full backend URL
+    // e.g., "https://your-backend.railway.app"
+    // We append /api to get the API base URL
+    const baseUrl = envUrl.replace(/\/$/, ''); // Remove trailing slash
+    const apiUrl = `${baseUrl}/api`;
+    console.log('[API] 🔗 Using backend URL:', apiUrl);
+    return apiUrl;
+  }
+  
+  // Development: Use vite proxy path (rewrites /api/prototype to /api)
+  console.log('[API] 🔗 Using dev proxy:', '/api/prototype');
+  return '/api/prototype';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+console.log('[API] 📍 API_BASE_URL configured as:', API_BASE_URL);
 
 // Vehicle/Portfolio API
 export interface VehicleData {

@@ -94,9 +94,11 @@ router.post('/',
       }, riskEvaluation)
 
       // Format results for display - single table with all items
+      // Include both formatted strings for display AND raw numeric values for calculations
       const formattedResults = {
         allItems: (riskEvaluation.allItems || []).map(item => ({
           item: item.item,
+          // Formatted strings for display
           forecast_mileage: item.forecastMileageMin && item.forecastMileageMax
             ? `${item.forecastMileageMin.toLocaleString()}-${item.forecastMileageMax.toLocaleString()}`
             : item.forecastMileageMin
@@ -119,7 +121,20 @@ router.post('/',
           maintenance_impact: item.maintenanceQuality?.impactOnRisk || 'N/A',
           recommendation: item.recommendation || 'N/A',
           confidence: item.confidence || 'Unknown',
-          urgency: item.urgency || 'Unknown'
+          urgency: item.urgency || 'Unknown',
+          // Raw numeric values for frontend calculations
+          forecastMileageMin: item.forecastMileageMin || null,
+          forecastMileageMax: item.forecastMileageMax || null,
+          probabilityRaw: item.probability || 0, // 0-100 scale
+          riskLevel: item.riskLevel || 'Unknown',
+          riskScore: item.riskScore !== undefined ? item.riskScore : null,
+          alreadyFixed: item.evidence?.alreadyFixed || false,
+          milesUntilTypicalFailure: item.mileageRisk?.milesUntilTypicalFailure !== undefined ? item.mileageRisk.milesUntilTypicalFailure : null,
+          evidence: item.evidence || null,
+          mileageRisk: item.mileageRisk || null,
+          maintenanceQuality: item.maintenanceQuality || null,
+          costRange: item.costRange || { min: 0, max: 0 },
+          oemCost: item.oemCost || { min: 0, max: 0 }
         })),
         summary: riskEvaluation.summary
       }
