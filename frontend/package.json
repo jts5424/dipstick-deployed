@@ -1,0 +1,13 @@
+{
+  "name": "dipstick-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "cd .. && npm install && npm run build",
+    "start": "cd .. && npx serve -s dist/public -l $PORT"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
+
