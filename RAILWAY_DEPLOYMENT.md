@@ -208,16 +208,24 @@ Now that you have the frontend URL, update the CORS settings in both backends:
 #### 5.1 Update Prototype Backend CORS
 1. Go to **Prototype Backend** service
 2. Click **"Variables"** tab
-3. Find `CORS_ORIGIN`
-4. Update it to your **frontend URL** (from Step 4.4)
-5. Click **"Save"**
-6. Railway will automatically redeploy
+3. Find `CORS_ORIGIN` (or create it if it doesn't exist)
+4. Update it to include your frontend URL(s):
+   - **If using Railway domain**: `https://your-frontend.railway.app`
+   - **If using custom domain**: `https://dipsticklab.com` (or your custom domain)
+   - **If using both**: `https://your-frontend.railway.app,https://dipsticklab.com` (comma-separated, no spaces)
+5. **Important**: 
+   - Use `https://` not `http://`
+   - No trailing slashes
+   - If you have multiple domains, separate with commas: `https://domain1.com,https://domain2.com`
+6. Click **"Save"**
+7. Railway will automatically redeploy
+8. Check backend logs to verify CORS is working (you'll see `✅ CORS: Allowing request from...`)
 
 #### 5.2 Update Dev Backend CORS
 1. Go to **Dev Backend** service
 2. Click **"Variables"** tab
 3. Find `CORS_ORIGIN`
-4. Update it to your **frontend URL** (from Step 4.4)
+4. Update it to include your frontend URL(s) (same format as above)
 5. Click **"Save"**
 6. Railway will automatically redeploy
 
@@ -360,11 +368,21 @@ Expected response:
 #### Error: "CORS policy" or "Access-Control-Allow-Origin"
 
 **Solution:**
-1. Check CORS_ORIGIN environment variable is set in backend services
-2. Make sure it matches your frontend URL exactly
-3. No trailing slashes
-4. Use https:// not http://
-5. Update CORS_ORIGIN and wait for redeploy
+1. Check `CORS_ORIGIN` environment variable is set in backend services
+2. Make sure it includes your frontend URL exactly:
+   - If using Railway domain: `https://your-frontend.railway.app`
+   - If using custom domain: `https://dipsticklab.com`
+   - If using both: `https://your-frontend.railway.app,https://dipsticklab.com` (comma-separated)
+3. **Common mistakes:**
+   - No trailing slashes (wrong: `https://dipsticklab.com/`, correct: `https://dipsticklab.com`)
+   - Missing `https://` (wrong: `dipsticklab.com`, correct: `https://dipsticklab.com`)
+   - Using `http://` instead of `https://` in production
+   - Spaces in comma-separated list (wrong: `https://a.com, https://b.com`, correct: `https://a.com,https://b.com`)
+4. Check backend logs after redeploy - you should see:
+   - `✅ CORS: Allowing request from https://dipsticklab.com` (if working)
+   - `❌ CORS: Blocking request from...` (if not configured correctly)
+5. Update `CORS_ORIGIN` and wait for backend to redeploy
+6. Clear browser cache and try again
 
 #### Error: "Environment variable not found"
 
